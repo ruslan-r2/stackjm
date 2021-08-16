@@ -15,7 +15,6 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Table(name = "role")
 public class Role implements GrantedAuthority {
 
