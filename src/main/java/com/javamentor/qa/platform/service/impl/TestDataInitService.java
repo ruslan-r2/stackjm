@@ -14,11 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TestDataInitService {
 
-    private UserService userService;
-    private RoleService roleService;
-    private QuestionService questionService;
-    private AnswerService answerService;
-    private TagService tagService;
+    private final UserService userService;
+    private final RoleService roleService;
+    private final QuestionService questionService;
+    private final AnswerService answerService;
+    private final TagService tagService;
 
     @Autowired
     public TestDataInitService(UserService userService,
@@ -34,32 +34,11 @@ public class TestDataInitService {
     }
 
     @Transactional
-    public void createEntity() {
-
-    }
-
-    @Transactional
-    public void createUser(User user) {
+    public void createEntity(User user, Role role, Question question, Answer answer, Tag tag) {
         userService.persist(user);
-    }
-
-    @Transactional
-    public void createRole(Role role) {
         roleService.persist(role);
-    }
-
-    @Transactional
-    public void createQuestion(Question question) {
         questionService.persist(question);
-    }
-
-    @Transactional
-    public void createAnswer(Answer answer) {
         answerService.persist(answer);
-    }
-
-    @Transactional
-    public void createTag(Tag tag) {
         tagService.persist(tag);
     }
 }
