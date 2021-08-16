@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class TagServiceImpl extends ReadWriteServiceImpl<Tag, Long> implements ReadWriteService<Tag, Long> {
 
-    TagDaoImpl tagDao;
+    private TagDaoImpl tagDao;
 
     @Autowired
     public TagServiceImpl(TagDaoImpl tagDao) {

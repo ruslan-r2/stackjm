@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class QuestionServiceImpl extends ReadWriteServiceImpl<Question, Long> implements ReadWriteService<Question, Long> {
 
-    QuestionDaoImpl questionDao;
+    private QuestionDaoImpl questionDao;
 
     @Autowired
     public QuestionServiceImpl(QuestionDaoImpl questionDao) {
