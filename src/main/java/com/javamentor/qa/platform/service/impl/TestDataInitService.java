@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class TestDataInitService {
 
@@ -34,11 +37,43 @@ public class TestDataInitService {
     }
 
     @Transactional
-    public void createEntity(User user, Role role, Question question, Answer answer, Tag tag) {
+    public void createEntity() {
+
+        Role role = new Role();
+        role.setName("ADMIN");
+
+        User user = new User();
+        user.setEmail("maza120@yandex.ru");
+        user.setPassword("123");
+        user.setFullName("Zalyalov Almaz Fayazovich");
+        user.setIsEnabled(true);
+        user.setCity("Kazan");
+        user.setLinkSite("domen.site.com");
+        user.setLinkGitHub("almaz.github.com");
+        user.setLinkVk("vk.com/almaz");
+        user.setAbout("I love Java");
+        user.setRole(role);
+        user.setNickname("Maza");
         userService.persist(user);
-        roleService.persist(role);
-        questionService.persist(question);
-        answerService.persist(answer);
+
+        Tag tag = new Tag();
+        tag.setName("tagName");
+        tag.setDescription("tagDescription");
         tagService.persist(tag);
+
+        Question question = new Question();
+        question.setTitle("title");
+        question.setDescription("description");
+        question.setUser(user);
+        question.setIsDeleted(false);
+        questionService.persist(question);
+
+        Answer answer = new Answer();
+        answer.setQuestion(question);
+        answer.setUser(user);
+        answer.setHtmlBody("htmlBody");
+        answer.setIsHelpful(true);
+        answer.setIsDeleted(false);
+        answerService.persist(answer);
     }
 }
