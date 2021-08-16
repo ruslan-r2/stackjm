@@ -27,7 +27,6 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Table(name = "user_entity")
 public class User implements UserDetails {
 
