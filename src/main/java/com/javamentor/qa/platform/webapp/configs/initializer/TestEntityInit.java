@@ -1,5 +1,7 @@
 package com.javamentor.qa.platform.webapp.configs.initializer;
 
+import com.javamentor.qa.platform.models.entity.user.Role;
+import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.impl.TestDataInitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,9 +24,10 @@ public class TestEntityInit implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) {
+    public void run(String...args) {
         if (ddlAuto.contains("create")) {
-            testDataInitService.createEntity();
+            testDataInitService.createUser(new User());
+            testDataInitService.createRole(new Role());
         }
     }
 }
