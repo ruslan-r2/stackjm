@@ -18,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TestDataInitService {
 
-
-
     private UserServiceImpl userService;
     private RoleServiceImpl roleService;
     private QuestionServiceImpl questionService;
@@ -37,6 +35,11 @@ public class TestDataInitService {
         this.questionService = questionService;
         this.answerService = answerService;
         this.tagService = tagService;
+    }
+
+    @Transactional
+    public void createEntity() {
+
     }
 
     @Transactional
