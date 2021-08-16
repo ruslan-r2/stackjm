@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class TestDataInitService {
 
@@ -54,17 +57,20 @@ public class TestDataInitService {
         user.setNickname("Maza");
         userService.persist(user);
 
-        Tag tag = new Tag();
-        tag.setName("tagName");
-        tag.setDescription("tagDescription");
-        tagService.persist(tag);
-
         Question question = new Question();
         question.setTitle("title");
         question.setDescription("description");
         question.setUser(user);
         question.setIsDeleted(false);
         questionService.persist(question);
+        List<Question> questions = new ArrayList<>();
+        questions.add(question);
+
+        Tag tag = new Tag();
+        tag.setName("tagName");
+        tag.setDescription("tagDescription");
+        tag.setQuestions(questions);
+        tagService.persist(tag);
 
         Answer answer = new Answer();
         answer.setQuestion(question);
