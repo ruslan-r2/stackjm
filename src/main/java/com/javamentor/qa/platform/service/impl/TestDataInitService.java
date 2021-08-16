@@ -6,6 +6,7 @@ import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.user.Role;
 import com.javamentor.qa.platform.models.entity.user.User;
+import com.javamentor.qa.platform.service.abstracts.model.*;
 import com.javamentor.qa.platform.service.impl.model.AnswerServiceImpl;
 import com.javamentor.qa.platform.service.impl.model.QuestionServiceImpl;
 import com.javamentor.qa.platform.service.impl.model.RoleServiceImpl;
@@ -18,18 +19,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TestDataInitService {
 
-    private UserServiceImpl userService;
-    private RoleServiceImpl roleService;
-    private QuestionServiceImpl questionService;
-    private AnswerServiceImpl answerService;
-    private TagServiceImpl tagService;
+    private UserService userService;
+    private RoleService roleService;
+    private QuestionService questionService;
+    private AnswerService answerService;
+    private TagService tagService;
 
     @Autowired
-    public TestDataInitService(UserServiceImpl userService,
-                               RoleServiceImpl roleService,
-                               QuestionServiceImpl questionService,
-                               AnswerServiceImpl answerService,
-                               TagServiceImpl tagService) {
+    public TestDataInitService(UserService userService,
+                               RoleService roleService,
+                               QuestionService questionService,
+                               AnswerService answerService,
+                               TagService tagService) {
         this.userService = userService;
         this.roleService = roleService;
         this.questionService = questionService;
