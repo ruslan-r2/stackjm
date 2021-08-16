@@ -11,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 public class TestDataInitService {
 
@@ -41,6 +38,7 @@ public class TestDataInitService {
 
         Role role = new Role();
         role.setName("ADMIN");
+        roleService.persist(role);
 
         User user = new User();
         user.setEmail("maza120@yandex.ru");
