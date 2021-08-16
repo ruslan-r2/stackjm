@@ -1,5 +1,8 @@
 package com.javamentor.qa.platform.webapp.configs.initializer;
 
+import com.javamentor.qa.platform.models.entity.question.Question;
+import com.javamentor.qa.platform.models.entity.question.Tag;
+import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.user.Role;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.impl.TestDataInitService;
@@ -26,8 +29,7 @@ public class TestEntityInit implements CommandLineRunner {
     @Override
     public void run(String...args) {
         if (ddlAuto.contains("create")) {
-            testDataInitService.createUser(new User());
-            testDataInitService.createRole(new Role());
+            testDataInitService.createEntity(new User(), new Role(), new Question(), new Answer(), new Tag());
         }
     }
 }
