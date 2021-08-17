@@ -42,9 +42,9 @@ public class TestDataInitService {
         createQuestion();
         createAnswer();
         createTag();
-        createRole();
     }
 
+    @Transactional
     public User createUser() {
         User user = new User();
         user.setEmail("maza120@yandex.ru");
@@ -55,6 +55,7 @@ public class TestDataInitService {
         user.setLinkSite("domen.site.com");
         user.setLinkGitHub("almaz.github.com");
         user.setLinkVk("vk.com/almaz");
+        user.setImageLink("images.com/link");
         user.setAbout("I love Java");
         user.setRole(createRole());
         user.setNickname("Maza");
@@ -62,6 +63,7 @@ public class TestDataInitService {
         return user;
     }
 
+    @Transactional
     public Role createRole() {
         Role role = new Role();
         role.setName("ADMIN");
@@ -69,6 +71,7 @@ public class TestDataInitService {
         return role;
     }
 
+    @Transactional
     public Question createQuestion() {
         Question question = new Question();
         question.setTitle("title");
@@ -82,23 +85,23 @@ public class TestDataInitService {
         return question;
     }
 
+    @Transactional
     public void createAnswer() {
         Answer answer = new Answer();
-        answer.setQuestion(createQuestion());
         answer.setUser(createUser());
         answer.setHtmlBody("htmlBody");
         answer.setIsHelpful(true);
         answer.setIsDeleted(false);
+        answer.setIsDeletedByModerator(false);
+        answer.setQuestion(createQuestion());
         answerService.persist(answer);
     }
 
+    @Transactional
     public Tag createTag() {
         Tag tag = new Tag();
         tag.setName("tagName");
         tag.setDescription("tagDescription");
-        List<Question> questions = new ArrayList<>();
-        questions.add(createQuestion());
-        tag.setQuestions(questions);
         tagService.persist(tag);
         return tag;
     }
