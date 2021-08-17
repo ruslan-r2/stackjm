@@ -30,7 +30,7 @@ public class ResourceAnswerController {
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/{answerId}")
+    @DeleteMapping("/{questionId}/answer/{answerId}")
     public ResponseEntity<Answer> deleteAnswerById(@PathVariable(name = "questionId") Long questionId,
                                                    @PathVariable(name = "answerId") Long answerId) {
         Question question = getQuestionById(questionId).getBody();
