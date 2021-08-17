@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/user/question/{questionId}/answer")
 @AllArgsConstructor
-public class ResourceAnswerContoller {
+public class ResourceAnswerController {
 
     private final QuestionDao questionDao;
     private final AnswerDao answerDao;
@@ -35,6 +35,7 @@ public class ResourceAnswerContoller {
         List<Answer> answers = question.getAnswers();
         for (Answer answer : answers) {
             if (answer.getId().equals(answerId)) {
+                answerDao.delete(answer);
                 return new ResponseEntity<>(answer, HttpStatus.OK);
             }
         }
