@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class TestDataInitService {
@@ -74,8 +73,6 @@ public class TestDataInitService {
         question.setUser(new User());
         question.setIsDeleted(false);
         questionService.persist(question);
-        List<Question> questions = new ArrayList<>();
-        questions.add(question);
     }
 
     public void createAnswer() {
