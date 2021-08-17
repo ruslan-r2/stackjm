@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TestDataInitService {
@@ -38,13 +39,13 @@ public class TestDataInitService {
     @Transactional
     public void createEntity() {
         createUser();
-        createRole();
         createQuestion();
         createAnswer();
         createTag();
+        createRole();
     }
 
-    public void createUser() {
+    public User createUser() {
         User user = new User();
         user.setEmail("maza120@yandex.ru");
         user.setPassword("123");
@@ -55,41 +56,51 @@ public class TestDataInitService {
         user.setLinkGitHub("almaz.github.com");
         user.setLinkVk("vk.com/almaz");
         user.setAbout("I love Java");
-        user.setRole(new Role());
+        user.setRole(createRole());
         user.setNickname("Maza");
         userService.persist(user);
+        return user;
     }
 
-    public void createRole() {
+    public Role createRole() {
         Role role = new Role();
         role.setName("ADMIN");
         roleService.persist(role);
+        return role;
     }
 
-    public void createQuestion() {
+    public Question createQuestion() {
         Question question = new Question();
         question.setTitle("title");
         question.setDescription("description");
-        question.setUser(new User());
+        question.setUser(createUser());
         question.setIsDeleted(false);
+        List<Tag> tags = new ArrayList<>();
+        tags.add(createTag());
+        question.setTags(tags);
         questionService.persist(question);
+        return question;
     }
 
     public void createAnswer() {
         Answer answer = new Answer();
-        answer.setQuestion(new Question());
-        answer.setUser(new User());
+        answer.setQuestion(createQuestion());
+        answer.setUser(createUser());
         answer.setHtmlBody("htmlBody");
         answer.setIsHelpful(true);
         answer.setIsDeleted(false);
         answerService.persist(answer);
     }
 
-    public void createTag() {
+    public Tag createTag() {
         Tag tag = new Tag();
         tag.setName("tagName");
         tag.setDescription("tagDescription");
         tag.setQuestions(new ArrayList<>());
+        List<Question> questions = new ArrayList<>();
+        questions.add(createQuestion());
+        tag.setQuestions(questions);
         tagService.persist(tag);
+        return tag;
     }
 }
