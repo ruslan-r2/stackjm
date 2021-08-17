@@ -8,30 +8,33 @@ import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("api/user/question/{questionId}/answer")
+@RequestMapping("api/user/question/")
 @AllArgsConstructor
 public class ResourceAnswerController {
 
     private final QuestionDao questionDao;
     private final AnswerDao answerDao;
 
+    @GetMapping("/{questionId}")
+    public ResponseEntity<Question> getQuestionById(@PathVariable(name = "questionId") Long questionId) {
+        Question result;
+        if (questionDao.getById(questionId).isPresent()) {
+            result = questionDao.getById(questionId).get();
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
     @DeleteMapping("/{answerId}")
     public ResponseEntity<Answer> deleteAnswerById(@PathVariable(name = "questionId") Long questionId,
                                                    @PathVariable(name = "answerId") Long answerId) {
-        Question question;
-        if (questionDao.getById(questionId).isPresent()) {
-            question = questionDao.getById(questionId).get();
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
+        Question question = getQuestionById(questionId).getBody();
+        assert question != null;
         List<Answer> answers = question.getAnswers();
         for (Answer answer : answers) {
             if (answer.getId().equals(answerId)) {
