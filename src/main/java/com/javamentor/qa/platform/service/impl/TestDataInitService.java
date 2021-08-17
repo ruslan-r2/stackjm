@@ -96,7 +96,6 @@ public class TestDataInitService {
         Tag tag = new Tag();
         tag.setName("tagName");
         tag.setDescription("tagDescription");
-        tag.setQuestions(new ArrayList<>());
         List<Question> questions = new ArrayList<>();
         questions.add(createQuestion());
         tag.setQuestions(questions);
