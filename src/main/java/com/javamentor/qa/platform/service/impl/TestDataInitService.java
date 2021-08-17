@@ -38,11 +38,14 @@ public class TestDataInitService {
 
     @Transactional
     public void createEntity() {
+        createUser();
+        createRole();
+        createQuestion();
+        createAnswer();
+        createTag();
+    }
 
-        Role role = new Role();
-        role.setName("ADMIN");
-        roleService.persist(role);
-
+    public void createUser() {
         User user = new User();
         user.setEmail("maza120@yandex.ru");
         user.setPassword("123");
@@ -53,31 +56,43 @@ public class TestDataInitService {
         user.setLinkGitHub("almaz.github.com");
         user.setLinkVk("vk.com/almaz");
         user.setAbout("I love Java");
-        user.setRole(role);
+        user.setRole(new Role());
         user.setNickname("Maza");
         userService.persist(user);
+    }
 
+    public void createRole() {
+        Role role = new Role();
+        role.setName("ADMIN");
+        roleService.persist(role);
+    }
+
+    public void createQuestion() {
         Question question = new Question();
         question.setTitle("title");
         question.setDescription("description");
-        question.setUser(user);
+        question.setUser(new User());
         question.setIsDeleted(false);
         questionService.persist(question);
         List<Question> questions = new ArrayList<>();
         questions.add(question);
+    }
 
-        Tag tag = new Tag();
-        tag.setName("tagName");
-        tag.setDescription("tagDescription");
-        tag.setQuestions(questions);
-        tagService.persist(tag);
-
+    public void createAnswer() {
         Answer answer = new Answer();
-        answer.setQuestion(question);
-        answer.setUser(user);
+        answer.setQuestion(new Question());
+        answer.setUser(new User());
         answer.setHtmlBody("htmlBody");
         answer.setIsHelpful(true);
         answer.setIsDeleted(false);
         answerService.persist(answer);
+    }
+
+    public void createTag() {
+        Tag tag = new Tag();
+        tag.setName("tagName");
+        tag.setDescription("tagDescription");
+        tag.setQuestions(new ArrayList<>());
+        tagService.persist(tag);
     }
 }
