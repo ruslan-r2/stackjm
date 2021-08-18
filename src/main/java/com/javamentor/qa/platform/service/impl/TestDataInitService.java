@@ -87,8 +87,9 @@ public class TestDataInitService {
 
     @Transactional
     public void createAnswer() {
-        Answer answer = new Answer();
+        Answer answer;
         for (int i = 0; i < 40; i++) {
+            answer = new Answer();
             answer.setHtmlBody("htmlBody" + i);
             answer.setIsHelpful(true);
             answer.setIsDeleted(false);

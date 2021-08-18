@@ -8,7 +8,7 @@ class JmApplicationTests {
 
     @Test
     void contextLoads() {
-    }
 
+    }
 
 }
