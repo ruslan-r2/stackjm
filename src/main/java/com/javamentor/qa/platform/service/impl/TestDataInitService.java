@@ -38,10 +38,7 @@ public class TestDataInitService {
 
     @Transactional
     public void createEntity() {
-        createUser();
-        createQuestion();
         createAnswer();
-        createTag();
     }
 
     @Transactional
@@ -72,36 +69,41 @@ public class TestDataInitService {
     }
 
     @Transactional
-    public Question createQuestion() {
+    public Question createQuestion(int count) {
         Question question = new Question();
-        question.setTitle("title");
-        question.setDescription("description");
+        question.setTitle("title" + count);
+        question.setDescription("description" + count);
         question.setUser(createUser());
         question.setIsDeleted(false);
         List<Tag> tags = new ArrayList<>();
-        tags.add(createTag());
-        question.setTags(tags);
-        questionService.persist(question);
+        for (int i = 0; i < 10; i++) {
+            Tag tag = createTag(i);
+            tags.add(tag);
+            question.setTags(tags);
+            questionService.persist(question);
+        }
         return question;
     }
 
     @Transactional
     public void createAnswer() {
         Answer answer = new Answer();
-        answer.setUser(createUser());
-        answer.setHtmlBody("htmlBody");
-        answer.setIsHelpful(true);
-        answer.setIsDeleted(false);
-        answer.setIsDeletedByModerator(false);
-        answer.setQuestion(createQuestion());
-        answerService.persist(answer);
+        for (int i = 0; i < 40; i++) {
+            answer.setHtmlBody("htmlBody" + i);
+            answer.setIsHelpful(true);
+            answer.setIsDeleted(false);
+            answer.setIsDeletedByModerator(false);
+            answer.setQuestion(createQuestion(i));
+            answer.setUser(createUser());
+            answerService.persist(answer);
+        }
     }
 
     @Transactional
-    public Tag createTag() {
+    public Tag createTag(int count) {
         Tag tag = new Tag();
-        tag.setName("tagName");
-        tag.setDescription("tagDescription");
+        tag.setName("tagName" + count);
+        tag.setDescription("tagDescription" + count);
         tagService.persist(tag);
         return tag;
     }
