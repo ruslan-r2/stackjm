@@ -33,12 +33,4 @@ public class UserTestController extends AbstractIntegrationTest {
                 .andExpect(content().string(containsString("Hello")));
     }
 
-    @DataSet(value = {"roles.yml","users.yml"},cleanAfter = true,cleanBefore = true)
-    void badTestHello() throws Exception{
-        this.mockMvc.perform(get(URL+"/hello"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("hello")));
-    }
-
 }
