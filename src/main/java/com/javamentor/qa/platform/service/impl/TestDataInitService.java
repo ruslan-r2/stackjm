@@ -66,7 +66,7 @@ public class TestDataInitService {
     @Transactional
     public Role createRole() {
         Role role = new Role();
-        role.setName("ADMIN");
+        role.setName("USER");
         roleService.persist(role);
         return role;
     }
