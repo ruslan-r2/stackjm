@@ -48,24 +48,6 @@ public class TestDataInitService {
         admin.setRole(adminRole);
         userService.persist(admin);
 
-
-        User user1 = new User();
-        user1.setEmail("user1@user.com");
-        user1.setPassword("admin1");
-        user1.setFullName(" User user1");
-        user1.setPersistDateTime(LocalDateTime.now());
-        user1.setIsEnabled(true);
-        user1.setCity("CitiName1");
-        user1.setImageLink("user1.image.link.com");
-        user1 .setLinkSite("sitename.user1.com");
-        user1 .setLinkGitHub("user1.github.com");
-        user1.setLinkVk("vk.com/user1");
-        user1.setAbout("I am User1");
-        user1.setNickname("user1NickName");
-        user1 .setLastUpdateDateTime(LocalDateTime.now());
-        user1.setRole(userRole);
-        userService.persist(user1);
-
         for (int i = 1; i < 41; i++) {
         User user = new User();
         user.setEmail("user" + i + "@user.com");
