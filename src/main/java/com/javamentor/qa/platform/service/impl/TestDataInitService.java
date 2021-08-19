@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -28,14 +29,17 @@ public class TestDataInitService {
     private TagService tagService;
 
     @Autowired
-    public TestDataInitService(UserService userService, RoleService roleService) {
-        this.roleService = roleService;
+    public TestDataInitService(UserService userService, RoleService roleService, QuestionService questionService, AnswerService answerService, TagService tagService) {
         this.userService = userService;
+        this.roleService = roleService;
+        this.questionService = questionService;
+        this.answerService = answerService;
+        this.tagService = tagService;
     }
 
-    private List<Tag> tags;
-    private List<Question> questions;
-    private List<Answer> answers;
+    private List<Tag> tags = new ArrayList<>();
+    private List<Question> questions = new ArrayList<>();
+    private List<Answer> answers = new ArrayList<>();
     private User admin;
     private User user;
 
@@ -118,7 +122,7 @@ public class TestDataInitService {
     private void createAnswers() {
         for (int i = 0; i < 40; i++) {
             Answer answer = new Answer();
-            answer.setQuestion(questions.get(new Random().nextInt(40)));
+            answer.setQuestion(questions.get(i));
             answer.setIsHelpful(new Random().nextBoolean());
             answer.setIsDeletedByModerator(new Random().nextBoolean());
             answer.setUser(user);
