@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/user/question/{questionId}/answer/{answerId}")
+@RequestMapping("api/user/question/{questionId}/answer")
 @AllArgsConstructor
 public class ResourceAnswerController {
 
     private final QuestionDao questionDao;
     private final AnswerDao answerDao;
 
-    @DeleteMapping()
+    @DeleteMapping("/{answerId}")
     public ResponseEntity<Answer> deleteAnswerById(@PathVariable(name = "questionId") Long questionId,
                                                    @PathVariable(name = "answerId") Long answerId) {
         Question question;
