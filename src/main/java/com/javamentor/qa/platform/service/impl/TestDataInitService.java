@@ -77,7 +77,7 @@ public class TestDataInitService {
         User user = new User();
         user.setEmail("user" + i + "@user.com");
         user.setPassword( "user" + i);
-        user.setFullName(" User user" +i+ "");
+        user.setFullName(" User user" + i + "");
         user.setPersistDateTime(LocalDateTime.now());
         user.setIsEnabled(true);
         user.setCity("CitiName" + i );
