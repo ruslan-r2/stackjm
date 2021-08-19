@@ -37,12 +37,6 @@ public class TestDataInitService {
         this.tagService = tagService;
     }
 
-    private List<Tag> tags = new ArrayList<>();
-    private List<Question> questions = new ArrayList<>();
-    private List<Answer> answers = new ArrayList<>();
-    private User admin;
-    private User user;
-
     @Transactional
     public void createEntity() {
         createUsers();
@@ -50,6 +44,9 @@ public class TestDataInitService {
         createQuestions();
         createAnswers();
     }
+
+    private User admin;
+    private User user;
 
     private void createUsers() {
         Role adminRole = new Role("ROLE_ADMIN");
@@ -94,6 +91,8 @@ public class TestDataInitService {
         }
     }
 
+    private List<Tag> tags = new ArrayList<>();
+
     private void createTags() {
         int tagCount = new Random().nextInt(4) + 1;
         for (int i = 0; i < tagCount; i++) {
@@ -104,6 +103,8 @@ public class TestDataInitService {
             tagService.persist(tag);
         }
     }
+
+    private List<Question> questions = new ArrayList<>();
 
     private void createQuestions() {
         for (int i = 0; i < 40; i++) {
@@ -118,6 +119,8 @@ public class TestDataInitService {
             questionService.persist(question);
         }
     }
+
+    private List<Answer> answers = new ArrayList<>();
 
     private void createAnswers() {
         for (int i = 0; i < 40; i++) {
