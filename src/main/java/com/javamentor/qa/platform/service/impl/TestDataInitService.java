@@ -42,9 +42,9 @@ public class TestDataInitService {
     @Transactional
     public void createEntity() {
         createUsers();
-//        createTags();
-//        createQuestions();
-//        createAnswers();
+        createTags();
+        createQuestions();
+        createAnswers();
     }
 
     private void createUsers() {
@@ -90,41 +90,41 @@ public class TestDataInitService {
         }
     }
 
-//    private void createTags() {
-//        int tagCount = new Random().nextInt(4) + 1;
-//        for (int i = 0; i < tagCount; i++) {
-//            Tag tag = new Tag();
-//            tag.setName("tagName" + i);
-//            tag.setDescription("tagDescription" + i);
-//            tags.add(tag);
-//            tagService.persist(tag);
-//        }
-//    }
-//
-//    private void createQuestions() {
-//        for (int i = 0; i < 40; i++) {
-//            Question question = new Question();
-//            question.setUser(user);
-//            question.setTags(tags);
-//            question.setTitle("questionTitle" + i);
-//            question.setIsDeleted(new Random().nextBoolean());
-//            question.setDescription("questionDescription" + i);
-//            question.setAnswers(answers);
-//            questions.add(question);
-//            questionService.persist(question);
-//        }
-//    }
-//
-//    private void createAnswers() {
-//        for (int i = 0; i < 40; i++) {
-//            Answer answer = new Answer();
-//            answer.setQuestion(questions.get(new Random().nextInt(40)));
-//            answer.setIsHelpful(new Random().nextBoolean());
-//            answer.setIsDeletedByModerator(new Random().nextBoolean());
-//            answer.setUser(user);
-//            answer.setHtmlBody("htmlBody" + i);
-//            answers.add(answer);
-//            answerService.persist(answer);
-//        }
-//    }
+    private void createTags() {
+        int tagCount = new Random().nextInt(4) + 1;
+        for (int i = 0; i < tagCount; i++) {
+            Tag tag = new Tag();
+            tag.setName("tagName" + i);
+            tag.setDescription("tagDescription" + i);
+            tags.add(tag);
+            tagService.persist(tag);
+        }
+    }
+
+    private void createQuestions() {
+        for (int i = 0; i < 40; i++) {
+            Question question = new Question();
+            question.setUser(user);
+            question.setTags(tags);
+            question.setTitle("questionTitle" + i);
+            question.setIsDeleted(new Random().nextBoolean());
+            question.setDescription("questionDescription" + i);
+            question.setAnswers(answers);
+            questions.add(question);
+            questionService.persist(question);
+        }
+    }
+
+    private void createAnswers() {
+        for (int i = 0; i < 40; i++) {
+            Answer answer = new Answer();
+            answer.setQuestion(questions.get(new Random().nextInt(40)));
+            answer.setIsHelpful(new Random().nextBoolean());
+            answer.setIsDeletedByModerator(new Random().nextBoolean());
+            answer.setUser(user);
+            answer.setHtmlBody("htmlBody" + i);
+            answers.add(answer);
+            answerService.persist(answer);
+        }
+    }
 }
