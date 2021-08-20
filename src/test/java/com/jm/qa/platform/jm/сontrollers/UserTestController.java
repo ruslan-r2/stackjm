@@ -7,6 +7,5 @@ public class UserTestController extends AbstractIntegrationTest {
 
     @Test
     void shouldGetUserById() throws Exception {
-        System.out.println("hello");
     }
 }

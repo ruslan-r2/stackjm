@@ -1,9 +1,9 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
-import com.javamentor.qa.platform.dao.abstracts.model.AnswerDao;
-import com.javamentor.qa.platform.dao.abstracts.model.QuestionDao;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
+import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
+import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,21 +19,18 @@ import java.util.List;
 @AllArgsConstructor
 public class ResourceAnswerController {
 
-    private final QuestionDao questionDao;
-    private final AnswerDao answerDao;
+    private final QuestionService questionService;
+    private final AnswerService answerService;
 
     @DeleteMapping("/{answerId}")
     public ResponseEntity<Answer> deleteAnswerById(@PathVariable(name = "questionId") Long questionId,
                                                    @PathVariable(name = "answerId") Long answerId) {
-        Question question;
-        if (questionDao.getById(questionId).isPresent()) {
-            question = questionDao.getById(questionId).get();
-            List<Answer> answers = question.getAnswers();
-            for (Answer answer : answers) {
-                if (answer.getId().equals(answerId)) {
-                    answerDao.delete(answer);
-                    return new ResponseEntity<>(answer, HttpStatus.OK);
-                }
+        Question question = questionService.getById(questionId).get();
+        List<Answer> answers = question.getAnswers();
+        for (Answer answer : answers) {
+            if (answer.getId().equals(answerId)) {
+                answerService.delete(answer);
+                return new ResponseEntity<>(answer, HttpStatus.OK);
             }
         }
         return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
