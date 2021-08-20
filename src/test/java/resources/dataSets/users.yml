@@ -1,0 +1,33 @@
+user_entity:
+  - id: 1
+    about: "i'm admin"
+    city: "Moscow"
+    email: "admin@mail.ru"
+    full_name: "super admin"
+    image_link: "admin.image.com"
+    is_deleted: "false"
+    is_enabled: "true"
+    last_redaction_date: "2021-08-17 19:10:25"
+    link_github: "admin.github.com"
+    link_site: "adminsite.com"
+    link_vk: "vk.com/admin"
+    nickname: "admin"
+    password: "admin"
+    persist_date: "2021-08-17 19:10:25"
+    role_id: 1
+  - id: 2
+    about: "i'm user"
+    city: "Moscow"
+    email: "user@mail.ru"
+    full_name: "just user"
+    image_link: "user.image.com"
+    is_deleted: "false"
+    is_enabled: "true"
+    last_redaction_date: "2021-08-17 19:10:25"
+    link_github: "user.github.com"
+    link_site: "usersite.com"
+    link_vk: "vk.com/user"
+    nickname: "user"
+    password: "user"
+    persist_date: "2021-08-17 19:10:25"
+    role_id: 2
