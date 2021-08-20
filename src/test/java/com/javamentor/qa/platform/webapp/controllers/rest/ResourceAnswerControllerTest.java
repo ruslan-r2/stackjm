@@ -30,13 +30,4 @@ class ResourceAnswerControllerTest {
                 accept(MediaType.APPLICATION_JSON)).
                 andExpect(status().isOk());
     }
-
-//    @Test
-//    @DataSet(value = {"roles.yml","users.yml"},cleanAfter = true,cleanBefore = true)
-//    void testHello() throws Exception{
-//        this.mockMvc.perform(get(URL))
-//                .andDo(print())
-//                .andExpect(status().isOk())
-//                .andExpect(content().string(containsString("Hello")));
-//    }
 }
