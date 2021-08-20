@@ -29,7 +29,9 @@ public class TestDataInitService {
 
     private void createUserEntity() {
         Role adminRole = new Role("ROLE_ADMIN");
+        roleService.persist(adminRole);
         Role userRole = new Role ("ROLE_USER");
+        roleService.persist(userRole);
 
         User admin = new User();
         admin.setEmail("admin@admin.com");
