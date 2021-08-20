@@ -130,8 +130,9 @@ public class TestDataInitService {
             answer.setQuestion(questions.get(i));
             answer.setIsHelpful(new Random().nextBoolean());
             answer.setIsDeletedByModerator(new Random().nextBoolean());
-            answer.setUser(user);
+            answer.setIsDeleted(new Random().nextBoolean());
             answer.setHtmlBody("htmlBody" + i);
+            answer.setUser(user);
             answers.add(answer);
             answerService.persist(answer);
         }
