@@ -21,11 +21,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @WebMvcTest(ResourceAnswerController.class)
 class ResourceAnswerControllerTest {
 
+    @Autowired
     MockMvc mockMvc;
 
     @Test
     void deleteAnswerById(Long questionId, Long answerId) {
-        ResourceAnswerController controller = new ResourceAnswerController(new QuestionDaoImpl(), new AnswerDaoImpl());
-        Answer response = controller.deleteAnswerById(questionId, answerId).getBody();
+
     }
 }
