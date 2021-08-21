@@ -56,7 +56,7 @@ public class TestDataInitService {
         admin.setRole(adminRole);
         userService.persist(admin);
 
-        for (int i = 1; i < 41; i++) {
+        for (int i = 1; i < 5; i++) {
         User user = new User();
         user.setEmail("user" + i + "@user.com");
         user.setPassword(passwordEncoder().encode("user" + i));

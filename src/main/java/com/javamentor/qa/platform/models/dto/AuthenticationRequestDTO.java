@@ -1,31 +1,20 @@
 package com.javamentor.qa.platform.models.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.*;
+import org.springframework.validation.annotation.Validated;
+import javax.validation.constraints.NotEmpty;
 
-import java.util.Objects;
-
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@Schema(description = "DTO описывающая запрос на аутентификацию")
+@Validated
 public class AuthenticationRequestDTO {
+
+    @NotEmpty
     private String login;
+
+    @NotEmpty
     private String pass;
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AuthenticationRequestDTO that = (AuthenticationRequestDTO) o;
-        return login.equals(that.login) && pass.equals(that.pass);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(login, pass);
-    }
 }
