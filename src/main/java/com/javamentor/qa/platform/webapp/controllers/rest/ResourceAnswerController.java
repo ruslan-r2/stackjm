@@ -33,6 +33,6 @@ public class ResourceAnswerController {
                 return new ResponseEntity<>(answer, HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
