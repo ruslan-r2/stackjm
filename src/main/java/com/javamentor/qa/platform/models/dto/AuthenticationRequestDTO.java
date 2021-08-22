@@ -5,8 +5,8 @@ import lombok.*;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotEmpty;
 
-@Data
 @AllArgsConstructor
+@Getter
 @Schema(description = "DTO описывающая запрос на аутентификацию")
 @Validated
 public class AuthenticationRequestDTO {
