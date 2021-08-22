@@ -4,10 +4,11 @@ import com.javamentor.qa.platform.models.dto.AuthenticationRequestDTO;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.security.jwt.JwtTokenProvider;
 import com.javamentor.qa.platform.service.impl.dto.UserService;
-import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
@@ -41,18 +42,20 @@ public class AuthenticationController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+
     @Operation(summary = "Метод аутентификации", description = "При успешной аутентификации метод возвращает JWT")
-        @ApiResponse(responseCode = "200",description = "Аутентификация прошла успешна, токен сгенерирован",
+    @ApiResponse(responseCode = "200", description = "Аутентификация прошла успешна, токен сгенерирован",
             content = @Content(mediaType = "application/json", examples = {
                     @ExampleObject(name = "Response JWT example", value = responseExample,
                             summary = "Пример возвращаемого токена")}))
     @ApiResponse(responseCode = "403", description = "Аутентификация не успешна, проверьте валидность данных для входа")
     @ApiResponse(responseCode = "500", description = "Данные с формы не прошли валидацию")
-
     @PostMapping("/api/auth/token")
-    public ResponseEntity<?> authentication(@ApiParam(
-            value = "DTO содержащая в себе данные для аутентификации",
-            example = "{login: admin, pass: admin}") @Valid @RequestBody AuthenticationRequestDTO authenticationRequest) {
+
+    public ResponseEntity<?> authentication(@Parameter(schema = @Schema(implementation = AuthenticationRequestDTO.class))
+                                            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Created user object", required = true,
+                                                    content = @Content(
+                                                            schema = @Schema(implementation = AuthenticationRequestDTO.class))) @Valid @RequestBody AuthenticationRequestDTO authenticationRequest) {
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getLogin(),
