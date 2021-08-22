@@ -1,4 +1,4 @@
-package com.jm.qa.platform.jm.сontrollers.rest;
+package com.jm.qa.platform.jm.сontrollers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.javamentor.qa.platform.models.entity.question.Question;
@@ -7,6 +7,7 @@ import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import com.javamentor.qa.platform.service.impl.model.QuestionServiceImpl;
 import com.javamentor.qa.platform.webapp.controllers.rest.ResourceAnswerController;
+import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ResourceAnswerControllerTest {
+class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
