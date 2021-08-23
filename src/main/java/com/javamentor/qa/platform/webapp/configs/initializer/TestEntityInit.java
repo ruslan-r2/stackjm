@@ -22,7 +22,7 @@ public class TestEntityInit implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) {
+    public void run(String...args) {
         if (ddlAuto.contains("create")) {
             testDataInitService.createEntity();
         }
