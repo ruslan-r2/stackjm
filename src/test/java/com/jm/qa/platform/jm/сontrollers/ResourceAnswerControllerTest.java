@@ -1,6 +1,7 @@
 package com.jm.qa.platform.jm.сontrollers;
 
 import com.javamentor.qa.platform.models.entity.question.Question;
+import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import com.javamentor.qa.platform.service.impl.TestDataInitService;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ResourceAnswerControllerTest extends AbstractIntegrationTest {
@@ -30,6 +33,8 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     void deleteAnswerById() throws Exception {
         testDataInitService.createEntity();
         Question question = questionService.getById(1L).get();
+        List<Answer> answers = question.getAnswers();
+
     }
 
     @AfterEach
