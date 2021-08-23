@@ -1,7 +1,6 @@
 package com.javamentor.qa.platform.security;
 
 import com.javamentor.qa.platform.security.jwt.JwtConfigurer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,8 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
         http.cors();
         http.authorizeRequests()
                 .antMatchers("/api/auth/token").anonymous()
-//                .antMatchers("/swagger-ui/**").anonymous()
-//                .anyRequest().authenticated()
+                .antMatchers("/swagger-ui/**", "/v3/api-docs/**").anonymous()
+                .anyRequest().authenticated()
                 .and()
                 .apply(jwtConfigurer);
     }

@@ -25,7 +25,7 @@ public class AuthenticationControllerIntegrationTest extends AbstractIntegration
     @Test
     public void authenticationControllerCheck_CORRECT() throws Exception {
         AuthenticationRequestDTO correct = new AuthenticationRequestDTO("admin@admin.com","admin");
-        String json = objectMapper.writeValueAsString(correct);;
+        String json = objectMapper.writeValueAsString(correct);
         this.mockMvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON).content(json))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -35,7 +35,7 @@ public class AuthenticationControllerIntegrationTest extends AbstractIntegration
     @Test
     public void authenticationControllerCheck_INCORRECT() throws Exception {
         AuthenticationRequestDTO incorrect = new AuthenticationRequestDTO("admin","admin");
-        String json = objectMapper.writeValueAsString(incorrect);;
+        String json = objectMapper.writeValueAsString(incorrect);
         this.mockMvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON).content(json))
                 .andDo(print())
                 .andExpect(status().is4xxClientError());
@@ -45,7 +45,7 @@ public class AuthenticationControllerIntegrationTest extends AbstractIntegration
     @Test
     public void authenticationControllerCheck_EMPTY() throws Exception {
         AuthenticationRequestDTO empty = new AuthenticationRequestDTO("","admin");
-        String json = objectMapper.writeValueAsString(empty);;
+        String json = objectMapper.writeValueAsString(empty);
         this.mockMvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON).content(json))
                 .andDo(print())
                 .andExpect(status().is5xxServerError());

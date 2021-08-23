@@ -2,7 +2,6 @@ package com.javamentor.qa.platform.dao.impl.model;
 
 import com.javamentor.qa.platform.dao.util.SingleResultUtil;
 import com.javamentor.qa.platform.models.entity.user.User;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -55,7 +54,7 @@ public abstract class ReadOnlyDaoImpl<E, K> {
 
     public Optional<User> getByEmail(String email) {
         TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.role WHERE u.email=:email", User.class);
-        User user = query.setParameter("email", email).getSingleResult();
-        return Optional.ofNullable(user);
+        List<User> list = query.setParameter("email", email).getResultList();
+        return list.stream().findFirst();
     }
 }

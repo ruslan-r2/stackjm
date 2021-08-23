@@ -11,7 +11,7 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl extends ReadWriteServiceImpl <User, Long> implements UserService {
 
-    private UserDao userDao;
+    private final UserDao userDao;
 
     @Autowired
     public UserServiceImpl(UserDao userDao) {
