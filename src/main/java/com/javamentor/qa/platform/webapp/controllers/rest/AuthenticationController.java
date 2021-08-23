@@ -45,9 +45,7 @@ public class AuthenticationController {
 
     @Operation(summary = "Метод аутентификации", description = "При успешной аутентификации метод возвращает JWT")
     @ApiResponse(responseCode = "200", description = "Аутентификация прошла успешна, токен сгенерирован",
-            content = @Content(mediaType = "application/json", examples = {
-                    @ExampleObject(name = "Response JWT example", value = responseExample,
-                            summary = "Пример возвращаемого токена")}))
+            content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "403", description = "Аутентификация не успешна, проверьте валидность данных для входа")
     @ApiResponse(responseCode = "500", description = "Данные с формы не прошли валидацию")
     @PostMapping("/api/auth/token")

@@ -35,7 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.cors();
         http.authorizeRequests()
-                .antMatchers(" /api/auth/token").permitAll()
+                .antMatchers("/api/auth/token").anonymous()
+//                .antMatchers("/swagger-ui/**").anonymous()
+//                .anyRequest().authenticated()
                 .and()
                 .apply(jwtConfigurer);
     }

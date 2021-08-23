@@ -2,7 +2,6 @@ package com.javamentor.qa.platform.service.impl.model;
 
 import com.javamentor.qa.platform.dao.abstracts.model.RoleDao;
 import com.javamentor.qa.platform.models.entity.user.Role;
-import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.impl.dto.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
