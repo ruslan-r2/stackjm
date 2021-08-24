@@ -30,6 +30,6 @@ public class ResourceAnswerController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         answerService.deleteById(answerId);
-        return new ResponseEntity<>(answerToDelete, HttpStatus.OK);
+        return new ResponseEntity<>(answerToDelete.get(), HttpStatus.OK);
     }
 }
