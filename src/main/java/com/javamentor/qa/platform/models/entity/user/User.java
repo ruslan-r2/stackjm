@@ -89,7 +89,7 @@ public class User implements UserDetails {
     @Column
     private String nickname;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Role.class, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Role.class, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "role_id", nullable = false)
     @NonNull
     private Role role;
