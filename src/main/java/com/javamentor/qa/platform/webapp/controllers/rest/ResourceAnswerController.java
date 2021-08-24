@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/user/question/{questionId}/answer")
@@ -24,10 +25,11 @@ public class ResourceAnswerController {
     @DeleteMapping("/{answerId}")
     public ResponseEntity<Answer> deleteAnswerById(@PathVariable(name = "questionId") Long questionId,
                                                  @PathVariable(name = "answerId") Long answerId) {
-        if (!answerService.getById(answerId).isPresent()) {
+        Optional<Answer> answerToDelete = answerService.getById(answerId);
+        if (!answerToDelete.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         answerService.deleteById(answerId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(answerToDelete, HttpStatus.OK);
     }
 }
