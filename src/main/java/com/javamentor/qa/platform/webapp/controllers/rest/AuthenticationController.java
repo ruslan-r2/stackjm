@@ -2,7 +2,7 @@ package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.models.dto.AuthenticationRequestDTO;
 import com.javamentor.qa.platform.models.dto.TokenResponseDTO;
-import com.javamentor.qa.platform.security.UserDetailsServiceImpl;
+import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.security.jwt.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,9 +14,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,14 +33,14 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenResponseDTO tokenResponseDTO;
-    private final UserDetailsServiceImpl userDetailsService;
+
+
 
     public AuthenticationController(AuthenticationManager authenticationManager,
-                                    JwtTokenProvider jwtTokenProvider, TokenResponseDTO tokenResponseDTO,UserDetailsServiceImpl userDetailsService) {
+                                    JwtTokenProvider jwtTokenProvider, TokenResponseDTO tokenResponseDTO) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.tokenResponseDTO = tokenResponseDTO;
-        this.userDetailsService = userDetailsService;
     }
 
 
@@ -53,11 +56,11 @@ public class AuthenticationController {
                                                             schema = @Schema(implementation = AuthenticationRequestDTO.class))) @Valid @RequestBody AuthenticationRequestDTO authenticationRequest) {
 
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getLogin(),
+            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getLogin(),
                     authenticationRequest.getPass()));
-
-            String token = jwtTokenProvider.createToken(authenticationRequest.getLogin(), userDetailsService.getFindUser().get().getRole().getName());
-            tokenResponseDTO.setRole(userDetailsService.getFindUser().get().getRole().getName());
+            User authUser = (User) authenticate.getPrincipal();
+            String token = jwtTokenProvider.createToken(authenticationRequest.getLogin(), authUser.getRole().getName());
+            tokenResponseDTO.setRole(authUser.getRole().getName());
             tokenResponseDTO.setToken(token);
 
             return ResponseEntity.ok(tokenResponseDTO);
@@ -73,5 +76,4 @@ public class AuthenticationController {
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, null);
     }
-
 }

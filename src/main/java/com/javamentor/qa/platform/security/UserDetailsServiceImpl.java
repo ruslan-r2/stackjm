@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service("userDetailsServiceImpl")
@@ -14,9 +15,6 @@ import java.util.Optional;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserService userService;
-    private Optional<User> findUser;
-
-
     public UserDetailsServiceImpl(UserService userService) {
         this.userService = userService;
     }
@@ -24,8 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> user = userService.getByEmail(email);
-        findUser = user;
-        return user.orElse(null);
+        return user.orElseThrow(()-> new UsernameNotFoundException("Пользователя с таким Email не существует"));
     }
 }
 

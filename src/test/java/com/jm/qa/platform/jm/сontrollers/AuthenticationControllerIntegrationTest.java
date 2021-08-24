@@ -48,7 +48,7 @@ public class AuthenticationControllerIntegrationTest extends AbstractIntegration
         String json = objectMapper.writeValueAsString(empty);
         this.mockMvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON).content(json))
                 .andDo(print())
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().is4xxClientError());
 
     }
 
