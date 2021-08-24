@@ -24,16 +24,12 @@ public class ResourceAnswerController {
     @DeleteMapping("/{answerId}")
     public ResponseEntity<Answer> deleteAnswerById(@PathVariable(name = "questionId") Long questionId,
                                                  @PathVariable(name = "answerId") Long answerId) {
-        Answer answerToDelete = null;
+        Answer answerToDelete;
         if (!answerService.getById(answerId).isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            answerToDelete = answerService.getById(answerId).get();
         }
+        answerToDelete = answerService.getById(answerId).get();
         answerService.deleteById(answerId);
-        if (Objects.isNull(answerId)) {
-            return new ResponseEntity<>(answerToDelete, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(answerToDelete, HttpStatus.OK);
     }
 }
