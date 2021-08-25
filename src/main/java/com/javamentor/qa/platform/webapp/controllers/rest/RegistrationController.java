@@ -5,6 +5,8 @@ import com.javamentor.qa.platform.dao.abstracts.model.UserDao;
 import com.javamentor.qa.platform.models.dto.UserRegistrationDto;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.webapp.converters.UserMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +45,7 @@ public class RegistrationController {
 
     private LocalDateTime sendMessageTime;
 
+    @Tag(name = "Отправка сообщения", description = "Отправляет сообщение юзеру, содержащее ссылку с подтверждением почты")
     @PostMapping
     public void sendMessage(UserRegistrationDto userRegistrationDto) throws IOException, MessagingException {
         user = UserMapper.userMapper.toUser(userRegistrationDto);
@@ -61,6 +64,7 @@ public class RegistrationController {
 
     }
 
+    @Tag(name = "Регистрация юзера")
     @GetMapping("/verify")
     public ResponseEntity<String> verify(@RequestParam("code") int code) {
         LocalDateTime linkExpirationTime = sendMessageTime.plusMinutes(EXPIRATION_TIME_IN_MINUTES);
@@ -74,6 +78,10 @@ public class RegistrationController {
         return new ResponseEntity<>("Ссылка недействительна", HttpStatus.FORBIDDEN);
     }
 
+    @Operation(
+            summary = "Создание сообщения",
+            description = "Создает сообщение, содержащее ссылку"
+    )
     private MimeMessage createMessage(String fromAddress,
                                       String senderName,
                                       String content,
