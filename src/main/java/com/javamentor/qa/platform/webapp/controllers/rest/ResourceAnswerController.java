@@ -5,6 +5,9 @@ import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-
+@Tag(name = "Resource Answer Controller", description = "Api для ответов на вопрос")
 @RestController
 @RequestMapping("/api/user/question/{questionId}/answer")
 public class ResourceAnswerController {
@@ -27,12 +30,14 @@ public class ResourceAnswerController {
         this.questionService = questionService;
     }
 
+    @Operation(summary = "Ответ на вопрос", description = "Позволяет добавить ответ на вопрос")
     @PostMapping
-    public ResponseEntity<AnswerDto> addAnswerToQuestion(@PathVariable Long questionId) {
+    public ResponseEntity<AnswerDto> addAnswerToQuestion(
+            @PathVariable @Parameter(description = "Идентификатор вопроса") Long questionId) {
         //Question question = questionService.getById(questionId).get();
         List<Answer> listAnswers = answerService.getAll();
-        Optional<Question> question = questionService.getById(questionId);
-        question.get().setAnswers(listAnswers);
+        Optional<Question> questionToBeAnswered = questionService.getById(questionId);
+        questionToBeAnswered.get().setAnswers(listAnswers);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
