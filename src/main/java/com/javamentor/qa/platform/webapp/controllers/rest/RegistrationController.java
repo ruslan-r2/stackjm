@@ -4,7 +4,10 @@ import com.javamentor.qa.platform.dao.abstracts.model.RoleDao;
 import com.javamentor.qa.platform.dao.abstracts.model.UserDao;
 import com.javamentor.qa.platform.models.dto.UserRegistrationDto;
 import com.javamentor.qa.platform.models.entity.user.User;
+import com.javamentor.qa.platform.webapp.converters.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,13 +39,13 @@ public class RegistrationController {
 
     private User user;
 
-    private final int EXPIRATION_TIME_IN_MINUTES = 10;
+    private final int EXPIRATION_TIME_IN_MINUTES = 1;
 
     private LocalDateTime sendMessageTime;
 
     @PostMapping
     public void sendMessage(UserRegistrationDto userRegistrationDto) throws IOException, MessagingException {
-        user = getUserFromDto(userRegistrationDto);
+        user = UserMapper.userMapper.toUser(userRegistrationDto);
         sendMessageTime = LocalDateTime.now();
         Properties property = new Properties();
         property.load(new FileInputStream("src/main/resources/application.properties"));
@@ -59,17 +62,16 @@ public class RegistrationController {
     }
 
     @GetMapping("/verify")
-    public String verify(@RequestParam("code") int code) {
+    public ResponseEntity<String> verify(@RequestParam("code") int code) {
         LocalDateTime linkExpirationTime = sendMessageTime.plusMinutes(EXPIRATION_TIME_IN_MINUTES);
         if ((code == user.getEmail().hashCode()) &&
                 (LocalDateTime.now().isBefore(linkExpirationTime))) {
-            user.setRole(roleDao.getById(2L).get());
-
             System.out.println(user);
+            user.setRole(roleDao.getById(2L).get());
             userDao.persist(user);
-            return "the user is registered";
+            return new ResponseEntity<>("Вы успешно зарегистрировались!", HttpStatus.OK);
         }
-        return "failed registration";
+        return new ResponseEntity<>("Ссылка недействительна", HttpStatus.FORBIDDEN);
     }
 
     private MimeMessage createMessage(String fromAddress,
@@ -83,15 +85,6 @@ public class RegistrationController {
         helper.setText(content, true);
         helper.setTo(toAddress);
         return message;
-    }
-
-    private User getUserFromDto(UserRegistrationDto userRegistrationDto) {
-        User user = new User();
-        user.setFullName(userRegistrationDto.getFirstName() + " " + userRegistrationDto.getLastName());
-        user.setEmail(userRegistrationDto.getEmail());
-        user.setPassword(userRegistrationDto.getPassword());
-        user.setIsEnabled(true);
-        return user;
     }
 
 }
