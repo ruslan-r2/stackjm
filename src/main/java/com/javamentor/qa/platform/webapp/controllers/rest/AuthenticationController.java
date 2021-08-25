@@ -48,7 +48,6 @@ public class AuthenticationController {
     @ApiResponse(responseCode = "200", description = "Аутентификация прошла успешна, токен сгенерирован",
             content = @Content(mediaType = "application/json"))
     @ApiResponse(responseCode = "403", description = "Аутентификация не успешна, проверьте валидность данных для входа")
-    @ApiResponse(responseCode = "500", description = "Данные с формы не прошли валидацию")
     @PostMapping("/api/auth/token")
     public ResponseEntity<?> authentication(@Parameter(schema = @Schema(implementation = AuthenticationRequestDTO.class))
                                             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Данные для аутентификации", required = true,

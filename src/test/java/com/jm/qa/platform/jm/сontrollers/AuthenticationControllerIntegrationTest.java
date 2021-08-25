@@ -42,14 +42,4 @@ public class AuthenticationControllerIntegrationTest extends AbstractIntegration
 
     }
 
-    @Test
-    public void authenticationControllerCheck_EMPTY() throws Exception {
-        AuthenticationRequestDTO empty = new AuthenticationRequestDTO("","admin");
-        String json = objectMapper.writeValueAsString(empty);
-        this.mockMvc.perform(post(URL).contentType(MediaType.APPLICATION_JSON).content(json))
-                .andDo(print())
-                .andExpect(status().is4xxClientError());
-
-    }
-
 }
