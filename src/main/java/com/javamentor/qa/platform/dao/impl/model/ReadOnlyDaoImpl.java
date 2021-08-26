@@ -54,8 +54,7 @@ public abstract class ReadOnlyDaoImpl<E, K> {
     }
 
     public Optional<User> getByEmail(String email) {
-        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.role WHERE u.email=:email", User.class);
-        query.setParameter("email", email).getSingleResult();
+        TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.role WHERE u.email=:email", User.class).setParameter("email", email);
         return SingleResultUtil.getSingleResultOrNull(query);
     }
 }
