@@ -14,4 +14,5 @@ public interface ReadOnlyService<E, K> {
     List<E> getAllByIds(Iterable<K> ids);
 
     boolean existsByAllIds(Collection<K> ids);
+
 }
