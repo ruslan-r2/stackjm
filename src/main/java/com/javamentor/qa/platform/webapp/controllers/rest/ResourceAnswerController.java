@@ -5,6 +5,7 @@ import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
+import com.javamentor.qa.platform.webapp.converters.AnswerMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,12 +33,12 @@ public class ResourceAnswerController {
 
     @Operation(summary = "Ответ на вопрос", description = "Позволяет добавить ответ на вопрос")
     @PostMapping
-    public ResponseEntity<AnswerDto> addAnswerToQuestion(
+    public ResponseEntity<AnswerDto> addAnswerToQuestion(@RequestBody Answer answer,
             @PathVariable @Parameter(description = "Идентификатор вопроса") Long questionId) {
         //Question question = questionService.getById(questionId).get();
         List<Answer> listAnswers = answerService.getAll();
         Optional<Question> questionToBeAnswered = questionService.getById(questionId);
         questionToBeAnswered.get().setAnswers(listAnswers);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(AnswerMapper.INSTANCE.answerDto(answer), HttpStatus.OK);
     }
 }
