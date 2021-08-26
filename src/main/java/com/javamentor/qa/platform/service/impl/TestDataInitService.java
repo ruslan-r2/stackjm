@@ -12,6 +12,8 @@ import com.javamentor.qa.platform.service.abstracts.model.RoleService;
 import com.javamentor.qa.platform.service.abstracts.model.TagService;
 import com.javamentor.qa.platform.service.abstracts.model.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,10 @@ public class TestDataInitService {
         this.tagService = tagService;
     }
 
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Transactional
     public void createEntity() {
         createUsers();
@@ -56,7 +62,7 @@ public class TestDataInitService {
 
         User admin = new User();
         admin.setEmail("admin@admin.com");
-        admin.setPassword("admin");
+        admin.setPassword(passwordEncoder().encode("admin"));
         admin.setFullName("John Smith");
         admin.setPersistDateTime(LocalDateTime.now());
         admin.setIsEnabled(true);
@@ -72,11 +78,11 @@ public class TestDataInitService {
         this.admin = admin;
         userService.persist(admin);
 
-        for (int i = 1; i < 41; i++) {
+        for (int i = 1; i < 5; i++) {
         User user = new User();
         user.setEmail("user" + i + "@user.com");
-        user.setPassword( "user" + i);
-        user.setFullName(" User user" + i + "");
+        user.setPassword(passwordEncoder().encode("user" + i));
+        user.setFullName(" User user" +i+ "");
         user.setPersistDateTime(LocalDateTime.now());
         user.setIsEnabled(true);
         user.setCity("CitiName" + i );

@@ -1,6 +1,7 @@
 package com.jm.qa.platform.jm.сontrollers;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.javamentor.qa.platform.models.dto.AuthenticationRequestDTO;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,9 @@ public class HelloTestController extends AbstractIntegrationTest {
 
     @Test
     @DataSet(value = {"roles.yml","users.yml"},cleanAfter = true,cleanBefore = true)
-    void testHello() throws Exception{
-        this.mockMvc.perform(get(URL))
+    void testAnonymousHello() throws Exception{
+                this.mockMvc.perform(get(URL))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Hello")));
+                .andExpect(status().is4xxClientError());
     }
 }
