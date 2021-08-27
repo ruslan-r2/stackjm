@@ -14,6 +14,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
@@ -23,7 +24,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     public SecurityConfig(JwtConfigurer jwtConfigurer) {
         this.jwtConfigurer = jwtConfigurer;
     }
-
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
