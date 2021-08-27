@@ -7,4 +7,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class AnswerDaoImpl extends ReadWriteDaoImpl<Answer, Long> implements AnswerDao {
 
+    @Override
+    public void deleteById(Long id) {
+        Answer answerToDelete = null;
+        if (super.getById(id).isPresent()) {
+            answerToDelete = super.getById(id).get();
+        }
+        assert answerToDelete != null;
+        answerToDelete.setIsDeleted(true);
+    }
 }
