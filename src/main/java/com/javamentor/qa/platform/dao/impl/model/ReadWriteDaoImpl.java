@@ -2,24 +2,21 @@ package com.javamentor.qa.platform.dao.impl.model;
 
 import com.javamentor.qa.platform.models.entity.user.User;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 
-@Repository
+
 public abstract class ReadWriteDaoImpl<E, K> extends ReadOnlyDaoImpl<E, K> {
 
     @Value("${spring.jpa.properties.hibernate.jdbc.batch_size}")
     private int batchSize;
 
     @PersistenceContext
-    protected EntityManager entityManager;
+    private EntityManager entityManager;
 
-    @Transactional
     public void persist(E e) {
         entityManager.persist(e);
     }
