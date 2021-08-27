@@ -1,13 +1,13 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
-import com.javamentor.qa.platform.dao.abstracts.model.RoleDao;
-import com.javamentor.qa.platform.dao.abstracts.model.UserDao;
 import com.javamentor.qa.platform.models.dto.UserRegistrationDto;
 import com.javamentor.qa.platform.models.entity.user.User;
-import com.javamentor.qa.platform.webapp.converters.UserMapper;
-import io.swagger.v3.oas.annotations.Operation;
+import com.javamentor.qa.platform.service.abstracts.model.RoleService;
+import com.javamentor.qa.platform.service.abstracts.model.UserService;
+import com.javamentor.qa.platform.webapp.converters.UserConverter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,24 +20,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Properties;
 
 @RestController
 @RequestMapping(path = "api/user/registration")
 public class RegistrationController {
 
     @Autowired
-    private UserDao userDao;
+    private UserService userService;
 
     @Autowired
-    private RoleDao roleDao;
+    private RoleService roleService;
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Autowired
+    private UserConverter userConverter;
 
     private User user;
 
@@ -45,21 +47,35 @@ public class RegistrationController {
 
     private LocalDateTime sendMessageTime;
 
+    private int code;
+
+    @Value("${spring.mail.username}")
+    private String fromAddress;
+
+    @Value("${sender.name}")
+    private String senderName;
+
+    @Value("${host}")
+    private String host;
+
     @Tag(name = "Отправка сообщения", description = "Отправляет сообщение юзеру, содержащее ссылку с подтверждением почты")
     @PostMapping
     public void sendMessage(UserRegistrationDto userRegistrationDto) throws IOException, MessagingException {
-        user = UserMapper.userMapper.toUser(userRegistrationDto);
+        System.out.println("we are hear");
+        user = userConverter.userRegistrationDtoToUser(userRegistrationDto);
         sendMessageTime = LocalDateTime.now();
-        Properties property = new Properties();
-        property.load(new FileInputStream("src/main/resources/application.properties"));
-        String fromAddress = property.getProperty("spring.mail.username");
-        String senderName = property.getProperty("sender.name");
-        String content = "Здравствуйте, " + userRegistrationDto.getFirstName() + "!<br>" +
-                "Чтобы завершить регистрацию, подтвердите адрес электронной почты:<br>" +
-                "<h3><a href=\"" + "http://localhost:8080/api/user/registration/verify?code=" +
-                userRegistrationDto.getEmail().hashCode() + "\" target=\"_blank\">VERIFY</a></h3>";
+        code = userRegistrationDto.getEmail().hashCode();
         String toAddress = userRegistrationDto.getEmail();
-        MimeMessage message = createMessage(fromAddress, senderName, content, toAddress);
+        String content = new String(Files.readAllBytes(Paths.get("src/main/resources/templates/message.html")));
+        content = content.replace("[[name]]", userRegistrationDto.getFirstName())
+                .replace("[[host]]", host)
+                .replace("[[code]]", code + "");
+        System.out.println(content);
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setFrom(fromAddress, senderName);
+        helper.setText(content, true);
+        helper.setTo(toAddress);
         mailSender.send(message);
 
     }
@@ -68,31 +84,13 @@ public class RegistrationController {
     @GetMapping("/verify")
     public ResponseEntity<String> verify(@RequestParam("code") int code) {
         LocalDateTime linkExpirationTime = sendMessageTime.plusMinutes(EXPIRATION_TIME_IN_MINUTES);
-        if ((code == user.getEmail().hashCode()) &&
+        if ((this.code == code) &&
                 (LocalDateTime.now().isBefore(linkExpirationTime))) {
-            System.out.println(user);
-            user.setRole(roleDao.getById(2L).get());
-            userDao.persist(user);
+            user.setRole(roleService.getByName("ROLE_USER").get());
+            userService.persist(user);
             return new ResponseEntity<>("Вы успешно зарегистрировались!", HttpStatus.OK);
         }
         return new ResponseEntity<>("Ссылка недействительна", HttpStatus.FORBIDDEN);
-    }
-
-    @Operation(
-            summary = "Создание сообщения",
-            description = "Создает сообщение, содержащее ссылку"
-    )
-    private MimeMessage createMessage(String fromAddress,
-                                      String senderName,
-                                      String content,
-                                      String toAddress
-    ) throws MessagingException, UnsupportedEncodingException {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom(fromAddress, senderName);
-        helper.setText(content, true);
-        helper.setTo(toAddress);
-        return message;
     }
 
 }
