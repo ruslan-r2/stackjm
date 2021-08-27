@@ -11,8 +11,12 @@ import java.lang.reflect.ParameterizedType;
 @Repository
 public class AnswerDaoImpl extends ReadWriteDaoImpl<Answer, Long> implements AnswerDao {
 
-    @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    public AnswerDaoImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public void deleteById(Long id) {
