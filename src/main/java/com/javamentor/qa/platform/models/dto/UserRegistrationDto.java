@@ -1,63 +1,47 @@
 package com.javamentor.qa.platform.models.dto;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Schema(description = "регистрация пользователя")
 public class UserRegistrationDto {
 
+    @Parameter(
+            name = "firstName",
+            example = "John",
+            required = true)
+    @NotEmpty
     private String firstName;
+
+    @Parameter(
+            name = "lastName",
+            example = "Smith",
+            required = true)
+    @NotEmpty
     private String lastName;
+
+    @Parameter(
+            name = "email",
+            example = "email@mail.ru",
+            required = true)
+    @NotEmpty
     private String email;
+
+    @Parameter(
+            name = "password",
+            example = "1234",
+            required = true)
+    @NotEmpty
     private String password;
-
-    public UserRegistrationDto(String firstName, String lastName, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-    }
-
-    public UserRegistrationDto() {
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String toString() {
-        return "UserRegistrationDto{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
 
 }
