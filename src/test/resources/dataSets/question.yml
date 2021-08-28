@@ -1,0 +1,10 @@
+question:
+  - id: 1
+    description: "question1_description"
+    is_deleted: "false"
+    last_redaction_date: "2021-08-17 19:10:25"
+    persist_date: "2021-08-17 19:10:25"
+    title: "question1_title"
+    user_id: 1
+
+

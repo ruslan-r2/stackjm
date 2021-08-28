@@ -1,5 +1,6 @@
 package com.jm.qa.platform.jm.сontrollers;
 
+import com.github.database.rider.core.api.dataset.DataSet;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -31,7 +33,7 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     private MockMvc mockMvc;
     @InjectMocks
     private ResourceAnswerController resourceAnswerController;
-    private String url = "api/user/question/{questionId}/answer/{answer}";
+    private String url = "api/user/question/{questionId}/answer";
 
     @Test
     public void controllerInitializedCorrectly() {
@@ -39,7 +41,12 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @DataSet(value = {"roles.yml", "users.yml", "tag.yml", "question.yml", "answer.yml"})
     void deleteAnswerById() throws Exception {
-
+        String idToDelete = "/1";
+        mockMvc.perform(delete(url + idToDelete, 1).
+                contentType(MediaType.APPLICATION_JSON).
+                accept(MediaType.APPLICATION_JSON)).
+                andExpect(status().isOk());
     }
 }
