@@ -5,6 +5,7 @@ import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.model.RoleService;
 import com.javamentor.qa.platform.service.abstracts.model.UserService;
 import com.javamentor.qa.platform.webapp.converters.UserConverter;
+import com.javamentor.qa.platform.webapp.converters.UserConverterImpl;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,16 +31,26 @@ import java.time.LocalDateTime;
 public class RegistrationController {
 
     @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
-    private RoleService roleService;
+    private final RoleService roleService;
 
     @Autowired
     private JavaMailSender mailSender;
 
     @Autowired
-    UserConverter userConverter;
+    private final UserConverter userConverter;
+
+    public RegistrationController(UserService userService,
+                                  RoleService roleService,
+                                  JavaMailSender javaMailSender,
+                                  UserConverter userConverter) {
+        this.userService = userService;
+        this.roleService = roleService;
+        this.mailSender = javaMailSender;
+        this.userConverter = userConverter;
+    }
 
     private User user;
 
