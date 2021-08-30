@@ -28,8 +28,10 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
     @WithMockUser
     @DataSet(value = {"userResourceController/roles.yml", "userResourceController/users.yml", "userResourceController/tags.yml",
             "userResourceController/questions.yml", "userResourceController/answers.yml"}, cleanBefore = true, cleanAfter = true)
-    public void getAllAnswersCorrect() throws Exception {
+    public void getAllAnswers() throws Exception {
         int idCorrect = 100;
+        int idIncorrect = -100;
+
         this.mockMvc.perform(get(URL, idCorrect))
                 .andDo(print())
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
@@ -39,14 +41,8 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$[0].nickname", is("admin")))
                 .andExpect(jsonPath("$[0].body", is("text")))
                 .andExpect(jsonPath("$[0].questionId", is(100)));
-    }
 
-    @Test
-    @WithMockUser
-    @DataSet(value = {"userResourceController/roles.yml", "userResourceController/users.yml", "userResourceController/tags.yml",
-            "userResourceController/questions.yml", "userResourceController/answers.yml"}, cleanBefore = true)
-    public void getAllAnswersIncorrect() throws Exception {
-        int idIncorrect = -100;
+
         this.mockMvc.perform(get(URL, idIncorrect))
                 .andDo(print())
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
