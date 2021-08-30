@@ -11,7 +11,7 @@ import java.lang.reflect.ParameterizedType;
 @Repository
 public class AnswerDaoImpl extends ReadWriteDaoImpl<Answer, Long> implements AnswerDao {
 
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     @Autowired
     public AnswerDaoImpl(EntityManager entityManager) {
