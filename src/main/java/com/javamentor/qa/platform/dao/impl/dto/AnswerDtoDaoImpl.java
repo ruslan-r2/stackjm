@@ -18,7 +18,7 @@ import java.util.List;
 public class AnswerDtoDaoImpl implements AnswerDtoDao {
 
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Override
     public List<AnswerDto> getAllAnswersByQuestionId(Long id) {
