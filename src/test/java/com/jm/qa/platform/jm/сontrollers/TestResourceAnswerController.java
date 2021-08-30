@@ -9,6 +9,8 @@ import org.springframework.security.test.web.servlet.response.SecurityMockMvcRes
 import org.springframework.test.web.servlet.MockMvc;
 
 
+import java.util.Collections;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -21,30 +23,32 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    @DataSet( value = {"userResourceController/roles.yml", "userResourceController/users.yml", "userResourceController/tags.yml",
-            "userResourceController/questions.yml", "userResourceController/answers.yml"},cleanBefore = true)
+    @DataSet(value = {"userResourceController/roles.yml", "userResourceController/users.yml", "userResourceController/tags.yml",
+            "userResourceController/questions.yml", "userResourceController/answers.yml"}, cleanBefore = true)
     @WithUserDetails("admin@mail.ru")
-    public void getAllAnswersCorrect() throws Exception{
+    public void getAllAnswersCorrect() throws Exception {
         int idCorrect = 100;
-        this.mockMvc.perform(get(URL,idCorrect))
+        this.mockMvc.perform(get(URL, idCorrect))
                 .andDo(print())
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id",is(100)))
-                .andExpect(jsonPath("$[0].userId",is(100)))
-                .andExpect(jsonPath("$[0].nickname",is("admin")))
-                .andExpect(jsonPath("$[0].body",is("text")));
+                .andExpect(jsonPath("$[0].id", is(100)))
+                .andExpect(jsonPath("$[0].userId", is(100)))
+                .andExpect(jsonPath("$[0].nickname", is("admin")))
+                .andExpect(jsonPath("$[0].body", is("text")))
+                .andExpect(jsonPath("$[0].questionId", is(100)));
     }
+
     @Test
-    @DataSet( value = {"userResourceController/roles.yml", "userResourceController/users.yml", "userResourceController/tags.yml",
-            "userResourceController/questions.yml", "userResourceController/answers.yml"},cleanBefore = true)
+    @DataSet(value = {"userResourceController/roles.yml", "userResourceController/users.yml", "userResourceController/tags.yml",
+            "userResourceController/questions.yml", "userResourceController/answers.yml"}, cleanBefore = true)
     @WithUserDetails("admin@mail.ru")
-    public void getAllAnswersIncorrect() throws Exception{
+    public void getAllAnswersIncorrect() throws Exception {
         int idIncorrect = 1000000;
-        this.mockMvc.perform(get(URL,idIncorrect))
+        this.mockMvc.perform(get(URL, idIncorrect))
                 .andDo(print())
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
-                .andExpect(content().string("[]"));
+                .andExpect(jsonPath("$").exists());
     }
 
 }
