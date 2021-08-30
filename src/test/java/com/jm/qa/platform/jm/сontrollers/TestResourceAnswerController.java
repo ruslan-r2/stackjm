@@ -4,12 +4,14 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
 import org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
 
 
-import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -23,9 +25,9 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
+    @WithMockUser
     @DataSet(value = {"userResourceController/roles.yml", "userResourceController/users.yml", "userResourceController/tags.yml",
-            "userResourceController/questions.yml", "userResourceController/answers.yml"}, cleanBefore = true)
-    @WithUserDetails("admin@mail.ru")
+            "userResourceController/questions.yml", "userResourceController/answers.yml"}, cleanBefore = true, cleanAfter = true)
     public void getAllAnswersCorrect() throws Exception {
         int idCorrect = 100;
         this.mockMvc.perform(get(URL, idCorrect))
@@ -40,9 +42,9 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     @DataSet(value = {"userResourceController/roles.yml", "userResourceController/users.yml", "userResourceController/tags.yml",
             "userResourceController/questions.yml", "userResourceController/answers.yml"}, cleanBefore = true)
-    @WithUserDetails("admin@mail.ru")
     public void getAllAnswersIncorrect() throws Exception {
         int idIncorrect = 1000000;
         this.mockMvc.perform(get(URL, idIncorrect))

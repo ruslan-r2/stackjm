@@ -1,5 +1,7 @@
 package com.javamentor.qa.platform.models.dto;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,16 +12,26 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "ответ")
 public class AnswerDto {
+    @Schema(description = "id ответа на вопрос")
     private Long id;
+    @Schema(description = "id пользователя")
     private Long userId;
+    @Parameter(description = "id вопроса")
     private Long questionId;
+    @Schema(description = "текст ответа")
     private String body;
+    @Schema(description = "дата создания ответа")
     private LocalDateTime persistDate;
+    @Schema(description = "Польза ответа")
     private Boolean isHelpful;
+    @Schema(description = "id пользователя")
     private LocalDateTime dateAccept;
+    @Schema(description = "рейтинг ответа")
     private Long countValuable;
+    @Schema(description = "Ссылка на картинку пользователя")
     private String image;
+    @Schema(description = "Никнейм пользователя")
     private String nickname;
-
 }
