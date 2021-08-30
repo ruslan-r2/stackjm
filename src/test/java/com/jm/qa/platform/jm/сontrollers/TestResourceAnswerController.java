@@ -21,7 +21,7 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    @DataSet(value = {"userResourceController/roles.yml", "userResourceController/users.yml", "tags.yml", "userResourceController/questions.yml", "userResourceController/answers.yml"},cleanBefore = true)
+    @DataSet(value = {"userResourceController/roles.yml", "userResourceController/users.yml", "userResourceController/tags.yml", "userResourceController/questions.yml", "userResourceController/answers.yml"},cleanBefore = true)
     public void getAllAnswers() throws Exception{
 //        AnswerDto answerDto = new AnswerDto();
 //        answerDto.setId(100L);
