@@ -33,8 +33,7 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$[0].id",is(100)))
                 .andExpect(jsonPath("$[0].userId",is(100)))
                 .andExpect(jsonPath("$[0].nickname",is("admin")))
-                .andExpect(jsonPath("$[0].body",is("text")))
-        ;
+                .andExpect(jsonPath("$[0].body",is("text")));
     }
     @Test
     @DataSet( value = {"userResourceController/roles.yml", "userResourceController/users.yml", "userResourceController/tags.yml",
@@ -45,8 +44,7 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
         this.mockMvc.perform(get(URL,idIncorrect))
                 .andDo(print())
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
-                .andExpect(content().string("[]"))
-        ;
+                .andExpect(content().string("[]"));
     }
 
 }
