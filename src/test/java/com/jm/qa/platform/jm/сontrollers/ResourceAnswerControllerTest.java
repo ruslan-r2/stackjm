@@ -20,14 +20,6 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @InjectMocks
-    private ResourceAnswerController resourceAnswerController;
-    private String url = "api/user/question/{questionId}/answer";
-
-    @Test
-    public void controllerInitializedCorrectly() {
-        assertThat(resourceAnswerController).isNotNull();
-    }
 
     @Test
     @DataSet(value = {"roles.yml", "users.yml", "tag.yml", "question.yml", "answer.yml"})
