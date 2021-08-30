@@ -20,9 +20,7 @@ public class AnswerDaoImpl extends ReadWriteDaoImpl<Answer, Long> implements Ans
 
     @Override
     public void deleteById(Long id) {
-        Class<Answer> clazz = (Class<Answer>) ((ParameterizedType) getClass().getGenericSuperclass())
-                .getActualTypeArguments()[0];
-        String hql = "from " + clazz.getName() + " WHERE id = :id set is_deleted = true";
+        String hql = "FROM Answer WHERE id = :id SET is_deleted = true";
         entityManager.createQuery(hql).setParameter("id", id).executeUpdate();
     }
 }
