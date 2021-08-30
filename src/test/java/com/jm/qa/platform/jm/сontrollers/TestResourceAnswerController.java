@@ -46,11 +46,11 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
     @DataSet(value = {"userResourceController/roles.yml", "userResourceController/users.yml", "userResourceController/tags.yml",
             "userResourceController/questions.yml", "userResourceController/answers.yml"}, cleanBefore = true)
     public void getAllAnswersIncorrect() throws Exception {
-        int idIncorrect = 1000000;
+        int idIncorrect = -100;
         this.mockMvc.perform(get(URL, idIncorrect))
                 .andDo(print())
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
-                .andExpect(jsonPath("$").exists());
+                .andExpect(status().isNotFound());
     }
 
 }
