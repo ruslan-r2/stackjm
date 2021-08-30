@@ -1,28 +1,18 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.models.dto.AnswerDto;
-import com.javamentor.qa.platform.models.dto.UserDto;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
-import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import com.javamentor.qa.platform.webapp.converters.AnswerConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PathVariable;
-
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +23,7 @@ import java.util.Optional;
 @RequestMapping("/api/user/question/{questionId}/answer")
 public class ResourceAnswerController {
 
-    AnswerConverter answerConverter;
+    private AnswerConverter answerConverter;
 
     private final QuestionService questionService;
 
@@ -47,16 +37,19 @@ public class ResourceAnswerController {
     @PostMapping
     public ResponseEntity<AnswerDto> addAnswerToQuestion(@RequestBody AnswerDto answerDto,
                                                          @PathVariable @Parameter(description = "Идентификатор вопроса")
-                                                                 Long questionId) {
+                                                                 Long questionId) throws Exception {
 
-        Optional<Question> questionToBeAnswered = questionService.getById(questionId);
-
-        Answer answer = answerConverter.answerDtoToAnswer(answerDto);
-        List<Answer> listAnswer = new ArrayList<>();
-        listAnswer.add(answer);
-
-        questionToBeAnswered.ifPresent(question -> question.setAnswers(listAnswer));
-
+        Answer answer = new Answer();
+        answer.setQuestion(questionService.getById(questionId).orElseThrow(
+                () -> new Exception("Вопрос не найден!")));
+        //.orElse(null)
+        //orElseGet(Question::new)
         return new ResponseEntity<>(answerConverter.answerToAnswerDto(answer), HttpStatus.OK);
+//        Optional<Question> questionToBeAnswered = questionService.getById(questionId);
+
+//        Answer answer = answerConverter.answerDtoToAnswer(answerDto);
+//        List<Answer> listAnswer = new ArrayList<>();
+//        listAnswer.add(answer);
+//        questionToBeAnswered.ifPresent(question -> question.setAnswers(listAnswer));
     }
 }
