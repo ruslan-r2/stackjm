@@ -1,7 +1,9 @@
 package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.AnswerDtoDao;
+import com.javamentor.qa.platform.exception.ApiRequestException;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
+import javassist.NotFoundException;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.stereotype.Repository;
@@ -31,6 +33,9 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
 
         List<AnswerDto> answerDtoList = query.getResultList();
+
+
+
         for (AnswerDto answerDto : answerDtoList){
             try {
                 List a = entityManager.createQuery("select sum(t1.vote) from VoteAnswer t1 where t1.answer.id = " + answerDto.getId()).getResultList();
@@ -40,6 +45,7 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
             }
         }
         return answerDtoList;
+
 
     }
 }
