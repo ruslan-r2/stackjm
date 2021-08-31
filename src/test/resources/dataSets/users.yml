@@ -1,5 +1,5 @@
 user_entity:
-  - id: 1
+  - id: 100
     about: "i'm admin"
     city: "Moscow"
     email: "admin@mail.ru"
@@ -14,8 +14,8 @@ user_entity:
     nickname: "admin"
     password: "admin"
     persist_date: "2021-08-17 19:10:25"
-    role_id: 1
-  - id: 2
+    role_id: 100
+  - id: 101
     about: "i'm user"
     city: "Moscow"
     email: "user@mail.ru"
@@ -30,4 +30,4 @@ user_entity:
     nickname: "user"
     password: "user"
     persist_date: "2021-08-17 19:10:25"
-    role_id: 2
+    role_id: 101
