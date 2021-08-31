@@ -21,27 +21,32 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
     @Override
     public List<AnswerDto> getAllAnswersByQuestionId(Long id) {
         Session session = entityManager.unwrap(Session.class);
-        Query query = session.createQuery("SELECT t1.id as id, t1.user.id as userId, t1.question.id as questionId," +
-                " t1.htmlBody as body, t1.persistDateTime as persistDate, t1.isHelpful as isHelpful," +
-                " t1.dateAcceptTime as dateAccept, " +
-                "t1.user.imageLink as image, t1.user.nickname as nickname " +
-                "FROM Answer t1 " +
-                "WHERE t1.question.id = " + id
+        Query query = session.createQuery("select a.id as id, " +
+                "a.user.id as userId, " +
+                "a.question.id as questionId, " +
+                "a.htmlBody as body, " +
+                "a.persistDateTime as persistDate, " +
+                "a.isHelpful as isHelpful, " +
+                "a.dateAcceptTime as dateAccept, " +
+                "COALESCE(SUM(v.vote), 0) as countValuable,  " +
+                "a.user.imageLink as image, " +
+                "a.user.nickname as nickname " +
+                "from VoteAnswer v " +
+                "right join v.answer a " +
+                "where a.question.id = :id " +
+                "group by a.id, " +
+                "a.user.id, " +
+                "a.question.id, " +
+                "a.htmlBody, " +
+                "a.persistDateTime, " +
+                "a.isHelpful, " +
+                "a.dateAcceptTime, " +
+                "a.user.imageLink, " +
+                "a.user.nickname"
         )
+                .setParameter("id",id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
-
         List<AnswerDto> answerDtoList = query.getResultList();
-
-
-
-        for (AnswerDto answerDto : answerDtoList){
-            try {
-                List a = entityManager.createQuery("select sum(t1.vote) from VoteAnswer t1 where t1.answer.id = " + answerDto.getId()).getResultList();
-                answerDto.setCountValuable(Long.parseLong(a.get(0).toString()));
-            } catch (NullPointerException e){
-                answerDto.setCountValuable(0L);
-            }
-        }
         return answerDtoList;
 
 
