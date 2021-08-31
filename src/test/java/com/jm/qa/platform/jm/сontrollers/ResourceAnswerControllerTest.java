@@ -21,6 +21,8 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private String url = "api/user/question/{questionId}/answer";
+
     @Test
     @DataSet(value = {"roles.yml", "users.yml", "tag.yml", "question.yml", "answer.yml"})
     void deleteAnswerById() throws Exception {
