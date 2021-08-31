@@ -14,7 +14,7 @@ public abstract class UserConverter {
     @Mapping(target = "fullName", expression = "java(userRegistrationDto.getFirstName() + \" \" + userRegistrationDto.getLastName())")
     public abstract User userRegistrationDtoToUser(UserRegistrationDto userRegistrationDto);
 
-//    @InheritInverseConfiguration
-//    public abstract UserRegistrationDto userToUserRegistrationDto(User user);
+    @InheritInverseConfiguration
+    public abstract UserRegistrationDto userToUserRegistrationDto(User user);
 
 }
