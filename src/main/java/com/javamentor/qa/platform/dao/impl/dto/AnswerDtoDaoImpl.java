@@ -1,9 +1,7 @@
 package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.AnswerDtoDao;
-import com.javamentor.qa.platform.exception.ApiRequestException;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
-import javassist.NotFoundException;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.stereotype.Repository;
