@@ -28,9 +28,9 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "a.persistDateTime as persistDate, " +
                 "a.isHelpful as isHelpful, " +
                 "a.dateAcceptTime as dateAccept, " +
-                "COALESCE(SUM(v.vote), 0) as countValuable,  " +
                 "a.user.imageLink as image, " +
-                "a.user.nickname as nickname " +
+                "a.user.nickname as nickname, " +
+                "COALESCE(SUM(v.vote), 0) as countValuable  " +
                 "from VoteAnswer v " +
                 "right join v.answer a " +
                 "where a.question.id = :id " +
@@ -42,8 +42,7 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "a.isHelpful, " +
                 "a.dateAcceptTime, " +
                 "a.user.imageLink, " +
-                "a.user.nickname"
-        )
+                "a.user.nickname")
                 .setParameter("id",id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
         List<AnswerDto> answerDtoList = query.getResultList();

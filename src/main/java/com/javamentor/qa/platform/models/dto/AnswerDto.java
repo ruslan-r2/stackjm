@@ -24,14 +24,14 @@ public class AnswerDto {
     private String body;
     @Schema(description = "дата создания ответа")
     private LocalDateTime persistDate;
-    @Schema(description = "Польза ответа")
+    @Schema(description = "польза ответа")
     private Boolean isHelpful;
-    @Schema(description = "id пользователя")
+    @Schema(description = "дата решения вопроса")
     private LocalDateTime dateAccept;
     @Schema(description = "рейтинг ответа")
     private Long countValuable;
-    @Schema(description = "Ссылка на картинку пользователя")
+    @Schema(description = "ссылка на картинку пользователя")
     private String image;
-    @Schema(description = "Никнейм пользователя")
+    @Schema(description = "никнейм пользователя")
     private String nickname;
 }
