@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@Tag(name = "Answers контроллер", description = "Api для работы с Answers")
 @RequestMapping("api/user/question/{questionId}/answer")
 public class ResourceAnswerController {
 
@@ -29,7 +31,7 @@ public class ResourceAnswerController {
 
 
     @GetMapping
-    @Operation(summary = "Возвращает лист ДТО ответов по id вопроса")
+    @Operation(summary = "Возвращает лист DTO ответов по id вопроса")
     @ApiResponse(responseCode = "200", description = "успешно",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = AnswerDto.class)))
