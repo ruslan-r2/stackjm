@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/user/registration")
@@ -103,14 +104,17 @@ public class RegistrationController {
     @GetMapping("/verify")
     public ResponseEntity<String> verify(@RequestParam("email") String email,
                                          @RequestParam("code") int code) {
-        User user = userService.getByEmail(email).get();
-        LocalDateTime linkExpirationTime = user.getPersistDateTime().plusMinutes(EXPIRATION_TIME_IN_MINUTES);
-        if ((code == user.getEmail().hashCode()) &&
-                (LocalDateTime.now().isBefore(linkExpirationTime))) {
-            authenticateUserAndSetSession(user);
-            user.setIsEnabled(true);
-            userService.persist(user);
-            return new ResponseEntity<>("Вы успешно зарегистрировались!", HttpStatus.OK);
+        Optional<User> optionalUser = userService.getByEmail(email);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            LocalDateTime linkExpirationTime = user.getPersistDateTime().plusMinutes(EXPIRATION_TIME_IN_MINUTES);
+            if ((code == user.getEmail().hashCode()) &&
+                    (LocalDateTime.now().isBefore(linkExpirationTime))) {
+                authenticateUserAndSetSession(user);
+                user.setIsEnabled(true);
+                userService.persist(user);
+                return new ResponseEntity<>("Вы успешно зарегистрировались!", HttpStatus.OK);
+            }
         }
         return new ResponseEntity<>("Ссылка недействительна", HttpStatus.FORBIDDEN);
     }
