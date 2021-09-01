@@ -26,7 +26,6 @@ public class ResourceAnswerController {
     public ResponseEntity<Answer> deleteAnswerById(@PathVariable(name = "questionId") Long questionId,
                                                  @PathVariable(name = "answerId") Long answerId) {
         answerService.deleteById(answerId);
-        Answer answerToDelete = answerService.getById(answerId).get();
-        return new ResponseEntity<>(answerToDelete, HttpStatus.OK);
+        return new ResponseEntity<>(answerService.getById(answerId).get(), HttpStatus.OK);
     }
 }
