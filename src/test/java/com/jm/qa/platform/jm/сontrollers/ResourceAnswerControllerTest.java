@@ -11,9 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ResourceAnswerControllerTest extends AbstractIntegrationTest {
@@ -21,7 +23,7 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private String url = "api/user/question/{questionId}/answer/{answerId}";
+    private String url = "/api/user/question/{questionId}/answer/{answerId}";
 
     @Test
     @WithMockUser
@@ -31,16 +33,14 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                       "ResourceAnswerController/question.yml",
                       "ResourceAnswerController/answer.yml"},
             cleanBefore = true)
-    void deleteAnswerById() throws Exception {
-        int correctId = 100;
-        int incorrectId = -100;
-        mockMvc.perform(delete(url + correctId, 100).
-                contentType(MediaType.APPLICATION_JSON).
-                accept(MediaType.APPLICATION_JSON)).
+    public void deleteAnswerById() throws Exception {
+        String correctId = "100";
+        String incorrectId = "-100";
+
+        mockMvc.perform(delete(url, correctId, correctId)).
+                andExpect(authenticated()).
                 andExpect(status().isOk());
-//        mockMvc.perform(delete(url + incorrectId, -100).
-//                contentType(MediaType.APPLICATION_JSON)).
-//                andExpect(jsonPath("$.id", -100)).
-//                andExpect()
+
+
     }
 }
