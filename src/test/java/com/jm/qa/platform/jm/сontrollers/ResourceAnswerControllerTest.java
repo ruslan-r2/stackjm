@@ -2,20 +2,17 @@ package com.jm.qa.platform.jm.сontrollers;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.hamcrest.core.IsEqual.equalTo;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class ResourceAnswerControllerTest extends AbstractIntegrationTest {
@@ -38,9 +35,8 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         String incorrectId = "-100";
 
         mockMvc.perform(delete(url, correctId, correctId)).
+                andDo(print()).
                 andExpect(authenticated()).
                 andExpect(status().isOk());
-
-
     }
 }
