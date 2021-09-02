@@ -21,9 +21,6 @@ public class AnswerDaoImpl extends ReadWriteDaoImpl<Answer, Long> implements Ans
     @Override
     public void deleteById(Long id) {
         String hql = "update Answer answer set answer.isDeleted = true where answer.id = :id";
-        int rowsProcessed = entityManager.createQuery(hql).setParameter("id", id).executeUpdate();
-        if (rowsProcessed == 0) {
-            throw new RuntimeException("No answer with such id");
-        }
+        entityManager.createQuery(hql).setParameter("id", id).executeUpdate();
     }
 }
