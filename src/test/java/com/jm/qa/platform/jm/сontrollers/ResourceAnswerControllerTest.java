@@ -38,5 +38,10 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                 andDo(print()).
                 andExpect(authenticated()).
                 andExpect(status().isOk());
+
+        mockMvc.perform(delete(url, correctId, incorrectId)).
+                andDo(print()).
+                andExpect(authenticated()).
+                andExpect(status().isNotFound());
     }
 }
