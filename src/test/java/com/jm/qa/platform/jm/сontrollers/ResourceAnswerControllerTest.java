@@ -5,6 +5,7 @@ import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -18,8 +19,9 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @WithMockUser
     @Test
+    @WithMockUser(roles = "ADMIN")
+//    @WithUserDetails("admin@mail.ru")
     @DataSet(value = {"resourceAnswerController/answers.yml",
             "resourceAnswerController/questions.yml",
             "resourceAnswerController/reputations.yml",
@@ -27,6 +29,8 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
             "resourceAnswerController/users.yml"}, cleanAfter = true, cleanBefore = true)
     public void addAnswerToQuestionTest_isNotFoundQuestionId() throws Exception {
         mockMvc.perform(post(URL, 101))
+
+
                 .andExpect(status().isNotFound());
     }
 
