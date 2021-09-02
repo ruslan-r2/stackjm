@@ -6,17 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.lang.reflect.ParameterizedType;
 
 @Repository
 public class AnswerDaoImpl extends ReadWriteDaoImpl<Answer, Long> implements AnswerDao {
 
-    private final EntityManager entityManager;
-
-    @Autowired
-    public AnswerDaoImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public void deleteById(Long id) {
