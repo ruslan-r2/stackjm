@@ -24,8 +24,8 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     @Test
     @WithMockUser
-    @DataSet(value = {"roles.yml",
-                      "users.yml",
+    @DataSet(value = {"ResourceAnswerController/roles.yml",
+                      "ResourceAnswerController/users.yml",
                       "ResourceAnswerController/tag.yml",
                       "ResourceAnswerController/question.yml",
                       "ResourceAnswerController/answer.yml"},
