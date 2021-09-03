@@ -1,18 +1,29 @@
 package com.jm.qa.platform.jm.сontrollers;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.javamentor.qa.platform.dao.impl.model.AnswerDaoImpl;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.reactive.TransactionContext;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -23,8 +34,8 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Autowired
+    private AnswerDaoImpl answerDao;
 
     private String url = "/api/user/question/{questionId}/answer/{answerId}";
 
@@ -36,26 +47,20 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                       "ResourceAnswerController/question.yml",
                       "ResourceAnswerController/answer.yml"},
             cleanBefore = true)
-    public void deleteAnswerById() throws Exception {
-        String correctId = "100";
-        String incorrectId = "-100";
+    void deleteAnswerById() throws Exception {
 
-        String deleteHql = "from Answer answer set answer.isDeleted = true where answer.id = " + correctId;
-        entityManager.createQuery(deleteHql).executeUpdate();
+        Answer answerBeforeDelete = answerDao.getById(100L).get();
+        assertFalse(answerBeforeDelete.getIsDeleted());
+        answerDao.deleteById(100L);
+        Answer answerAfterDelete = answerDao.getById(100L).get();
+        assertTrue(answerAfterDelete.getIsDeleted());
 
-        String checkDeletedHql = "from Answer answer where answer.id = " + correctId;
-        Answer answer = (Answer) entityManager.createQuery(checkDeletedHql).getSingleResult();
-
-        if (!answer.getIsDeleted()) {
-
-        }
-
-        mockMvc.perform(delete(url, correctId, correctId)).
+        mockMvc.perform(delete(url, 100, 100)).
                 andDo(print()).
                 andExpect(authenticated()).
                 andExpect(status().isOk());
 
-        mockMvc.perform(delete(url, correctId, incorrectId)).
+        mockMvc.perform(delete(url, 100, -100)).
                 andDo(print()).
                 andExpect(authenticated()).
                 andExpect(status().isBadRequest());
