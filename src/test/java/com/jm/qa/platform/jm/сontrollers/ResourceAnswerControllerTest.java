@@ -4,23 +4,12 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.javamentor.qa.platform.dao.impl.model.AnswerDaoImpl;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.reactive.TransactionContext;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.PersistenceContext;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
