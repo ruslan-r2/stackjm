@@ -13,20 +13,26 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @Tag(name = "Resource Answer Controller", description = "Api для ответов на вопрос")
 @RestController
 @RequestMapping("/api/user/question/{questionId}/answer")
 public class ResourceAnswerController {
 
-    private AnswerConverter answerConverter;
+    private final AnswerConverter answerConverter;
 
     private final QuestionService questionService;
 
     @Autowired
-    public ResourceAnswerController(QuestionService questionService) {
+    public ResourceAnswerController(QuestionService questionService, AnswerConverter answerConverter) {
         this.questionService = questionService;
+        this.answerConverter = answerConverter;
     }
 
     @Operation(summary = "Ответ на вопрос", description = "Позволяет добавить ответ на вопрос")
