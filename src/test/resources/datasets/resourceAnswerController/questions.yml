@@ -1,0 +1,8 @@
+question:
+  - id: 100
+    description: "description"
+    is_deleted: "false"
+    last_redaction_date: "1990-10-10 00:00:00"
+    persist_date: "1990-10-10 00:00:00"
+    title: "title"
+    user_id: 100
