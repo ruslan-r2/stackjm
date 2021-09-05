@@ -23,15 +23,15 @@ public class AnswerDto {
     private Long questionId;
     @Schema(description = "Тело ответа")
     private String body;
-    @Schema(description = "Идентификатор пользователя")
+    @Schema(description = "Время создания ответа")
     private LocalDateTime persistDate;
-    @Schema(description = "Идентификатор пользователя")
+    @Schema(description = "Полезность ответа")
     private Boolean isHelpful;
-    @Schema(description = "Идентификатор пользователя")
+    @Schema(description = "Время валидации ответа")
     private LocalDateTime dateAccept;
-    @Schema(description = "Идентификатор пользователя")
+    @Schema(description = "Счетчик очков полезности вопроса")
     private Long countValuable;
-    @Schema(description = "Идентификатор пользователя")
+    @Schema(description = "URL картинки-аварата")
     private String image;
     @Schema(description = "Никнейм")
     private String nickName;

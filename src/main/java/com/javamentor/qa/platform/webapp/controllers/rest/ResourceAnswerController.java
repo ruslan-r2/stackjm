@@ -37,6 +37,7 @@ public class ResourceAnswerController {
 
     @Operation(summary = "Ответ на вопрос", description = "Позволяет добавить ответ на вопрос")
     @ApiResponse(responseCode = "200", description = "Успешное выполнение")
+    @ApiResponse(responseCode = "400", description = "Вопрос не найден")
     @PostMapping
     public ResponseEntity<AnswerDto> addAnswerToQuestion(@RequestBody AnswerDto answerDto,
                                                          @PathVariable @Parameter(description = "Идентификатор вопроса")
