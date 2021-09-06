@@ -5,12 +5,8 @@ import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
 import org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers;
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
-
 
 
 import static org.hamcrest.CoreMatchers.is;
@@ -26,24 +22,20 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-//    @WithMockUser(username = "user@mail.ru", roles = "ROLE_USER")
+    @WithMockUser(username = "user@mail.ru", roles = "USER")
     @DataSet(value = "userResourceController/getAllAnswers.yml", cleanBefore = true
             , cleanAfter = true
     )
-    @WithUserDetails("user@mail.ru")
     public void getAllAnswers() throws Exception {
         int idCorrect = 100;
         int idIncorrect = -100;
 
-        //проверка на величину ожидаемого массива
-        this.mockMvc.perform(get(URL, idCorrect))
-                .andDo(print())
-                .andExpect(jsonPath("$.*", hasSize(2)));
         // Корректный ид, массив из 2-х ответов
         this.mockMvc.perform(get(URL, idCorrect))
                 .andDo(print())
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(2))) // величина ожидаемого массива
                 //1 ответ
                 .andExpect(jsonPath("$[0].id", is(100)))
                 .andExpect(jsonPath("$[0].userId", is(101)))
@@ -66,9 +58,7 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
-
     }
-
 }
 
 
