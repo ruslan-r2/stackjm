@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
     test controller for example
 */
 
+
 @RestController
 @RequestMapping("/rest/api/test")
 public class HelloController {
