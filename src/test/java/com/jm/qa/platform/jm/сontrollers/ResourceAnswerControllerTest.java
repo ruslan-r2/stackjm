@@ -1,7 +1,6 @@
 package com.jm.qa.platform.jm.сontrollers;
 
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.javamentor.qa.platform.dao.impl.model.AnswerDaoImpl;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -10,6 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.transaction.UserTransaction;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,7 +27,7 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private AnswerDaoImpl answerDao;
+    private EntityManager entityManager;
 
     private String url = "/api/user/question/{questionId}/answer/{answerId}";
 
@@ -38,16 +41,16 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
             cleanBefore = true)
     void deleteAnswerById() throws Exception {
 
-        Answer answerBeforeDelete = answerDao.getById(100L).get();
+        Answer answerBeforeDelete = (Answer) entityManager.createQuery("from Answer answer where answer.id = 100").getSingleResult();
         assertFalse(answerBeforeDelete.getIsDeleted());
-        answerDao.deleteById(100L);
-        Answer answerAfterDelete = answerDao.getById(100L).get();
-        assertTrue(answerAfterDelete.getIsDeleted());
 
         mockMvc.perform(delete(url, 100, 100)).
                 andDo(print()).
                 andExpect(authenticated()).
                 andExpect(status().isOk());
+
+        Answer answerAfterDelete = (Answer) entityManager.createQuery("from Answer answer where answer.id = 100").getSingleResult();
+        assertTrue(answerAfterDelete.getIsDeleted());
 
         mockMvc.perform(delete(url, 100, -100)).
                 andDo(print()).
