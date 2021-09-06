@@ -41,17 +41,21 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
             cleanBefore = true)
     void deleteAnswerById() throws Exception {
 
+        //Проверяется состояние флага IsDeleted у ответа с id 100, до его пометки на удаление
         Answer answerBeforeDelete = (Answer) entityManager.createQuery("from Answer answer where answer.id = 100").getSingleResult();
         assertFalse(answerBeforeDelete.getIsDeleted());
 
+        //Выполняется запрос с пометкой на удаление ответа с id 100(запрос с корректными данными)
         mockMvc.perform(delete(url, 100, 100)).
                 andDo(print()).
                 andExpect(authenticated()).
                 andExpect(status().isOk());
 
+        //Проверяется состояние флага IsDeleted у ответа с id 100, после его пометки на удаление
         Answer answerAfterDelete = (Answer) entityManager.createQuery("from Answer answer where answer.id = 100").getSingleResult();
         assertTrue(answerAfterDelete.getIsDeleted());
 
+        //Выполняется запрос с пометкой на удаление ответа с id 100(запрос с некорректными данными)
         mockMvc.perform(delete(url, 100, -100)).
                 andDo(print()).
                 andExpect(authenticated()).
