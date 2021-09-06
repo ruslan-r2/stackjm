@@ -34,6 +34,7 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "from VoteAnswer v " +
                 "right join v.answer a " +
                 "where a.question.id = :id " +
+                "and a.isDeleted = false " +
                 "group by a.id, " +
                 "a.user.id, " +
                 "a.question.id, " +

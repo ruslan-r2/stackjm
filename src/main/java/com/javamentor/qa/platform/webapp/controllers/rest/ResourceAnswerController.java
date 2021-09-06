@@ -38,11 +38,7 @@ public class ResourceAnswerController {
     @ApiResponse(responseCode = "404", description = "Ответы не найдены")
     public ResponseEntity<List<AnswerDto>> getAllAnswers(@Parameter(description = "id вопроса по которому получим ответы")@PathVariable("questionId") Long id ){
         List<AnswerDto> list = answerDtoService.getAllAnswerDtoByQuestionId(id);
-        if(list.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(list,HttpStatus.OK);
-        }
+        return  new ResponseEntity<>(list,HttpStatus.OK);
     }
 
 
