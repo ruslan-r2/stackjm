@@ -3,6 +3,8 @@ package com.jm.qa.platform.jm.сontrollers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
+import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
+import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,10 +13,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
@@ -23,6 +25,9 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+
+    private AnswerService answerService;
 
     String URL = "/api/user/question/{questionId}/answer";
 
@@ -36,7 +41,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
             "resourceAnswerController/users.yml"}, cleanAfter = true, cleanBefore = true)
     public void addAnswerToQuestionTest_isNotFoundQuestionId() throws Exception {
         String jsonAnswerDto = objectMapper.writeValueAsString(new AnswerDto());
-        mockMvc.perform(post(URL,99).contentType(MediaType.APPLICATION_JSON).content(jsonAnswerDto))
+        mockMvc.perform(post(URL, 99).contentType(MediaType.APPLICATION_JSON).content(jsonAnswerDto))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -48,14 +53,15 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
             "resourceAnswerController/questions.yml",
             "resourceAnswerController/reputations.yml",
             "resourceAnswerController/roles.yml",
-            "resourceAnswerController/users.yml"})
+            "resourceAnswerController/users.yml"}, cleanAfter = true, cleanBefore = true)
     public void addAnswerToQuestionTest_getQuestionId() throws Exception {
         AnswerDto answerdto = new AnswerDto();
         answerdto.setId(100L);
+
         String jsonAnswerDto = objectMapper.writeValueAsString(answerdto);
-                mockMvc.perform(post(URL, 100).contentType(MediaType.APPLICATION_JSON).content(jsonAnswerDto))
+        mockMvc.perform(post(URL, 100).contentType(MediaType.APPLICATION_JSON).content(jsonAnswerDto))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("id"). value(100L));
+                .andExpect(jsonPath("$[0].id", equalTo(100)));
     }
 }
