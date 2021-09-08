@@ -30,6 +30,8 @@ public class AnswerDto {
     private LocalDateTime dateAccept;
     @Schema(description = "рейтинг ответа")
     private Long countValuable;
+    @Schema(description = "рейтинг юзера")
+    private Long countUserReputation;
     @Schema(description = "ссылка на картинку пользователя")
     private String image;
     @Schema(description = "никнейм пользователя")

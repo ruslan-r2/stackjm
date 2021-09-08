@@ -22,28 +22,19 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
     public List<AnswerDto> getAllAnswersByQuestionId(Long id) {
         Session session = entityManager.unwrap(Session.class);
         Query query = session.createQuery("select a.id as id, " +
-                "a.user.id as userId, " +
-                "a.question.id as questionId, " +
+                "a.user.id as userId," +
+                "a.question.id as questionId," +
                 "a.htmlBody as body, " +
                 "a.persistDateTime as persistDate, " +
                 "a.isHelpful as isHelpful, " +
                 "a.dateAcceptTime as dateAccept, " +
                 "a.user.imageLink as image, " +
                 "a.user.nickname as nickname, " +
-                "COALESCE(SUM(v.vote), 0) as countValuable  " +
-                "from VoteAnswer v " +
-                "right join v.answer a " +
+                "(select COALESCE(SUM(vote), 0)  from VoteAnswer  where answer.id = a.id) as countValuable, " +
+                "(select COALESCE(SUM(r.count), 0)  from Reputation r  where author.id = a.user.id) as countUserReputation " +
+                "from Answer a " +
                 "where a.question.id = :id " +
-                "and a.isDeleted = false " +
-                "group by a.id, " +
-                "a.user.id, " +
-                "a.question.id, " +
-                "a.htmlBody, " +
-                "a.persistDateTime, " +
-                "a.isHelpful, " +
-                "a.dateAcceptTime, " +
-                "a.user.imageLink, " +
-                "a.user.nickname")
+                "group by a.id, a.user.id, a.question.id,a.htmlBody, a.persistDateTime, a.isHelpful, a.dateAcceptTime, a.user.imageLink, a.user.nickname")
                 .setParameter("id",id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
         List<AnswerDto> answerDtoList = query.getResultList();
