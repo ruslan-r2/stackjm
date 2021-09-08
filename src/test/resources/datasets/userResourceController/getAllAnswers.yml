@@ -63,7 +63,14 @@ question:
     is_deleted: "false"
     last_redaction_date: "1990-10-10 00:00:00"
     persist_date: "1990-10-10 00:00:00"
-    title: "text"
+    title: "question"
+    user_id: 100
+  - id: 101
+    description: "text"
+    is_deleted: "false"
+    last_redaction_date: "1990-10-10 00:00:00"
+    persist_date: "1990-10-10 00:00:00"
+    title: "question2"
     user_id: 100
 answer:
   - id: 100
@@ -112,3 +119,20 @@ votes_on_answers:
     vote: -1
     answer_id: 101
     user_id: 101
+reputation:
+  - id: 100
+    count: 1
+    persist_date: 1990-01-01 00:00:00
+    type: 1
+    answer_id: 100
+    author_id: 101
+    question_id: 100
+    sender_id: 100
+  - id: 101
+    count: 1
+    persist_date: 1990-01-01 00:00:00
+    type: 1
+    answer_id: 100
+    author_id: 101
+    question_id: 100
+    sender_id: 100

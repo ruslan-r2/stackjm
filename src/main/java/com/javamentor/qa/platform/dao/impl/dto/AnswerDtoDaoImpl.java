@@ -33,13 +33,11 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "(select COALESCE(SUM(vote), 0)  from VoteAnswer  where answer.id = a.id) as countValuable, " +
                 "(select COALESCE(SUM(r.count), 0)  from Reputation r  where author.id = a.user.id) as countUserReputation " +
                 "from Answer a " +
-                "where a.question.id = :id " +
+                "where a.question.id = :id and a.isDeleted = false " +
                 "group by a.id, a.user.id, a.question.id,a.htmlBody, a.persistDateTime, a.isHelpful, a.dateAcceptTime, a.user.imageLink, a.user.nickname")
                 .setParameter("id",id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
         List<AnswerDto> answerDtoList = query.getResultList();
         return answerDtoList;
-
-
     }
 }

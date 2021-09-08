@@ -27,11 +27,12 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
             , cleanAfter = true
     )
     public void getAllAnswers() throws Exception {
-        int idCorrect = 100;
+        int idWithAnswers = 100;
+        int idWithoutAnswers = 101;
         int idIncorrect = -100;
 
-        // Корректный ид, массив из 2-х ответов
-        this.mockMvc.perform(get(URL, idCorrect))
+        //Существующий ид вопроса с ответами,ожидание массива из 2-х ответов
+        this.mockMvc.perform(get(URL, idWithAnswers))
                 .andDo(print())
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
                 .andExpect(status().isOk())
@@ -43,6 +44,7 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$[0].nickname", is("user")))
                 .andExpect(jsonPath("$[0].body", is("text")))
                 .andExpect(jsonPath("$[0].countValuable", is(2)))
+                .andExpect(jsonPath("$[0].countUserReputation", is(2)))
                 .andExpect(jsonPath("$[0].questionId", is(100)))
                 // 2 ответ
                 .andExpect(jsonPath("$[1].id", is(101)))
@@ -52,12 +54,17 @@ public class TestResourceAnswerController extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$[1].body", is("text2")))
                 .andExpect(jsonPath("$[1].countValuable", is(-1)))
                 .andExpect(jsonPath("$[1].questionId", is(100)));
-        // Некорректный ид, ожидание пустого массива
-        this.mockMvc.perform(get(URL, idIncorrect))
+        // Существующий ид вопроса без ответов, ожидание пустого массива
+        this.mockMvc.perform(get(URL, idWithoutAnswers))
                 .andDo(print())
                 .andExpect(SecurityMockMvcResultMatchers.authenticated())
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
+        //Не существующий ид вопроса
+        this.mockMvc.perform(get(URL, idIncorrect))
+                .andDo(print())
+                .andExpect(SecurityMockMvcResultMatchers.authenticated())
+                .andExpect(status().isNotFound());
     }
 }
 

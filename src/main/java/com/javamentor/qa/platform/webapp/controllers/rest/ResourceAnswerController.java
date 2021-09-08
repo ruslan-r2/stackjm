@@ -3,6 +3,7 @@ package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.models.dto.AnswerDto;
 import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
+import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,9 +25,11 @@ import java.util.List;
 public class ResourceAnswerController {
 
     private final AnswerDtoService answerDtoService;
+    private final QuestionService questionService;
 
-    public ResourceAnswerController(AnswerDtoService answerDtoService) {
+    public ResourceAnswerController(AnswerDtoService answerDtoService, QuestionService questionService) {
         this.answerDtoService = answerDtoService;
+        this.questionService = questionService;
     }
 
 
@@ -36,9 +39,14 @@ public class ResourceAnswerController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = AnswerDto.class)))
     @ApiResponse(responseCode = "404", description = "Ответы не найдены")
-    public ResponseEntity<List<AnswerDto>> getAllAnswers(@Parameter(description = "id вопроса по которому получим ответы")@PathVariable("questionId") Long id ){
-        List<AnswerDto> list = answerDtoService.getAllAnswerDtoByQuestionId(id);
-        return  new ResponseEntity<>(list,HttpStatus.OK);
+    public ResponseEntity<List<AnswerDto>> getAllAnswers(@Parameter(description = "id вопроса по которому получим ответы") @PathVariable("questionId") Long id) {
+
+        if (questionService.getById(id).isPresent()) {
+            List<AnswerDto> list = answerDtoService.getAllAnswerDtoByQuestionId(id);
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
     }
 
 
