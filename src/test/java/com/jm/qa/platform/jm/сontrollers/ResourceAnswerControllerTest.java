@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,10 +31,13 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     @Autowired
     private EntityManager entityManager;
 
-    private String url = "/api/user/question/{questionId}/answer/{answerId}";
+    private String deleteAnswerUrl = "/api/user/question/{questionId}/answer/{answerId}";
+    private String authenticationUrl = "/api/auth/token";
 
     @Test
-//    @WithMockUser
+    @WithMockUser(username = "admin@mail.ru",
+                  password = "admin",
+                  roles = "ADMIN")
     @DataSet(value = {"ResourceAnswerController/roles.yml",
                       "ResourceAnswerController/users.yml",
                       "ResourceAnswerController/tag.yml",
@@ -41,24 +46,24 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
             cleanBefore = true)
     void deleteAnswerById() throws Exception {
 
-        //Проверяется состояние флага IsDeleted у ответа с id 100, до его пометки на удаление
+//        Проверяется состояние флага IsDeleted у ответа с id 100, до его пометки на удаление
         Answer answerBeforeDelete = (Answer) entityManager.createQuery("from Answer answer where answer.id = 100").getSingleResult();
         assertFalse(answerBeforeDelete.getIsDeleted());
 
-        //Выполняется запрос с пометкой на удаление ответа с id 100(запрос с корректными данными)
-        mockMvc.perform(delete(url, 100, 100)).
+//        Выполняется запрос с пометкой на удаление ответа с id 100(корректный id)
+        mockMvc.perform(delete(deleteAnswerUrl, 100, 100)).
                 andDo(print()).
-//                andExpect(authenticated()).
+                andExpect(authenticated()).
                 andExpect(status().isOk());
 
-        //Проверяется состояние флага IsDeleted у ответа с id 100, после его пометки на удаление
+//        Проверяется состояние флага IsDeleted у ответа с id 100, после его пометки на удаление
         Answer answerAfterDelete = (Answer) entityManager.createQuery("from Answer answer where answer.id = 100").getSingleResult();
         assertTrue(answerAfterDelete.getIsDeleted());
 
-        //Выполняется запрос с пометкой на удаление ответа с id 100(запрос с некорректными данными)
-        mockMvc.perform(delete(url, 100, -100)).
+//        Выполняется запрос с пометкой на удаление ответа с id -100(некорректный шв)
+        mockMvc.perform(delete(deleteAnswerUrl, 100, -100)).
                 andDo(print()).
-//                andExpect(authenticated()).
+                andExpect(authenticated()).
                 andExpect(status().isBadRequest());
     }
 }
