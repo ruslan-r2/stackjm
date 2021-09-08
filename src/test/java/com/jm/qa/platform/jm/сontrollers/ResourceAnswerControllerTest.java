@@ -32,7 +32,7 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     private String url = "/api/user/question/{questionId}/answer/{answerId}";
 
     @Test
-    @WithMockUser
+//    @WithMockUser
     @DataSet(value = {"ResourceAnswerController/roles.yml",
                       "ResourceAnswerController/users.yml",
                       "ResourceAnswerController/tag.yml",
@@ -48,7 +48,7 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         //Выполняется запрос с пометкой на удаление ответа с id 100(запрос с корректными данными)
         mockMvc.perform(delete(url, 100, 100)).
                 andDo(print()).
-                andExpect(authenticated()).
+//                andExpect(authenticated()).
                 andExpect(status().isOk());
 
         //Проверяется состояние флага IsDeleted у ответа с id 100, после его пометки на удаление
@@ -58,7 +58,7 @@ class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         //Выполняется запрос с пометкой на удаление ответа с id 100(запрос с некорректными данными)
         mockMvc.perform(delete(url, 100, -100)).
                 andDo(print()).
-                andExpect(authenticated()).
+//                andExpect(authenticated()).
                 andExpect(status().isBadRequest());
     }
 }
