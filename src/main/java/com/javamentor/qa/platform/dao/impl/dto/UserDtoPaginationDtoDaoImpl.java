@@ -36,7 +36,7 @@ public class UserDtoPaginationDtoDaoImpl implements PaginationDao<UserDto> {
                 "user.fullName as fullName, " +
                 "user.imageLink as linkImage, " +
                 "user.city as city, " +
-                "CAST((SELECT coalesce(SUM(r.count),0) FROM Reputation r WHERE r.sender.id = user.id) as int) as reputation FROM User user WHERE user.isDeleted = false ORDER BY user.id")
+                "CAST((SELECT coalesce(SUM(r.count),0) FROM Reputation r WHERE r.author.id = user.id) as int) as reputation FROM User user WHERE user.isDeleted = false ORDER BY user.id")
                 .unwrap(org.hibernate.query.Query.class)
                 .setResultTransformer(Transformers.aliasToBean(UserDto.class))
                 .setFirstResult(itemsOnPage * (currentPage - 1))
