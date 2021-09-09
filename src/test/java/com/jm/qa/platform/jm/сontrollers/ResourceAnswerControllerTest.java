@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-public class TestResourceAnswerController extends AbstractIntegrationTest {
+public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     private String URL = "/api/user/question/{questionId}/answer";
 
