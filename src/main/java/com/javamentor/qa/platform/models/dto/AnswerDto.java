@@ -1,5 +1,6 @@
 package com.javamentor.qa.platform.models.dto;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,27 +13,29 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "Сущность ответа")
-public class AnswerDto {
 
-    @Schema(description = "Идентификатор ответа")
+@Schema(description = "ответ")
+public class AnswerDto {
+    @Schema(description = "id ответа на вопрос")
     private Long id;
-    @Schema(description = "Идентификатор пользователя")
+    @Schema(description = "id пользователя")
     private Long userId;
-    @Schema(description = "Идентификатор вопроса")
+    @Parameter(description = "id вопроса")
     private Long questionId;
-    @Schema(description = "Тело ответа")
+    @Schema(description = "текст ответа")
     private String body;
-    @Schema(description = "Время создания ответа")
+    @Schema(description = "дата создания ответа")
     private LocalDateTime persistDate;
-    @Schema(description = "Полезность ответа")
+    @Schema(description = "польза ответа")
     private Boolean isHelpful;
-    @Schema(description = "Время валидации ответа")
+    @Schema(description = "дата решения вопроса")
     private LocalDateTime dateAccept;
-    @Schema(description = "Счетчик очков полезности вопроса")
+    @Schema(description = "рейтинг ответа")
     private Long countValuable;
-    @Schema(description = "URL картинки-аварата")
+    @Schema(description = "рейтинг юзера")
+    private Long countUserReputation;
+    @Schema(description = "ссылка на картинку пользователя")
     private String image;
-    @Schema(description = "Никнейм")
-    private String nickName;
+    @Schema(description = "никнейм пользователя")
+    private String nickname;
 }

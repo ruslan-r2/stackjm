@@ -42,7 +42,7 @@ public class Comment implements Serializable {
 
     @Enumerated
     @NotNull
-    @Column(columnDefinition = "smallint")
+    @Column(columnDefinition = "int2")
     private CommentType commentType;
 
     @Column(name = "persist_date", updatable = false)

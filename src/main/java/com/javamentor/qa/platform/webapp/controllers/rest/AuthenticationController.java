@@ -3,13 +3,14 @@ package com.javamentor.qa.platform.webapp.controllers.rest;
 import com.javamentor.qa.platform.models.dto.AuthenticationRequestDTO;
 import com.javamentor.qa.platform.models.dto.TokenResponseDTO;
 import com.javamentor.qa.platform.models.entity.user.User;
-import com.javamentor.qa.platform.security.jwt.JwtTokenProvider;
+import com.javamentor.qa.platform.security.jwt.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,29 +21,18 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 
 @Tag(name = "Контроллер Аутентификации", description = "Rest контроллер предоставляющий API для авторизации пользователя через JWT")
-@RestController
+@RestController @RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtUtils jwtUtils;
     private final TokenResponseDTO tokenResponseDTO;
-
-
-
-    public AuthenticationController(AuthenticationManager authenticationManager,
-                                    JwtTokenProvider jwtTokenProvider, TokenResponseDTO tokenResponseDTO) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.tokenResponseDTO = tokenResponseDTO;
-    }
-
 
     @Operation(summary = "Метод аутентификации", description = "При успешной аутентификации метод возвращает JWT")
     @ApiResponse(responseCode = "200", description = "Аутентификация прошла успешна, токен сгенерирован",
@@ -55,13 +45,12 @@ public class AuthenticationController {
                                                             schema = @Schema(implementation = AuthenticationRequestDTO.class))) @Valid @RequestBody AuthenticationRequestDTO authenticationRequest) {
 
         try {
-            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getLogin(),
-                    authenticationRequest.getPass()));
+            Authentication authenticate = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getLogin(), authenticationRequest.getPass()));
             User authUser = (User) authenticate.getPrincipal();
-            String token = jwtTokenProvider.createToken(authenticationRequest.getLogin(), authUser.getRole().getName());
+            String token = jwtUtils.generateJwtToken(authenticate);
             tokenResponseDTO.setRole(authUser.getRole().getName());
             tokenResponseDTO.setToken(token);
-
             return ResponseEntity.ok(tokenResponseDTO);
 
         } catch (AuthenticationException e) {
@@ -75,4 +64,5 @@ public class AuthenticationController {
         SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
         securityContextLogoutHandler.logout(request, response, null);
     }
+
 }

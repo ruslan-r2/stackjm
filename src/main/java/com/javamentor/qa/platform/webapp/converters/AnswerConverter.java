@@ -5,10 +5,12 @@ import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
+import org.springframework.stereotype.Component;
 
 
 @Mapper(componentModel = "spring")
 @Schema(description = "преобразование Answer в AnswerDto и обратно")
+@Component
 public abstract class AnswerConverter {
 
     public abstract Answer answerDtoToAnswer(AnswerDto answerDto);
