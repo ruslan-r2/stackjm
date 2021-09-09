@@ -11,18 +11,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -44,7 +42,7 @@ public class AuthenticationController {
     public ResponseEntity<?> authentication(@Parameter(schema = @Schema(implementation = AuthenticationRequestDTO.class))
                                             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Данные для аутентификации", required = true,
                                                     content = @Content(
-                                                            schema = @Schema(implementation = AuthenticationRequestDTO.class))) @Valid @RequestBody AuthenticationRequestDTO authenticationRequest, HttpServletResponse response) {
+                                                            schema = @Schema(implementation = AuthenticationRequestDTO.class))) @Valid @RequestBody AuthenticationRequestDTO authenticationRequest) {
 
         try {
             Authentication authenticate = authenticationManager
@@ -53,8 +51,6 @@ public class AuthenticationController {
             String token = jwtUtils.generateJwtToken(authenticate);
             tokenResponseDTO.setRole(authUser.getRole().getName());
             tokenResponseDTO.setToken(token);
-            Cookie sessionCookie = new Cookie("StackJM", token);
-            response.addCookie(sessionCookie);
             return ResponseEntity.ok(tokenResponseDTO);
 
         } catch (AuthenticationException e) {
@@ -69,10 +65,4 @@ public class AuthenticationController {
         securityContextLogoutHandler.logout(request, response, null);
     }
 
-    @GetMapping("/error")
-    public String error(HttpServletRequest request) {
-        String message = (String) request.getSession().getAttribute("error.message");
-        request.getSession().removeAttribute("error.message");
-        return message;
-    }
 }

@@ -1,7 +1,9 @@
 package com.javamentor.qa.platform.security.jwt;
 
 import com.javamentor.qa.platform.models.entity.user.User;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -15,8 +17,7 @@ public class JwtUtils {
 
     @Value("${app.jwtExpirationMs}")
     private int jwtExpirationMs;
-
-    SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String generateJwtToken(Authentication authentication) {
 
