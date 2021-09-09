@@ -1,30 +1,39 @@
-<div id="container_demo" >
-    <!-- спрятанный якорь, чтобы избежать прыжков http://www.css3create.com/Astuce-Empecher-le-scroll-avec-l-utilisation-de-target#wrap4  -->
-    <a class="hiddenanchor" id="tosubscribe"></a>
-    <a class="hiddenanchor" id="tologin"></a>
-    <div id="wrapper">
-        <div id="login" class="animate form">
-            <form  action="mysuperscript.php" autocomplete="on">
-                <h1>Log in</h1>
-                <p>
-                    <label for="username" class="uname" data-icon="u" > Your email or username </label>
-                    <input id="username" name="username" required="required" type="text" placeholder="myusername or mymail@mail.com"/>
-                </p>
-                <p>
-                    <label for="password" class="youpasswd" data-icon="p"> Your password </label>
-                    <input id="password" name="password" required="required" type="password" placeholder="eg. X8df!90EO" />
-                </p>
-                <p class="keeplogin">
-                    <input type="checkbox" name="loginkeeping" id="loginkeeping" value="loginkeeping" />
-                    <label for="loginkeeping">Keep me logged in</label>
-                </p>
-                <p class="login button">
-                    <input type="submit" value="Login" />
-                </p>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Demo</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width" />
+    <base href="/" />
+    <link rel="stylesheet" type="text/css"
+          href="/webjars/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript"
+            src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
 
-            </form>
-        </div>
+<body>
+<h1>Login</h1>
+<div class="container unauthenticated">
+    <div>
+        With GitHub: <a href="/oauth2/authorization/github">click here</a>
+    </div>
+    <div>
+        With Google: <a href="/oauth2/authorization/google">click here</a>
+    </div>
 
-
+    <div>
+        With vk: <a href="/oauth2/authorization/vk">click here</a>
     </div>
 </div>
+<div class="container authenticated" style="display: none">
+    Logged in as: <span id="user"></span>
+    <div>
+        <button onClick="logout()" class="btn btn-primary">Logout</button>
+    </div>
+</div>
+
+</body>
+</html>
