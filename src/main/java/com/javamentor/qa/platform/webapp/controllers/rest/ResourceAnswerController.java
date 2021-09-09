@@ -38,15 +38,15 @@ public class ResourceAnswerController {
     @ApiResponse(responseCode = "200", description = "успешно",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = AnswerDto.class)))
-    @ApiResponse(responseCode = "404", description = "Ответы не найдены")
+    @ApiResponse(responseCode = "400", description = "Вопроса по ID не существует")
     public ResponseEntity<List<AnswerDto>> getAllAnswers(@Parameter(description = "id вопроса по которому получим ответы") @PathVariable("questionId") Long id) {
 
-        if (questionService.getById(id).isPresent()) {
-            List<AnswerDto> list = answerDtoService.getAllAnswerDtoByQuestionId(id);
-            return new ResponseEntity<>(list, HttpStatus.OK);
+        if (!questionService.getById(id).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
+        List<AnswerDto> list = answerDtoService.getAllAnswerDtoByQuestionId(id);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
 
