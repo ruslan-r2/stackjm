@@ -14,7 +14,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     private String URL = "/api/user/question/{questionId}/answer";
 
     @Test
-    @DataSet(value = "userResourceController/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
+    @DataSet(value = "resource_answer_controller/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
     public void getAllAnswers() throws Exception {
         int idWithAnswers = 100;
         int idWithoutAnswers = 101;
