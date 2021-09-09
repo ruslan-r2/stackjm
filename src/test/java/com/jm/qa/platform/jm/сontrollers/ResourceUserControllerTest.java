@@ -5,10 +5,7 @@ import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -16,13 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class TestUserResourceController extends AbstractIntegrationTest {
-
-    @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
-    private MockMvc mockMvc;
+public class ResourceUserControllerTest extends AbstractIntegrationTest {
 
 
     @WithMockUser("spring")
