@@ -14,30 +14,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class ResourceUserControllerTest extends AbstractIntegrationTest {
+    private String username;
+    private String password;
 
-
-    @WithMockUser("spring")
     @Test
     @DataSet(value = {"resource_user_controller/users.yml",
             "resource_user_controller/roles.yml",
             "resource_user_controller/reputations.yml",
             "resource_user_controller/answers.yml",
-            "resource_user_controller/questions.yml"},cleanAfter = true,cleanBefore = true)
+            "resource_user_controller/questions.yml"}, cleanAfter = true, cleanBefore = true)
     public void should_return_status_not_found() throws Exception {
-        mockMvc.perform(get("/api/user/99"))
+        username = "user@mail.ru";
+        password = "user";
+        mockMvc.perform(get("/api/user/99").header("Authorization", getToken(username, password)))
                 .andExpect(status().isNotFound());
     }
 
 
-    @WithMockUser("spring")
     @Test
     @DataSet(value = {"resource_user_controller/users.yml",
             "resource_user_controller/roles.yml",
             "resource_user_controller/reputations.yml",
             "resource_user_controller/answers.yml",
-            "resource_user_controller/questions.yml"},cleanAfter = true,cleanBefore = true)
+            "resource_user_controller/questions.yml"}, cleanAfter = true, cleanBefore = true)
     public void should_get_user_by_id() throws Exception {
-        mockMvc.perform(get("/api/user/100"))
+        username = "user@mail.ru";
+        password = "user";
+        mockMvc.perform(get("/api/user/100").header("Authorization", getToken(username, password)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(100)))
                 .andExpect(jsonPath("$.email", equalTo("admin@mail.ru")))
