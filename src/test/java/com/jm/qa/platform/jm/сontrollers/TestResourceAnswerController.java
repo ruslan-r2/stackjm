@@ -12,11 +12,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TestResourceAnswerController extends AbstractIntegrationTest {
 
     private String URL = "/api/user/question/{questionId}/answer";
-    private String tokenURL = "/api/auth/token";
 
     @Test
     @DataSet(value = "userResourceController/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
-
     public void getAllAnswers() throws Exception {
         int idWithAnswers = 100;
         int idWithoutAnswers = 101;
