@@ -52,7 +52,7 @@ drop table if exists question_viewed cascade;
 drop table if exists related_tag cascade;
 drop table if exists reputation cascade;
 drop table if exists role cascade;
-drop table if exists singel_chat cascade;
+drop table if exists single_chat cascade;
 drop table if exists tag cascade;
 drop table if exists tag_ignore cascade;
 drop table if exists tag_tracked cascade;
@@ -399,13 +399,13 @@ alter table question_viewed
 
 alter table related_tag
     add constraint FK_RELATED_TAG_ON_TAG_child_tag
-    foreign key (child_tag)
-    references tag;
+        foreign key (child_tag)
+            references tag;
 
 alter table related_tag
     add constraint FK_RELATED_TAG_ON_TAG_main_tag
-    foreign key (main_tag)
-    references tag;
+        foreign key (main_tag)
+            references tag;
 
 alter table reputation
     add constraint FK_REPUTATION_ON_ANSWER
@@ -414,8 +414,8 @@ alter table reputation
 
 alter table reputation
     add constraint FK_REPUTATION_ON_USER_author_id
-    foreign key (author_id)
-    references user_entity;
+        foreign key (author_id)
+            references user_entity;
 
 alter table reputation
     add constraint FK_REPUTATION_ON_QUESTION
@@ -424,8 +424,8 @@ alter table reputation
 
 alter table reputation
     add constraint FK_REPUTATION_ON_USER_sender_id
-    foreign key (sender_id)
-    references user_entity;
+        foreign key (sender_id)
+            references user_entity;
 
 alter table single_chat
     add constraint FK_SINGLE_CHAT_ON_CHAT
@@ -434,13 +434,13 @@ alter table single_chat
 
 alter table single_chat
     add constraint FK_SINGLE_CHAT_ON_USER_use_two_id
-    foreign key (use_two_id)
-    references user_entity;
+        foreign key (use_two_id)
+            references user_entity;
 
 alter table single_chat
     add constraint FK_SINGLE_CHAT_ON_USER_user_one_id
-    foreign key (user_one_id)
-    references user_entity;
+        foreign key (user_one_id)
+            references user_entity;
 
 alter table tag_ignore
     add constraint FK_TAG_IGNORE_ON_TAG
