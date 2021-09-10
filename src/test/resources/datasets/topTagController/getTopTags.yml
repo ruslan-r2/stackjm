@@ -1,0 +1,125 @@
+role:
+  - id: 100
+    name: "ROLE_ADMIN"
+  - id: 101
+    name: "ROLE_USER"
+tag:
+  - id: 100
+    description: "фреймворк"
+    name: "Hibernate"
+    persist_date: 1990-10-10 00:00:00
+  - id: 101
+    description: "фреймворк"
+    name: "Spring"
+    persist_date: 1990-10-10 00:00:00
+  - id: 102
+    description: "раздел java"
+    name: "ООП"
+    persist_date: 1990-10-10 00:00:00
+user_entity:
+  - id: 100
+    about: "i'm admin"
+    city: "Moscow"
+    email: "admin@mail.ru"
+    full_name: "super admin"
+    image_link: "admin.image.com"
+    is_deleted: "false"
+    is_enabled: "true"
+    last_redaction_date: "2021-08-17 19:10:25"
+    link_github: "admin.github.com"
+    link_site: "adminsite.com"
+    link_vk: "vk.com/admin"
+    nickname: "admin"
+    password: "$2a$10$L7vulI.EeptscIf2.IRL0OVsIwoQIxpHWNIHXn5WjR7LzAGBNMN26"
+    persist_date: "2021-08-17 19:10:25"
+    role_id: 100
+  - id: 101
+    about: "i'm user"
+    city: "Moscow"
+    email: "user@mail.ru"
+    full_name: "just user"
+    image_link: "user.image.com"
+    is_deleted: "false"
+    is_enabled: "true"
+    last_redaction_date: "2021-08-17 19:10:25"
+    link_github: "user.github.com"
+    link_site: "usersite.com"
+    link_vk: "vk.com/user"
+    nickname: "user"
+    password: "$2a$10$EO4tL7b5hFUbHFb46NmGheExGu2p1mJT0alqqggCa6Nl.RT4nOqh."
+    persist_date: "2021-08-17 19:10:25"
+    role_id: 101
+  - id: 102
+    about: "i'm user2"
+    city: "Moscow"
+    email: "user2@mail.ru"
+    full_name: "just user2"
+    image_link: "user2.image.com"
+    is_deleted: "false"
+    is_enabled: "true"
+    last_redaction_date: "2021-08-17 19:10:25"
+    link_github: "user2.github.com"
+    link_site: "user2site.com"
+    link_vk: "vk.com/user2"
+    nickname: "user2"
+    password: "$2a$10$EO4tL7b5hFUbHFb46NmGheExGu2p1mJT0alqqggCa6Nl.RT4nOqh."
+    persist_date: "2021-08-17 19:10:25"
+    role_id: 101
+question:
+  - id: 100
+    description: ооп
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: Что такое полиморфизм?
+    user_id: 100
+  - id: 101
+    description: ооп
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: Что такое наследование?
+    user_id: 100
+  - id: 102
+    description: ооп
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: Что такое инкапсуляция?
+    user_id: 100
+  - id: 103
+    description: spring
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: Что такое бин?
+    user_id: 100
+  - id: 104
+    description: spring
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: За что отвечает аннотация @Autowired?
+    user_id: 100
+  - id: 105
+    description: hibernate
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: Что означает состояние detached?
+    user_id: 100
+question_has_tag:
+  - question_id: 100
+    tag_id: 102
+  - question_id: 101
+    tag_id: 102
+  - question_id: 102
+    tag_id: 102
+  - question_id: 103
+    tag_id: 101
+  - question_id: 104
+    tag_id: 101
+  - question_id: 105
+    tag_id: 100
+
+
