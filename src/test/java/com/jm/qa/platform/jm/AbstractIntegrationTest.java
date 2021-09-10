@@ -56,7 +56,7 @@ public abstract class AbstractIntegrationTest {
                         .andDo(print())
                         .andExpect(status().isOk())
                         .andReturn();
-        return JsonPath.read(mvcResult.getResponse().getContentAsString(), "token");
+        return "Bearer " + JsonPath.read(mvcResult.getResponse().getContentAsString(), "token");
     }
 
 }

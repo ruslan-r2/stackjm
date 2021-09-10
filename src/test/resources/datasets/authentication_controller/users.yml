@@ -12,7 +12,7 @@ user_entity:
     link_site: "adminsite.com"
     link_vk: "vk.com/admin"
     nickname: "admin"
-    password: "admin"
+    password: "$2a$10$L7vulI.EeptscIf2.IRL0OVsIwoQIxpHWNIHXn5WjR7LzAGBNMN26"
     persist_date: "2021-08-17 19:10:25"
     role_id: 100
   - id: 101
@@ -28,6 +28,6 @@ user_entity:
     link_site: "usersite.com"
     link_vk: "vk.com/user"
     nickname: "user"
-    password: "user"
+    password: "$2a$10$EO4tL7b5hFUbHFb46NmGheExGu2p1mJT0alqqggCa6Nl.RT4nOqh."
     persist_date: "2021-08-17 19:10:25"
     role_id: 101

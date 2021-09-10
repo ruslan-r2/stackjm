@@ -5,10 +5,7 @@ import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -16,37 +13,34 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class TestUserResourceController extends AbstractIntegrationTest {
+public class ResourceUserControllerTest extends AbstractIntegrationTest {
+    private String username;
+    private String password;
 
-    @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
-    private MockMvc mockMvc;
-
-
-    @WithMockUser("spring")
     @Test
-    @DataSet(value = {"userResourceController/users.yml",
-            "userResourceController/roles.yml",
-            "userResourceController/reputations.yml",
-            "userResourceController/answers.yml",
-            "userResourceController/questions.yml"},cleanAfter = true,cleanBefore = true)
+    @DataSet(value = {"resource_user_controller/users.yml",
+            "resource_user_controller/roles.yml",
+            "resource_user_controller/reputations.yml",
+            "resource_user_controller/answers.yml",
+            "resource_user_controller/questions.yml"}, cleanAfter = true, cleanBefore = true)
     public void should_return_status_not_found() throws Exception {
-        mockMvc.perform(get("/api/user/99"))
+        username = "user@mail.ru";
+        password = "user";
+        mockMvc.perform(get("/api/user/99").header("Authorization", getToken(username, password)))
                 .andExpect(status().isNotFound());
     }
 
 
-    @WithMockUser("spring")
     @Test
-    @DataSet(value = {"userResourceController/users.yml",
-            "userResourceController/roles.yml",
-            "userResourceController/reputations.yml",
-            "userResourceController/answers.yml",
-            "userResourceController/questions.yml"},cleanAfter = true,cleanBefore = true)
+    @DataSet(value = {"resource_user_controller/users.yml",
+            "resource_user_controller/roles.yml",
+            "resource_user_controller/reputations.yml",
+            "resource_user_controller/answers.yml",
+            "resource_user_controller/questions.yml"}, cleanAfter = true, cleanBefore = true)
     public void should_get_user_by_id() throws Exception {
-        mockMvc.perform(get("/api/user/100"))
+        username = "user@mail.ru";
+        password = "user";
+        mockMvc.perform(get("/api/user/100").header("Authorization", getToken(username, password)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(100)))
                 .andExpect(jsonPath("$.email", equalTo("admin@mail.ru")))
