@@ -25,7 +25,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "singel_chat")
+@Table(name = "single_chat")
 public class SingleChat{
 
     @Id
