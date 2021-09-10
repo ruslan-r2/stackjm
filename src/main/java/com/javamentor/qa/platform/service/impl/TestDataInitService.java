@@ -11,6 +11,7 @@ import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import com.javamentor.qa.platform.service.abstracts.model.RoleService;
 import com.javamentor.qa.platform.service.abstracts.model.TagService;
 import com.javamentor.qa.platform.service.abstracts.model.UserService;
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,14 +30,16 @@ public class TestDataInitService {
     private QuestionService questionService;
     private AnswerService answerService;
     private TagService tagService;
+    private final Flyway flyway;
 
     @Autowired
-    public TestDataInitService(UserService userService, RoleService roleService, QuestionService questionService, AnswerService answerService, TagService tagService) {
+    public TestDataInitService(UserService userService, RoleService roleService, QuestionService questionService, AnswerService answerService, TagService tagService, Flyway flyway) {
         this.userService = userService;
         this.roleService = roleService;
         this.questionService = questionService;
         this.answerService = answerService;
         this.tagService = tagService;
+        this.flyway = flyway;
     }
 
     public PasswordEncoder passwordEncoder() {
@@ -45,10 +48,15 @@ public class TestDataInitService {
 
     @Transactional
     public void createEntity() {
+        flyway.clean();
+        flyway.migrate();
+        System.out.println("START FLYWAY");
         createUsers();
         createTags();
         createQuestions();
         createAnswers();
+        System.out.println("FINISH FLYWAY");
+
     }
 
     private User admin;
