@@ -5,7 +5,6 @@ import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,5 +44,44 @@ public class ResourceUserControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.id", equalTo(100)))
                 .andExpect(jsonPath("$.email", equalTo("admin@mail.ru")))
                 .andExpect(jsonPath("$.reputation", equalTo(15)));
+    }
+
+    @Test
+    @DataSet(value = {"resource_user_controller/users.yml",
+            "resource_user_controller/roles.yml",
+            "resource_user_controller/reputations.yml",
+            "resource_user_controller/answers.yml",
+            "resource_user_controller/questions.yml"}, cleanAfter = true, cleanBefore = true)
+    public void get_page_1() throws Exception {
+        username = "user@mail.ru";
+        password = "user";
+        mockMvc.perform(get("/api/user?currentPage=1&itemsOnPage=2").header("Authorization", getToken(username, password)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentPageNumber", equalTo(1)))
+                .andExpect(jsonPath("$.totalPageCount", equalTo(2)))
+                .andExpect(jsonPath("$.totalResultCount", equalTo(3)))
+                .andExpect(jsonPath("$.itemsOnPage", equalTo(2)))
+                .andExpect(jsonPath("$.items.length()", equalTo(2)))
+                .andExpect(jsonPath("$.items[0].id", equalTo(100)))
+                .andExpect(jsonPath("$.items[1].id", equalTo(101)));
+    }
+
+    @Test
+    @DataSet(value = {"resource_user_controller/users.yml",
+            "resource_user_controller/roles.yml",
+            "resource_user_controller/reputations.yml",
+            "resource_user_controller/answers.yml",
+            "resource_user_controller/questions.yml"}, cleanAfter = true, cleanBefore = true)
+    public void get_page_2() throws Exception {
+        username = "user@mail.ru";
+        password = "user";
+        mockMvc.perform(get("/api/user?currentPage=2&itemsOnPage=2").header("Authorization", getToken(username, password)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentPageNumber", equalTo(2)))
+                .andExpect(jsonPath("$.totalPageCount", equalTo(2)))
+                .andExpect(jsonPath("$.totalResultCount", equalTo(3)))
+                .andExpect(jsonPath("$.itemsOnPage", equalTo(2)))
+                .andExpect(jsonPath("$.items.length()", equalTo(1)))
+                .andExpect(jsonPath("$.items[0].id", equalTo(102)));
     }
 }
