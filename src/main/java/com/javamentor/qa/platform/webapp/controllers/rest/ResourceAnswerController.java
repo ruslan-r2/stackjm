@@ -8,6 +8,7 @@ import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
+import com.javamentor.qa.platform.service.abstracts.model.UserService;
 import com.javamentor.qa.platform.webapp.converters.AnswerConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,6 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Tag(name = "Answers контроллер", description = "Api для работы с Answers")
@@ -32,13 +34,16 @@ public class ResourceAnswerController {
     private final QuestionService questionService;
     private final AnswerConverter answerConverter;
     private final AnswerService answerService;
+    private final UserService userService;
 
     @Autowired
-    public ResourceAnswerController(AnswerDtoService answerDtoService, QuestionService questionService, AnswerConverter answerConverter, AnswerService answerService) {
+    public ResourceAnswerController(AnswerDtoService answerDtoService, QuestionService questionService,
+                                    AnswerConverter answerConverter, AnswerService answerService, UserService userService) {
         this.answerDtoService = answerDtoService;
         this.questionService = questionService;
         this.answerConverter = answerConverter;
         this.answerService = answerService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -61,20 +66,32 @@ public class ResourceAnswerController {
     @ApiResponse(responseCode = "200", description = "Успешное выполнение")
     @ApiResponse(responseCode = "400", description = "Вопрос не найден")
     @PostMapping
-    public ResponseEntity<AnswerDto> addAnswerToQuestion( @RequestBody AnswerDto answerDto,
+    public ResponseEntity<AnswerDto> addAnswerToQuestion(@AuthenticationPrincipal User user, @RequestBody AnswerDto answerDto,
                                                          @PathVariable @Parameter(description = "Идентификатор вопроса")
                                                                  Long questionId) {
         Answer answer = answerConverter.answerDtoToAnswer(answerDto);
-        Question question = questionService.getById(questionId).orElse(null);
-
-        if (question == null) {
+        Optional<Question> question = questionService.getById(questionId);
+        if (!question.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            Question question1 = question.get();
+            Answer answerOnQuestion = answerService.addAnswer(answer,user, question1, questionId);
+
+            return new ResponseEntity<>(answerConverter.answerToAnswerDto(answerOnQuestion), HttpStatus.OK);
         }
-
-//        answer.setUser(user);
-        answer.setQuestion(question);
-        answerService.persist(answer);
-
-        return new ResponseEntity<>(answerConverter.answerToAnswerDto(answer), HttpStatus.OK);
     }
 }
+
+//        Question question = questionService.getById(questionId).orElse(null);
+//
+//        if (question == null) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//
+//        Answer answer = answerConverter.answerDtoToAnswer(answerDto);
+//        answer.setUser(user);
+//        answer.setQuestion(question);
+//        answerService.persist(answer);
+////        questionService.update(question);
+//
+//        return new ResponseEntity<>(answerConverter.answerToAnswerDto(answer), HttpStatus.OK);

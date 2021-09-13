@@ -85,11 +85,13 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
             "resourceAnswerController/roles.yml",
             "resourceAnswerController/users.yml"}, cleanAfter = true, cleanBefore = true)
     public void addAnswerToQuestionTest_getQuestionId() throws Exception {
-        AnswerDto answerdto = new AnswerDto();
-        answerdto.setId(100L);
+//        AnswerDto answerdto = new AnswerDto();
+//        answerdto.setId(100L);
+        String username = "user@mail.ru";
+        String password = "user";
 
-        String jsonAnswerDto = objectMapper.writeValueAsString(answerdto);
-        mockMvc.perform(post(URL, 100).contentType(MediaType.APPLICATION_JSON).content(jsonAnswerDto))
+//        String jsonAnswerDto = objectMapper.writeValueAsString(answerdto);
+        this.mockMvc.perform(post(URL, 100).header("Authorization", getToken(username, password)))
                 .andDo(print())
                 .andExpect(status().isOk());
 //                .andExpect(jsonPath("$[0].id", equalTo(100)));

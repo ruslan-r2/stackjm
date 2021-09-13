@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 @Schema(description = "преобразование Answer в AnswerDto и обратно")
-@Component
 public abstract class AnswerConverter {
 
     public abstract Answer answerDtoToAnswer(AnswerDto answerDto);
