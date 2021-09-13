@@ -24,5 +24,5 @@ public class UserDto {
     @Schema(description = "город пользователя")
     private String city;
     @Schema(description = "репутация пользователя")
-    private int reputation;
+    private Long reputation;
 }
