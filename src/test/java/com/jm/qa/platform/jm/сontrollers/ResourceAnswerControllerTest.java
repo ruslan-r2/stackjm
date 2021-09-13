@@ -3,67 +3,98 @@ package com.jm.qa.platform.jm.сontrollers;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.transaction.UserTransaction;
+import javax.persistence.PersistenceContext;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class ResourceAnswerControllerTest extends AbstractIntegrationTest {
+public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private EntityManager entityManager;
+    @PersistenceContext
+    EntityManager entityManager;
 
-    private String deleteAnswerUrl = "/api/user/question/{questionId}/answer/{answerId}";
-    private String authenticationUrl = "/api/auth/token";
+    private String URL = "/api/user/question/{questionId}/answer";
+    private String username;
+    private String password;
 
     @Test
-    @WithMockUser(username = "admin@mail.ru",
-                  password = "admin",
-                  roles = "ADMIN")
-    @DataSet(value = {"ResourceAnswerController/roles.yml",
-                      "ResourceAnswerController/users.yml",
-                      "ResourceAnswerController/tag.yml",
-                      "ResourceAnswerController/question.yml",
-                      "ResourceAnswerController/answer.yml"},
-            cleanBefore = true)
-    void deleteAnswerById() throws Exception {
+    @DataSet(value = "resource_answer_controller/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
+    public void getAllAnswers() throws Exception {
+        int idWithAnswers = 100;
+        int idWithoutAnswers = 101;
+        int idIncorrect = -100;
+        username = "user@mail.ru";
+        password = "user";
 
-//        Проверяется состояние флага IsDeleted у ответа с id 100, до его пометки на удаление
-        Answer answerBeforeDelete = (Answer) entityManager.createQuery("from Answer answer where answer.id = 100").getSingleResult();
+        //Существующий ID вопроса с ответами,ожидание массива из 2-х ответов
+        mockMvc.perform(get(URL, idWithAnswers).header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(2))) // величина ожидаемого массива
+                //1 ответ
+                .andExpect(jsonPath("$[0].id", is(100)))
+                .andExpect(jsonPath("$[0].userId", is(101)))
+                .andExpect(jsonPath("$[0].questionId", is(100)))
+                .andExpect(jsonPath("$[0].nickname", is("user")))
+                .andExpect(jsonPath("$[0].body", is("text")))
+                .andExpect(jsonPath("$[0].countValuable", is(2)))
+                .andExpect(jsonPath("$[0].countUserReputation", is(2)))
+                .andExpect(jsonPath("$[0].questionId", is(100)))
+                // 2 ответ
+                .andExpect(jsonPath("$[1].id", is(101)))
+                .andExpect(jsonPath("$[1].userId", is(102)))
+                .andExpect(jsonPath("$[1].questionId", is(100)))
+                .andExpect(jsonPath("$[1].nickname", is("user2")))
+                .andExpect(jsonPath("$[1].body", is("text2")))
+                .andExpect(jsonPath("$[1].countValuable", is(-1)))
+                .andExpect(jsonPath("$[1].countUserReputation", is(0)))
+                .andExpect(jsonPath("$[1].questionId", is(100)));
+        // Существующий ID вопроса без ответов, ожидание пустого массива
+        this.mockMvc.perform(get(URL, idWithoutAnswers).header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("[]"));
+        //Не существующий ID вопроса
+        this.mockMvc.perform(get(URL, idIncorrect).header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    private String deleteAnswerByIdApiUrl = "/api/user/question/{questionId}/answer/{answerId}";
+
+    @Test
+    @DataSet(value = {"ResourceAnswerController/answer.yml",
+                      "ResourceAnswerController/users.yml"})
+    public void deleteAnswerById() throws Exception {
+
+        username = "admin@mail.ru";
+        password = "admin";
+
+        Answer answerBeforeDelete = (Answer) entityManager.createQuery("select a from Answer a where a.id = 100").getSingleResult();
         assertFalse(answerBeforeDelete.getIsDeleted());
 
-//        Выполняется запрос с пометкой на удаление ответа с id 100(корректный id)
-        mockMvc.perform(delete(deleteAnswerUrl, 100, 100)).
+        mockMvc.perform(post(deleteAnswerByIdApiUrl, 100, 100).
+                header("Authorization", getToken(username, password))).
                 andDo(print()).
-                andExpect(authenticated()).
                 andExpect(status().isOk());
 
-//        Проверяется состояние флага IsDeleted у ответа с id 100, после его пометки на удаление
-        Answer answerAfterDelete = (Answer) entityManager.createQuery("from Answer answer where answer.id = 100").getSingleResult();
+        Answer answerAfterDelete = (Answer) entityManager.createQuery("select a from Answer a where a.id = 100").getSingleResult();
         assertTrue(answerAfterDelete.getIsDeleted());
 
-//        Выполняется запрос с пометкой на удаление ответа с id -100(некорректный шв)
-        mockMvc.perform(delete(deleteAnswerUrl, 100, -100)).
+        mockMvc.perform(post(deleteAnswerByIdApiUrl, 100, -100).
+                header("Authorization", getToken(username, password))).
                 andDo(print()).
-                andExpect(authenticated()).
                 andExpect(status().isBadRequest());
     }
 }
+
+
