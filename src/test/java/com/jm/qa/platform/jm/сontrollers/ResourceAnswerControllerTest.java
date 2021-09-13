@@ -17,20 +17,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     private String URL = "/api/user/question/{questionId}/answer";
+    private String username;
+    private String password;
 
     @Test
-    @DataSet(value = "userResourceController/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
+    @DataSet(value = "resource_answer_controller/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
     public void getAllAnswers() throws Exception {
         int idWithAnswers = 100;
         int idWithoutAnswers = 101;
         int idIncorrect = -100;
-        String username = "user@mail.ru";
-        String password = "user";
+        username = "user@mail.ru";
+        password = "user";
 
         //Существующий ID вопроса с ответами,ожидание массива из 2-х ответов
-        mockMvc.perform(get(URL, idWithAnswers)
-                .header("Authorization", getToken(username, password))
-        )
+        mockMvc.perform(get(URL, idWithAnswers).header("Authorization", getToken(username, password)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2))) // величина ожидаемого массива

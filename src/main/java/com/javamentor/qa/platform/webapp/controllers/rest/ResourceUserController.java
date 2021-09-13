@@ -18,11 +18,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/user")
-public class UserResourceController {
+public class ResourceUserController {
 
     private UserDtoService userDtoService;
 
-    public UserResourceController(UserDtoService userDtoService) {
+    public ResourceUserController(UserDtoService userDtoService) {
         this.userDtoService = userDtoService;
     }
 
