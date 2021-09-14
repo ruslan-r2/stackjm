@@ -73,7 +73,10 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     @Test
     @DataSet(value = {"ResourceAnswerController/answer.yml",
-                      "ResourceAnswerController/users.yml"})
+                      "ResourceAnswerController/users.yml",
+                      "ResourceAnswerController/question.yml",
+                      "ResourceAnswerController/roles.yml",
+                      "ResourceAnswerController/tag.yml"})
     public void deleteAnswerById() throws Exception {
 
         username = "admin@mail.ru";
