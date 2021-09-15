@@ -29,7 +29,8 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                       "ResourceAnswerController/users.yml",
                       "ResourceAnswerController/question.yml",
                       "ResourceAnswerController/roles.yml",
-                      "ResourceAnswerController/tag.yml"})
+                      "ResourceAnswerController/tag.yml"},
+                      cleanBefore = true, cleanAfter = true)
     public void deleteAnswerById() throws Exception {
 
         username = "admin@mail.ru";

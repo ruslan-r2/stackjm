@@ -6,6 +6,7 @@ import com.javamentor.qa.platform.models.entity.question.Question;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper
 @Schema(description = "Converter Question <-> QuestionCreateDto")
@@ -15,6 +16,7 @@ public abstract class QuestionConverter {
 
     public abstract QuestionCreateDto questionToQuestionCreateDto(Question question);
 
+    @Mapping(target = "user.fullName", source = "authorName")
     public abstract Question questionDtoToQuestion(QuestionDto questionDto);
 
     @InheritInverseConfiguration
