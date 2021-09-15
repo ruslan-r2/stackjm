@@ -33,8 +33,8 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                       cleanBefore = true, cleanAfter = true)
     public void deleteAnswerById() throws Exception {
 
-        username = "admin@mail.ru";
-        password = "admin";
+        username = "user@mail.ru";
+        password = "user";
 
         Answer answerBeforeDelete = (Answer) entityManager.createQuery("select a from Answer a where a.id = 100").getSingleResult();
         assertFalse(answerBeforeDelete.getIsDeleted());
