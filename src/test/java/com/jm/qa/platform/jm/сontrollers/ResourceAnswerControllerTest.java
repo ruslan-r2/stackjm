@@ -10,7 +10,7 @@ import javax.persistence.PersistenceContext;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,7 +39,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         Answer answerBeforeDelete = (Answer) entityManager.createQuery("select a from Answer a where a.id = 100").getSingleResult();
         assertFalse(answerBeforeDelete.getIsDeleted());
 
-        mockMvc.perform(post(deleteAnswerByIdApiUrl, 100, 100).
+        mockMvc.perform(delete(deleteAnswerByIdApiUrl, 100, 100).
                 header("Authorization", getToken(username, password))).
                 andDo(print()).
                 andExpect(status().isOk());
@@ -47,7 +47,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         Answer answerAfterDelete = (Answer) entityManager.createQuery("select a from Answer a where a.id = 100").getSingleResult();
         assertTrue(answerAfterDelete.getIsDeleted());
 
-        mockMvc.perform(post(deleteAnswerByIdApiUrl, 100, -100).
+        mockMvc.perform(delete(deleteAnswerByIdApiUrl, 100, -100).
                 header("Authorization", getToken(username, password))).
                 andDo(print()).
                 andExpect(status().isBadRequest());
