@@ -2,9 +2,11 @@ package com.jm.qa.platform.jm.сontrollers;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
+import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -12,13 +14,18 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     private String URL = "/api/user/question/{questionId}/answer";
     private String username;
     private String password;
+
+    @Autowired
+    private AnswerService answerService;
 
     @Test
     @DataSet(value = "resource_answer_controller/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
@@ -65,36 +72,30 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     @Test
     @DisplayName("Return 404 question id not found")
-    @DataSet(value = {"resourceAnswerController/answers.yml",
-            "resourceAnswerController/questions.yml",
-            "resourceAnswerController/reputations.yml",
-            "resourceAnswerController/roles.yml",
-            "resourceAnswerController/users.yml"}, cleanAfter = true, cleanBefore = true)
+    @DataSet(value = "resource_answer_controller/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
     public void addAnswerToQuestionTest_isNotFoundQuestionId() throws Exception {
         String jsonAnswerDto = objectMapper.writeValueAsString(new AnswerDto());
-        mockMvc.perform(post(URL, 99).contentType(MediaType.APPLICATION_JSON).content(jsonAnswerDto))
+        this.mockMvc.perform(post(URL, 99).header("Authorization", getToken("user@mail.ru", "user"))
+                .contentType(MediaType.APPLICATION_JSON).content(jsonAnswerDto))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("Return 200 question id exists")
-    @DataSet(value = {"resourceAnswerController/answers.yml",
-            "resourceAnswerController/questions.yml",
-            "resourceAnswerController/reputations.yml",
-            "resourceAnswerController/roles.yml",
-            "resourceAnswerController/users.yml"}, cleanAfter = true, cleanBefore = true)
+    @DataSet(value = "resource_answer_controller/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
     public void addAnswerToQuestionTest_getQuestionId() throws Exception {
-//        AnswerDto answerdto = new AnswerDto();
-//        answerdto.setId(100L);
-        String username = "user@mail.ru";
-        String password = "user";
-
-//        String jsonAnswerDto = objectMapper.writeValueAsString(answerdto);
-        this.mockMvc.perform(post(URL, 100).header("Authorization", getToken(username, password)))
+        AnswerDto answerDtoTest = new AnswerDto();
+        answerDtoTest.setId(101L);
+        String json = objectMapper.writeValueAsString(answerDtoTest);
+        mockMvc.perform(post(URL, 101).header("Authorization", getToken("user@mail.ru", "user"))
+                .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andDo(print())
-                .andExpect(status().isOk());
-//                .andExpect(jsonPath("$[0].id", equalTo(100)));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(101)))
+                .andExpect(content().string("{\"id\":101,\"userId\":null,\"questionId\":null,\"body\":null," +
+                        "\"persistDate\":null,\"isHelpful\":true,\"dateAccept\":null,\"countValuable\":null," +
+                        "\"countUserReputation\":null,\"image\":null,\"nickname\":null}"));
     }
 }
 

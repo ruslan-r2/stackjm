@@ -70,12 +70,12 @@ public class ResourceAnswerController {
                                                          @PathVariable @Parameter(description = "Идентификатор вопроса")
                                                                  Long questionId) {
         Answer answer = answerConverter.answerDtoToAnswer(answerDto);
-        Optional<Question> question = questionService.getById(questionId);
-        if (!question.isPresent()) {
+        Optional<Question> optionalQuestion = questionService.getById(questionId);
+        if (!optionalQuestion.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            Question question1 = question.get();
-            Answer answerOnQuestion = answerService.addAnswer(answer,user, question1, questionId);
+            Question question = optionalQuestion.get();
+            Answer answerOnQuestion = answerService.addAnswer(answer, user, question, questionId);
 
             return new ResponseEntity<>(answerConverter.answerToAnswerDto(answerOnQuestion), HttpStatus.OK);
         }
