@@ -14,11 +14,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Schema(description = "ответ")
 public class AnswerDto {
-    @Schema(description = "id ответа на вопрос")
+
+    @Parameter(description = "id вопроса")
     private Long id;
     @Schema(description = "id пользователя")
     private Long userId;
-    @Parameter(description = "id вопроса")
+    @Schema(description = "id ответа на вопрос")
     private Long questionId;
     @Schema(description = "текст ответа")
     private String body;
