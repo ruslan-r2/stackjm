@@ -14,6 +14,7 @@ public abstract class QuestionConverter {
 
     public abstract Question questionCreateDtoToQuestion(QuestionCreateDto questionCreateDto);
 
+    @InheritInverseConfiguration
     public abstract QuestionCreateDto questionToQuestionCreateDto(Question question);
 
     @Mapping(target = "user.fullName", source = "authorName")
