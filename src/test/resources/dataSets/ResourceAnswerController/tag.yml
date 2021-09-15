@@ -1,0 +1,5 @@
+tag:
+  - id: 100
+    description: tag_description
+    name: tag_name
+    persist_date: 1990-10-10 00:00:00
