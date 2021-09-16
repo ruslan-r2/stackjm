@@ -25,11 +25,9 @@ import java.util.Optional;
 public class ResourceQuestionController {
 
     private final QuestionDtoService questionDtoService;
-    private final QuestionService questionService;
 
-    public ResourceQuestionController(QuestionDtoService questionDtoService, QuestionService questionService) {
+    public ResourceQuestionController(QuestionDtoService questionDtoService) {
         this.questionDtoService = questionDtoService;
-        this.questionService = questionService;
     }
 
     @GetMapping("/{id}")
@@ -39,10 +37,7 @@ public class ResourceQuestionController {
                     schema = @Schema(implementation = QuestionDto.class)))
     @ApiResponse(responseCode = "400", description = "Вопроса по ID не существует")
     public ResponseEntity<QuestionDto> getById(@Parameter(description = "id вопроса ") @PathVariable(value = "id") Long id) {
-//        Optional<QuestionDto> questionDto = questionDtoService.getById(id);
-        if (questionService.getById(id).isPresent()) {
-            return new ResponseEntity<>(questionDtoService.getById(id).get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Optional<QuestionDto> questionDto = questionDtoService.getById(id);
+        return questionDto.map(dto -> new ResponseEntity<>(dto, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 }
