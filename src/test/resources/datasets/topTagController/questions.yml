@@ -1,0 +1,43 @@
+question:
+  - id: 100
+    description: ооп
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: Что такое полиморфизм?
+    user_id: 100
+  - id: 101
+    description: ооп
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: Что такое наследование?
+    user_id: 100
+  - id: 102
+    description: ооп
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: Что такое инкапсуляция?
+    user_id: 100
+  - id: 103
+    description: spring
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: Что такое бин?
+    user_id: 100
+  - id: 104
+    description: spring
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: За что отвечает аннотация @Autowired?
+    user_id: 100
+  - id: 105
+    description: hibernate
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: Что означает состояние detached?
+    user_id: 100

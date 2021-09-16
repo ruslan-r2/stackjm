@@ -1,0 +1,13 @@
+tag:
+  - id: 100
+    description: "фреймворк"
+    name: "Hibernate"
+    persist_date: 1990-10-10 00:00:00
+  - id: 101
+    description: "фреймворк"
+    name: "Spring"
+    persist_date: 1990-10-10 00:00:00
+  - id: 102
+    description: "раздел java"
+    name: "ООП"
+    persist_date: 1990-10-10 00:00:00
