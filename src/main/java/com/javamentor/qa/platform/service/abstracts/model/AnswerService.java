@@ -7,6 +7,4 @@ import com.javamentor.qa.platform.models.entity.user.User;
 
 public interface AnswerService extends ReadWriteService<Answer, Long> {
 
-    Answer addAnswer(Answer answer, User user, Question question, Long id);
-
 }
