@@ -34,6 +34,7 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.authorImage", is("user.image.com" )))
                 .andExpect(jsonPath("$.description", is("description1" )))
                 .andExpect(jsonPath("$.viewCount", is(2)))
+                .andExpect(jsonPath("$.authorReputation", is(1)))
                 .andExpect(jsonPath("$.countAnswer", is(1)))
                 .andExpect(jsonPath("$.countValuable", is(2)))
                 .andExpect(jsonPath("$.persistDateTime", is("1990-10-10T00:00:00" )))

@@ -25,6 +25,8 @@ public class QuestionDto {
     private String authorName;
     @Schema(description = "картинка автора")
     private String authorImage;
+    @Schema(description = "репутация автора")
+    private Long authorReputation;
     @Schema(description = "вопрос")
     private String description;
     @Schema(description = "количество просмотров")

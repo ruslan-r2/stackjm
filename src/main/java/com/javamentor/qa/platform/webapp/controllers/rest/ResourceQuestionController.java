@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("api/user/question")
@@ -37,6 +39,7 @@ public class ResourceQuestionController {
                     schema = @Schema(implementation = QuestionDto.class)))
     @ApiResponse(responseCode = "400", description = "Вопроса по ID не существует")
     public ResponseEntity<QuestionDto> getById(@Parameter(description = "id вопроса ") @PathVariable(value = "id") Long id) {
+//        Optional<QuestionDto> questionDto = questionDtoService.getById(id);
         if (questionService.getById(id).isPresent()) {
             return new ResponseEntity<>(questionDtoService.getById(id).get(), HttpStatus.OK);
         }

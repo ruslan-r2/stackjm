@@ -1,7 +1,6 @@
 package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.QuestionDtoDao;
-import com.javamentor.qa.platform.dao.abstracts.dto.TagDtoDao;
 import com.javamentor.qa.platform.models.dto.QuestionDto;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
@@ -17,11 +16,6 @@ import java.util.Optional;
 public class QuestionDtoDaoImpl implements QuestionDtoDao{
     @PersistenceContext
     private EntityManager entityManager;
-    private final TagDtoDao tagDtoDao;
-
-    public QuestionDtoDaoImpl(TagDtoDao tagDtoDao) {
-        this.tagDtoDao = tagDtoDao;
-    }
 
     @Override
     public Optional<QuestionDto> getById(Long id) {
@@ -36,14 +30,13 @@ public class QuestionDtoDaoImpl implements QuestionDtoDao{
                     "q.lastUpdateDateTime as lastUpdateDateTime, " +
                     "(select COALESCE(count(*), 0)  from QuestionViewed  where question.id = q.id) as viewCount," +
                     "(select COALESCE(count(*), 0)  from Answer a where question.id = q.id)   as countAnswer, " +
-                    "(select COALESCE(SUM(vote), 0)  from VoteQuestion  where question.id = q.id) as countValuable " +
+                    "(select COALESCE(SUM(vote), 0)  from VoteQuestion  where question.id = q.id) as countValuable, " +
+                    "(select COALESCE(SUM(r.count), 0)  from Reputation r  where author.id = q.user.id) as authorReputation " +
                     "from Question q " +
                     "where q.id = :id and q.isDeleted = false " +
                     "group by q.id, q.title, q.user.id, q.user.fullName, q.user.imageLink, q.description, q.persistDateTime, q.lastUpdateDateTime")
                     .setParameter("id", id)
                     .setResultTransformer(new AliasToBeanResultTransformer(QuestionDto.class)).unwrap(TypedQuery.class);
-            Optional<QuestionDto> optionalQuestionDto = Optional.of((QuestionDto) query.getSingleResult());
-            optionalQuestionDto.get().setListTagDto(tagDtoDao.getByQuestionId(id));
-            return optionalQuestionDto;
+            return Optional.of((QuestionDto) query.getSingleResult());
     }
 }
