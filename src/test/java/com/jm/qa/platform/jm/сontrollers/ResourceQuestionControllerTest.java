@@ -5,7 +5,6 @@ import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -24,7 +23,7 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
         username = "user@mail.ru";
         password = "user";
 
-//Существующий ID вопроса
+        //Существующий ID вопроса
         mockMvc.perform(get(URL, correctId).header("Authorization", getToken(username, password)))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -41,7 +40,7 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.lastUpdateDateTime", is("1990-10-10T00:00:00")))
         ;
 
-//Не существующий ID вопроса
+        //Не существующий ID вопроса
         this.mockMvc.perform(get(URL, incorrectId).header("Authorization", getToken(username, password)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());

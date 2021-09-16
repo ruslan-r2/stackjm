@@ -1,5 +1,6 @@
 package com.javamentor.qa.platform.models.dto;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Schema(description = "вопрос")
 public class QuestionDto {
-    @Schema(description = "id вопроса")
+    @Parameter(description = "id вопроса")
     private Long id;
     @Schema(description = "Заголовок вопроса")
     private String title;
