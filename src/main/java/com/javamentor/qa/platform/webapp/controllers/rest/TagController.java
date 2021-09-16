@@ -28,13 +28,13 @@ import java.util.List;
 
 @RestController
 @io.swagger.v3.oas.annotations.tags.Tag(name = "Контроллер топ-10 тегов", description = "Api для вывода топ-10 тегов")
-@RequestMapping
-public class TopTagsController {
+@RequestMapping("/api/user/tag/related")
+public class TagController {
 
     @Autowired
     private TagDtoDao tagDtoDao;
 
-    public TopTagsController(TagDtoDao tagDtoDao) {
+    public TagController(TagDtoDao tagDtoDao) {
         this.tagDtoDao = tagDtoDao;
     }
 
