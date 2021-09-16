@@ -19,7 +19,7 @@ public class TagDtoDaoImpl implements TagDtoDao {
 
     @SuppressWarnings("unchecked")
     public List<RelatedTagDto> getTopTags() {
-        List<RelatedTagDto> list =  (List<RelatedTagDto>) entityManager.createQuery(
+        return (List<RelatedTagDto>) entityManager.createQuery(
                 "SELECT tag.id AS id, " +
                         "tag.name AS title, " +
                         "CAST (tag.questions.size AS long) AS countQuestion " +
@@ -27,7 +27,6 @@ public class TagDtoDaoImpl implements TagDtoDao {
                 .setResultTransformer(Transformers.aliasToBean(RelatedTagDto.class))
                 .setMaxResults(10)
                 .getResultList();
-        return list.isEmpty() ? Collections.emptyList() : list;
     }
 
 }

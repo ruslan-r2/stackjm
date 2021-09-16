@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class TopTagControllerTest extends AbstractIntegrationTest {
+public class TagControllerTest extends AbstractIntegrationTest {
 
     private String URL = "/api/user/tag/related";
 
