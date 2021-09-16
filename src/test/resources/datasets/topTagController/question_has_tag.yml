@@ -1,0 +1,13 @@
+question_has_tag:
+  - question_id: 100
+    tag_id: 100
+  - question_id: 100
+    tag_id: 101
+  - question_id: 100
+    tag_id: 102
+  - question_id: 101
+    tag_id: 103
+  - question_id: 101
+    tag_id: 104
+  - question_id: 102
+    tag_id: 105
