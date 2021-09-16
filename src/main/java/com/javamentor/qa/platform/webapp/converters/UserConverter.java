@@ -6,9 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.stereotype.Component;
 
-@Component
 @Mapper(componentModel = "spring")
 @Schema(description = "преобразование User в UserRegistrationDto и обратно")
 public abstract class UserConverter {
