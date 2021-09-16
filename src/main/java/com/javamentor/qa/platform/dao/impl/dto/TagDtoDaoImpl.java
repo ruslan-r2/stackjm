@@ -2,6 +2,7 @@ package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.TagDtoDao;
 import com.javamentor.qa.platform.models.dto.RelatedTagDto;
+import com.javamentor.qa.platform.models.dto.TagDto;
 import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
@@ -28,6 +29,17 @@ public class TagDtoDaoImpl implements TagDtoDao {
                 .setMaxResults(10)
                 .getResultList();
         return list.isEmpty() ? Collections.emptyList() : list;
+    }
+//    String hql = "INSERT INTO Employee(firstName, lastName, salary)"  +
+//            "SELECT firstName, lastName, salary FROM old_employee";
+    @Override
+    public TagDto addTagToIgnoreTag(Long id, String userMail) {
+        TagDto tagDto = entityManager.createQuery(
+                "INSERT INTO IgnoredTag(Long id, Tag ignoredTag, User user)" +
+                        "SELECT " + id + ", Tag ignoredTag, User user" +
+                        "WHERE "
+        )
+        return null;
     }
 
 }
