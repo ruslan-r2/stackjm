@@ -1,5 +1,5 @@
 user_entity:
-  - id: 100
+  - id: 1
     about: "i'm admin"
     city: "Moscow"
     email: "admin@mail.ru"
@@ -12,10 +12,10 @@ user_entity:
     link_site: "adminsite.com"
     link_vk: "vk.com/admin"
     nickname: "admin"
-    password: "$2a$10$L7vulI.EeptscIf2.IRL0OVsIwoQIxpHWNIHXn5WjR7LzAGBNMN26"
+    password: "admin"
     persist_date: "2021-08-17 19:10:25"
-    role_id: 100
-  - id: 101
+    role_id: 1
+  - id: 2
     about: "i'm user"
     city: "Moscow"
     email: "user@mail.ru"
@@ -28,6 +28,6 @@ user_entity:
     link_site: "usersite.com"
     link_vk: "vk.com/user"
     nickname: "user"
-    password: "$2a$10$EO4tL7b5hFUbHFb46NmGheExGu2p1mJT0alqqggCa6Nl.RT4nOqh."
+    password: "user"
     persist_date: "2021-08-17 19:10:25"
-    role_id: 101
+    role_id: 2

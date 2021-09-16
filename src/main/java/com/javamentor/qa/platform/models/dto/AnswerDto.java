@@ -1,4 +1,4 @@
-package com.javamentor.qa.platform.models.dto.question.answer;
+package com.javamentor.qa.platform.models.dto;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,12 +14,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Schema(description = "ответ")
 public class AnswerDto {
-
-    @Parameter(description = "id вопроса")
+    @Schema(description = "id ответа на вопрос")
     private Long id;
     @Schema(description = "id пользователя")
     private Long userId;
-    @Schema(description = "id ответа на вопрос")
+    @Parameter(description = "id вопроса")
     private Long questionId;
     @Schema(description = "текст ответа")
     private String body;
