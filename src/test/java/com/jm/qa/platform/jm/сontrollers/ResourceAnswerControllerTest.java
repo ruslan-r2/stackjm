@@ -2,7 +2,6 @@ package com.jm.qa.platform.jm.сontrollers;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
-import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
@@ -12,13 +11,10 @@ import org.springframework.http.MediaType;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.IsEqual.equalTo;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
@@ -87,21 +83,20 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     @DisplayName("Return 200 question id exists")
     @DataSet(value = "resource_answer_controller/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
     public void addAnswerToQuestionTest_getQuestionId() throws Exception {
-//        AnswerDto answerDto = new AnswerDto();
-//        answerDto.getBody();
-//        String json = objectMapper.writeValueAsString(answerDto);
-        mockMvc.perform(post(URL, 101).header("Authorization", getToken("user@mail.ru", "user"))
-                .contentType(MediaType.APPLICATION_JSON))
+        AnswerDto answerDto = new AnswerDto();
+        answerDto.setId(null);
+        answerDto.setUserId(101L);
+        answerDto.setQuestionId(100L);
+        answerDto.setCountUserReputation(1L);
+        String json = objectMapper.writeValueAsString(answerDto);
+        mockMvc.perform(post(URL, 100).header("Authorization", getToken("user@mail.ru", "user"))
+                .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(101)))
+                .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.userId", is(101)))
-                .andExpect(jsonPath("$.questionId", is(101)))
-                .andExpect(jsonPath("$.reputation", is(1)))
-                .andExpect(content().string("{\"id\":101,\"userId\":101,\"questionId\":101," +
-                        "\"body\":\"com.javamentor.qa.platform.service.impl.model.AnswerServiceImpl@44fd7ba4\"," +
-                        "\"persistDate\":null,\"isHelpful\":false,\"dateAccept\":null," +
-                        "\"countValuable\":null,\"countUserReputation\":null,\"image\":null,\"nickname\":null}"));
+                .andExpect(jsonPath("$.questionId", is(100)))
+                .andExpect(jsonPath("$.countUserReputation", is(1)));
     }
 }
 
