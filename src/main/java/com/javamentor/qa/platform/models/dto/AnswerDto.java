@@ -28,7 +28,6 @@ public class AnswerDto {
     private LocalDateTime persistDate;
     @Schema(description = "польза ответа")
     private Boolean isHelpful;
-    private Boolean isDeleted;
     @Schema(description = "дата решения вопроса")
     private LocalDateTime dateAccept;
     @Schema(description = "рейтинг ответа")
