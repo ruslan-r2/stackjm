@@ -57,9 +57,11 @@ public class ResourceAnswerController {
     @ApiResponse(responseCode = "400", description = "Ответ не найден")
     @PostMapping("/{answerId}/comment")
     public ResponseEntity<CommentAnswerDto> addCommentToAnswer(String comment, Long answerId) {
-        if (answerService.getById(answerId).isPresent()) {
-
+        if (!answerService.getById(answerId).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
