@@ -44,6 +44,6 @@ user_entity:
     link_site: "usersite.com"
     link_vk: "vk.com/user"
     nickname: "user"
-    password: "$2a$10$EO4tL7b5hFUbHFb46NmGheExGu2p1mJT0alqqggCa6Nl.RT4nOqh."
+    password: "$2y$10$KiX9W5rKG55aezl9oW1cLuTSzOhZP73hmifzGbLcI1Kzg7X1lYwsG"
     persist_date: "2021-08-17 19:10:25"
     role_id: 101

@@ -52,7 +52,7 @@ public class ResourceUserControllerTest extends AbstractIntegrationTest {
             "resource_user_controller/reputations.yml",
             "resource_user_controller/answers.yml",
             "resource_user_controller/questions.yml"}, cleanAfter = true, cleanBefore = true)
-    public void get_page_1() throws Exception {
+    public void should_return_users_with_id_one_hundred_and_one_hundred_one() throws Exception {
         username = "user@mail.ru";
         password = "user";
         mockMvc.perform(get("/api/user?currentPage=1&itemsOnPage=2").header("Authorization", getToken(username, password)))
@@ -72,7 +72,7 @@ public class ResourceUserControllerTest extends AbstractIntegrationTest {
             "resource_user_controller/reputations.yml",
             "resource_user_controller/answers.yml",
             "resource_user_controller/questions.yml"}, cleanAfter = true, cleanBefore = true)
-    public void get_page_2() throws Exception {
+    public void should_return_user_with_id_one_hundred_two() throws Exception {
         username = "user@mail.ru";
         password = "user";
         mockMvc.perform(get("/api/user?currentPage=2&itemsOnPage=2").header("Authorization", getToken(username, password)))
