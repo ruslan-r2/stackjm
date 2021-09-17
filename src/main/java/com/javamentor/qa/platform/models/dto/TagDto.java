@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
@@ -18,9 +19,9 @@ public class TagDto {
     private Long id;
 
     @Schema(description = "тег")
-    private Tag ignoredTag;
+    private String name;
 
-    @Schema(description = "юзер")
-    private User user;
+    @Schema(description = "описание тега")
+    private String description;
 
 }

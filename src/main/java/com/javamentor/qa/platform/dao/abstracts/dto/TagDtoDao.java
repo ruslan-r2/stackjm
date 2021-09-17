@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface TagDtoDao {
     List<RelatedTagDto> getTopTags();
-    TagDto addTagToIgnoreTag(Long id, String userMail);
 }

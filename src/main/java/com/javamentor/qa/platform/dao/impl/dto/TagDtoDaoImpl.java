@@ -29,16 +29,5 @@ public class TagDtoDaoImpl implements TagDtoDao {
                 .setMaxResults(10)
                 .getResultList();
     }
-//    String hql = "INSERT INTO Employee(firstName, lastName, salary)"  +
-//            "SELECT firstName, lastName, salary FROM old_employee";
-    @Override
-    public TagDto addTagToIgnoreTag(Long id, String userMail) {
-        TagDto tagDto = entityManager.createQuery(
-                "INSERT INTO IgnoredTag(Long id, Tag ignoredTag, User user)" +
-                        "SELECT " + id + ", Tag ignoredTag, User user" +
-                        "WHERE "
-        )
-        return null;
-    }
 
 }
