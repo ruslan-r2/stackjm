@@ -1,0 +1,7 @@
+comment:
+  - id: 100
+    user_id: 100
+    text: "Text"
+    persist_date: 1990-10-10 00:00:00
+    last_redaction_date: 1990-10-10 00:00:00
+    conmment_type: 1
