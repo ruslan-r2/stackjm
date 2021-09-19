@@ -27,30 +27,5 @@ public abstract class TagConverter {
     public abstract RelatedTagDto tagToRelatedTagDto(Tag tag);
 
     public abstract TagDto TagToTagDto(Tag tag);
-//
-//
-//    public abstract IgnoredTag tagDtoToIgnoredTag(TagDto tagDto);
-
-
-
-//    TagDto
-//    @Schema(description = "id тега")
-//    private Long id;
-//
-//    @Schema(description = "тег")
-//    private Tag ignoredTag;
-//
-//    @Schema(description = "юзер")
-//    private User user;
-
-
-
-//    IgnoredTag
-//    private Long id;
-
-//    private Tag ignoredTag;
-
-//    private User user;
-
 
 }

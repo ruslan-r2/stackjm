@@ -48,6 +48,14 @@ public class ResourceTagController {
     @Autowired
     private IgnoredTagService ignoredTagService;
 
+    public ResourceTagController(TagDtoDao tagDtoDao, UserService userService, TagService tagService, TagConverter tagConverter, IgnoredTagService ignoredTagService) {
+        this.tagDtoDao = tagDtoDao;
+        this.userService = userService;
+        this.tagService = tagService;
+        this.tagConverter = tagConverter;
+        this.ignoredTagService = ignoredTagService;
+    }
+
     @Operation(summary = "Возвращает лист содержащий топ-10 тегов")
     @ApiResponse(responseCode = "200", description = "успешно",
             content = @Content(mediaType = "application/json",
