@@ -41,11 +41,13 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
     public void addTagToIgnoredTag() throws Exception {
         String username = "user@mail.ru";
         String password = "user";
-        mockMvc.perform(post("/api/user/tag/101/ignored")
+        mockMvc.perform(get("/api/user/tag/101/ignored")
                 .header("Authorization", getToken(username, password))
         )
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id", is(101)))
+                .andExpect(jsonPath("name", is("Spring")));
     }
 
 }

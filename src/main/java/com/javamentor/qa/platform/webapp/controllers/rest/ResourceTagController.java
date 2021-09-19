@@ -61,19 +61,15 @@ public class ResourceTagController {
     @ApiResponse(responseCode = "200", description = "успешно",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = RelatedTagDto.class)))
-    @PostMapping("/api/user/tag/{id}/ignored")
+    @GetMapping("/api/user/tag/{id}/ignored")
     public ResponseEntity<TagDto> addTagToIgnoreTag(@PathVariable(name = "id") Long tagId, @ApiIgnore Principal principal) {
         if (!tagService.existsById(tagId)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Tag tag = tagService.getById(tagId).get();
         User user = userService.getByEmail(principal.getName()).get();
-        TagDto tagDto = tagConverter.TagToTagDto(tag);
-//        IgnoredTag ignoredTag = new IgnoredTag();
-//        ignoredTag.setIgnoredTag(tag);
-//        ignoredTag.setUser(user);
-//        ignoredTagService.persist(ignoredTag);
-        return new ResponseEntity<>(tagDto, HttpStatus.OK);
+        ignoredTagService.persist(new IgnoredTag(tag, user));
+        return new ResponseEntity<>(tagConverter.TagToTagDto(tag), HttpStatus.OK);
     }
 
 }
