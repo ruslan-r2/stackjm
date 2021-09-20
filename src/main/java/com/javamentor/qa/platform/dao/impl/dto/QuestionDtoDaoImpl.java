@@ -1,6 +1,7 @@
 package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.QuestionDtoDao;
+import com.javamentor.qa.platform.dao.util.SingleResultUtil;
 import com.javamentor.qa.platform.models.dto.QuestionDto;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.util.Optional;
 
 @Repository
@@ -20,7 +20,8 @@ public class QuestionDtoDaoImpl implements QuestionDtoDao{
     @Override
     public Optional<QuestionDto> getById(Long id) {
             Session session = entityManager.unwrap(Session.class);
-            Query query = session.createQuery("select q.id as id, " +
+            Query query = session.createQuery("select " +
+                    "q.id as id, " +
                     "q.title as title, " +
                     "q.user.id as authorId, " +
                     "q.user.fullName as authorName, " +
@@ -36,7 +37,8 @@ public class QuestionDtoDaoImpl implements QuestionDtoDao{
                     "where q.id = :id and q.isDeleted = false " +
                     "group by q.id, q.title, q.user.id, q.user.fullName, q.user.imageLink, q.description, q.persistDateTime, q.lastUpdateDateTime")
                     .setParameter("id", id)
-                    .setResultTransformer(new AliasToBeanResultTransformer(QuestionDto.class)).unwrap(TypedQuery.class);
-            return Optional.of((QuestionDto) query.getSingleResult());
+                    .setResultTransformer(new AliasToBeanResultTransformer(QuestionDto.class));
+            return SingleResultUtil.getSingleResultOrNull(query);
+
     }
 }

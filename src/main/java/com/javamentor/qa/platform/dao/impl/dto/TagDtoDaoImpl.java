@@ -26,7 +26,6 @@ public class TagDtoDaoImpl implements TagDtoDao {
                         "join q.tags t " +
                         "where q.id = :id")
                 .setParameter("id", id).setResultTransformer(new AliasToBeanResultTransformer(TagDto.class));
-
         return query.getResultList();
     }
 }

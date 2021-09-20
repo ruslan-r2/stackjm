@@ -24,7 +24,7 @@ public class QuestionDtoServiceImpl implements QuestionDtoService {
     @Override
     public Optional<QuestionDto> getById(Long id) {
         Optional<QuestionDto> questionDto = questionDtoDao.getById(id);
-        questionDto.get().setListTagDto(tagDtoDao.getByQuestionId(id));
+        questionDto.ifPresent(dto -> dto.setListTagDto(tagDtoDao.getByQuestionId(id)));
         return questionDto;
     }
 
