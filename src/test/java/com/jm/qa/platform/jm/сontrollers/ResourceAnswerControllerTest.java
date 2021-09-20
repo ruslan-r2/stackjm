@@ -57,6 +57,13 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @DataSet
+    public void markAnswerToDelete() throws Exception {
+
+
+    }
 }
 
 

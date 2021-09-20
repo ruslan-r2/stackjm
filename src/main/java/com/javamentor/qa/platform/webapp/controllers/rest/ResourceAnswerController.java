@@ -61,11 +61,10 @@ public class ResourceAnswerController {
     @DeleteMapping("/{answerId}")
     @Operation(summary = "Помечает ответ на удаление")
     @ApiResponse(responseCode = "200", description = "Вопрос успешно помечен на удаление")
+    @ApiResponse(responseCode = "403", description = "Вопрос не найден")
     public ResponseEntity<?> markAnswerToDelete(@PathVariable("answerId") Long answerId) {
         if (answerService.getById(answerId).isPresent()) {
-            Answer answerToDelete = answerService.getById(answerId).get();
-            answerToDelete.setIsDeleted(true);
-            answerService.update(answerToDelete);
+            answerService.deleteById(answerId);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
