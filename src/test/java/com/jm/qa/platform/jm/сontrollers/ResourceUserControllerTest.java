@@ -63,7 +63,9 @@ public class ResourceUserControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.itemsOnPage", equalTo(2)))
                 .andExpect(jsonPath("$.items.length()", equalTo(2)))
                 .andExpect(jsonPath("$.items[0].id", equalTo(100)))
-                .andExpect(jsonPath("$.items[1].id", equalTo(101)));
+                .andExpect(jsonPath("$.items[0].reputation", equalTo(15)))
+                .andExpect(jsonPath("$.items[1].id", equalTo(101)))
+                .andExpect(jsonPath("$.items[1].reputation", equalTo(0)));
     }
 
     @Test
@@ -82,6 +84,7 @@ public class ResourceUserControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.totalResultCount", equalTo(3)))
                 .andExpect(jsonPath("$.itemsOnPage", equalTo(2)))
                 .andExpect(jsonPath("$.items.length()", equalTo(1)))
-                .andExpect(jsonPath("$.items[0].id", equalTo(102)));
+                .andExpect(jsonPath("$.items[0].id", equalTo(102)))
+                .andExpect(jsonPath("$.items[0].reputation", equalTo(0)));
     }
 }
