@@ -48,7 +48,7 @@ public class TestDataInitService {
 
     @Transactional
     public void createEntity() {
-        flyway.clean();
+        //flyway.clean();
         flyway.migrate();
         createUsers();
         createTags();
