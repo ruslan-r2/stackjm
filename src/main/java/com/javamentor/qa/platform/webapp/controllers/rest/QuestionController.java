@@ -1,11 +1,7 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
-import com.javamentor.qa.platform.models.dto.UserDto;
 import com.javamentor.qa.platform.models.entity.question.Question;
-import com.javamentor.qa.platform.models.entity.question.VoteQuestion;
 import com.javamentor.qa.platform.models.entity.user.User;
-import com.javamentor.qa.platform.models.entity.user.reputation.Reputation;
-import com.javamentor.qa.platform.models.entity.user.reputation.ReputationType;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import com.javamentor.qa.platform.service.abstracts.model.ReputationService;
 import com.javamentor.qa.platform.service.abstracts.model.VoteQuestionService;
@@ -20,7 +16,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Controller
@@ -42,38 +37,20 @@ public class QuestionController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Long.class)))
     @ApiResponse(responseCode = "404", description = "вопроса с таким id не найден")
+    @ApiResponse(responseCode = "400", description = "пользователь голосует за свой вопрос")
     @PostMapping(value = "/{questionId}/upVote")
     @ResponseBody
     public ResponseEntity<Long> upVote(@Parameter(description = "id вопроса, за который голосует пользователь", required = true) @PathVariable(value = "questionId") Long questionId, @AuthenticationPrincipal User user) {
-        // получаем вопрос по id
         Optional<Question> optionalQuestion = questionService.getById(questionId);
         if (!optionalQuestion.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else if (optionalQuestion.get().getUser().equals(user)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Question question = optionalQuestion.get();
 
-        // удаляем старый vote
-        voteQuestionService.getByUserAndQuestion(user, question)
-                .ifPresent(voteQuestion -> voteQuestionService.delete(voteQuestion));
+        voteQuestionService.upVote(user, question);
 
-        // удаление поставленной репутации ранее(если есть)
-        reputationService.getByAuthorAndSenderAndQuestionAndType(question.getUser(), user, question, ReputationType.VoteQuestion)
-                .ifPresent(reputation -> reputationService.delete(reputation));
-
-        //создаем новый vote
-        voteQuestionService.persist(new VoteQuestion(user, question, 1));
-
-        //добавление репутацию автору вопроса
-        Reputation reputationAuthor = new Reputation();
-        reputationAuthor.setPersistDate(LocalDateTime.now());
-        reputationAuthor.setAuthor(question.getUser());
-        reputationAuthor.setSender(user);
-        reputationAuthor.setCount(10);
-        reputationAuthor.setType(ReputationType.VoteQuestion);
-        reputationAuthor.setQuestion(question);
-        reputationService.persist(reputationAuthor);
-
-        // нахождение суммы vote для вопроса
         Long sumVote = voteQuestionService.getSumVoteForQuestion(question);
         return new ResponseEntity<>(sumVote, HttpStatus.OK);
     }
@@ -83,38 +60,20 @@ public class QuestionController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Long.class)))
     @ApiResponse(responseCode = "404", description = "вопроса с таким id не найден")
+    @ApiResponse(responseCode = "400", description = "пользователь голосует за свой вопрос")
     @PostMapping(value = "/{questionId}/downVote")
     @ResponseBody
     public ResponseEntity<Long> downVote(@Parameter(description = "id вопроса, против которого голосует пользователь", required = true) @PathVariable(value = "questionId") Long questionId, @AuthenticationPrincipal User user) {
-        // получаем вопрос по id
         Optional<Question> optionalQuestion = questionService.getById(questionId);
         if (!optionalQuestion.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else if (optionalQuestion.get().getUser().equals(user)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Question question = optionalQuestion.get();
 
-        // удаляем старый vote
-        voteQuestionService.getByUserAndQuestion(user, question)
-                .ifPresent(voteQuestion -> voteQuestionService.delete(voteQuestion));
+        voteQuestionService.downVote(user, question);
 
-        // удаление поставленной репутации ранее(если есть)
-        reputationService.getByAuthorAndSenderAndQuestionAndType(question.getUser(), user, question, ReputationType.VoteQuestion)
-                .ifPresent(reputation -> reputationService.delete(reputation));
-
-        //создаем новый vote
-        voteQuestionService.persist(new VoteQuestion(user, question, -1));
-
-        //добавление репутацию автору вопроса
-        Reputation reputationAuthor = new Reputation();
-        reputationAuthor.setPersistDate(LocalDateTime.now());
-        reputationAuthor.setAuthor(question.getUser());
-        reputationAuthor.setSender(user);
-        reputationAuthor.setCount(-5);
-        reputationAuthor.setType(ReputationType.VoteQuestion);
-        reputationAuthor.setQuestion(question);
-        reputationService.persist(reputationAuthor);
-
-        // нахождение суммы vote для вопроса
         Long sumVote = voteQuestionService.getSumVoteForQuestion(question);
         return new ResponseEntity<>(sumVote, HttpStatus.OK);
     }

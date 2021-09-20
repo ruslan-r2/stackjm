@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface VoteQuestionService extends ReadWriteService<VoteQuestion, Long> {
     Optional<VoteQuestion> getByUserAndQuestion(User user, Question question);
     Long getSumVoteForQuestion(Question question);
+    void upVote(User user, Question question);
+    void downVote(User user, Question question);
 }
