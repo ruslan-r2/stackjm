@@ -4,9 +4,11 @@ package com.javamentor.qa.platform.webapp.controllers.rest;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.user.User;
+import com.javamentor.qa.platform.models.entity.user.reputation.Reputation;
 import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
+import com.javamentor.qa.platform.service.abstracts.model.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,14 +36,15 @@ public class ResourceAnswerController {
     private final AnswerDtoService answerDtoService;
     private final QuestionService questionService;
     private final AnswerService answerService;
+    private final UserService userService;
 
     @Autowired
     public ResourceAnswerController(AnswerDtoService answerDtoService, QuestionService questionService,
-                                    AnswerService answerService) {
+                                    AnswerService answerService, UserService userService) {
         this.answerDtoService = answerDtoService;
         this.questionService = questionService;
         this.answerService = answerService;
-
+        this.userService = userService;
     }
 
     @GetMapping
@@ -66,17 +69,16 @@ public class ResourceAnswerController {
     @PostMapping
     public ResponseEntity<AnswerDto> addAnswerToQuestion(@AuthenticationPrincipal User user, @RequestBody AnswerDto answerDto,
                                                          @PathVariable @Parameter(description = "Идентификатор вопроса")
-                                                                 Long questionId) {
+                                                                 Long questionId) throws Exception {
 
-        if (!questionService.getById(questionId).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         Answer answer = answerService.addAnswerOnQuestion(user, questionId);
         answerDto.setId(answer.getId());
         answerDto.setBody(answer.getHtmlBody());
         answerDto.setUserId(answer.getUser().getId());
         answerDto.setIsHelpful(answer.getIsHelpful());
         answerDto.setQuestionId(answer.getQuestion().getId());
+        answerDto.setPersistDate(answer.getPersistDateTime());
+//        answerDto.setCountUserReputation();
         return new ResponseEntity<>(answerDto, HttpStatus.OK);
     }
 }
