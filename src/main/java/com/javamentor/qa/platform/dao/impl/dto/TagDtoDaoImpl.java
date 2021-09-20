@@ -11,8 +11,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -32,9 +30,6 @@ public class TagDtoDaoImpl implements TagDtoDao {
                 .setParameter("id", id).setResultTransformer(new AliasToBeanResultTransformer(TagDto.class));
         return query.getResultList();
     }
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @SuppressWarnings("unchecked")
     public List<RelatedTagDto> getTopTags() {
