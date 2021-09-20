@@ -68,10 +68,10 @@ public class ResourceTagController {
                     schema = @Schema(implementation = RelatedTagDto.class)))
     @GetMapping("/api/user/tag/{id}/ignored")
     public ResponseEntity<TagDto> addTagToIgnoreTag(@PathVariable(name = "id") Long tagId) {
-        if (!tagService.existsById(tagId)) {
+        Tag tag = tagService.getById(tagId).get();
+        if (tag.equals(null)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        Tag tag = tagService.getById(tagId).get();
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ignoredTagService.persist(new IgnoredTag(tag, user));
         return new ResponseEntity<>(tagConverter.TagToTagDto(tag), HttpStatus.OK);

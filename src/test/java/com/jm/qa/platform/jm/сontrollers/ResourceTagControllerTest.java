@@ -1,9 +1,14 @@
 package com.jm.qa.platform.jm.сontrollers;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.javamentor.qa.platform.models.entity.question.IgnoredTag;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -12,6 +17,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ResourceTagControllerTest extends AbstractIntegrationTest {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Test
     @DataSet(value = "topTagController/getTopTags.yml", cleanBefore = true, cleanAfter = true)
@@ -35,12 +43,20 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
     public void addExistTagToIgnoredTag() throws Exception {
         String username = "user@mail.ru";
         String password = "user";
-        mockMvc.perform(get("/api/user/tag/101/ignored")
+        Long id = 101L;
+
+        mockMvc.perform(get("/api/user/tag/{id}/ignored", id)
                 .header("Authorization", getToken(username, password)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id", is(101)))
-                .andExpect(jsonPath("name", is("Spring")));
+                .andExpect(jsonPath("name", is("Spring")))
+                .andReturn();
+
+        IgnoredTag ignoredTag = (IgnoredTag) entityManager.createQuery("SELECT it FROM IgnoredTag it JOIN FETCH it.ignoredTag WHERE it.id=1").getSingleResult();
+        assertThat(ignoredTag).isNotNull();
+        assertThat(ignoredTag.getIgnoredTag().getName()).isEqualTo("Spring");
+
     }
 
     @Test
