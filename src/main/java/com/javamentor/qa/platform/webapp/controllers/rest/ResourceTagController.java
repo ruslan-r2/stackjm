@@ -17,15 +17,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
-import springfox.documentation.annotations.ApiIgnore;
 
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -70,12 +67,12 @@ public class ResourceTagController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = RelatedTagDto.class)))
     @GetMapping("/api/user/tag/{id}/ignored")
-    public ResponseEntity<TagDto> addTagToIgnoreTag(@PathVariable(name = "id") Long tagId, @ApiIgnore Principal principal) {
+    public ResponseEntity<TagDto> addTagToIgnoreTag(@PathVariable(name = "id") Long tagId) {
         if (!tagService.existsById(tagId)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Tag tag = tagService.getById(tagId).get();
-        User user = userService.getByEmail(principal.getName()).get();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ignoredTagService.persist(new IgnoredTag(tag, user));
         return new ResponseEntity<>(tagConverter.TagToTagDto(tag), HttpStatus.OK);
     }
