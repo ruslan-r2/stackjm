@@ -50,12 +50,10 @@ public class TestDataInitService {
     public void createEntity() {
         flyway.clean();
         flyway.migrate();
-        System.out.println("START FLYWAY");
         createUsers();
         createTags();
         createQuestions();
         createAnswers();
-        System.out.println("FINISH FLYWAY");
 
     }
 
