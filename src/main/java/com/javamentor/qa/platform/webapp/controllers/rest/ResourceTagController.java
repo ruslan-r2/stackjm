@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @io.swagger.v3.oas.annotations.tags.Tag(name = "Контроллер тегов", description = "Api для тегов")
@@ -68,13 +69,13 @@ public class ResourceTagController {
                     schema = @Schema(implementation = RelatedTagDto.class)))
     @GetMapping("/api/user/tag/{id}/ignored")
     public ResponseEntity<TagDto> addTagToIgnoreTag(@PathVariable(name = "id") Long tagId) {
-        Tag tag = tagService.getById(tagId).get();
-        if (tag.equals(null)) {
+        Optional<Tag> tag = tagService.getById(tagId);
+        if (!tag.isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ignoredTagService.persist(new IgnoredTag(tag, user));
-        return new ResponseEntity<>(tagConverter.TagToTagDto(tag), HttpStatus.OK);
+        ignoredTagService.persist(new IgnoredTag(tag.get(), user));
+        return new ResponseEntity<>(tagConverter.TagToTagDto(tag.get()), HttpStatus.OK);
     }
 
 }
