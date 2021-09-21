@@ -24,5 +24,6 @@ public class AnswerDtoServiceImpl  implements AnswerDtoService {
         return answerDtoDao.getAllAnswersByQuestionId(id);
     }
 
-
+    @Override
+    public AnswerDto getAnswerDtoById(Long questionId, Long answerId) { return answerDtoDao.getAnswerDtoById(questionId, answerId);}
 }
