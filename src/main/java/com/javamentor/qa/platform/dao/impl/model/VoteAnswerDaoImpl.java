@@ -28,7 +28,6 @@ public class VoteAnswerDaoImpl extends ReadWriteDaoImpl<VoteAnswer,Long> impleme
         Query query = entityManager.createQuery("select v from VoteAnswer v where v.answer.id = :ansId and v.user.id = :userId")
                 .setParameter("ansId",answerId)
                 .setParameter("userId",userId);
-        Optional<VoteAnswer> optional = SingleResultUtil.getSingleResultOrNull(query.getSingleResult());
-        return Optional.empty();
+        return SingleResultUtil.getSingleResultOrNull(query);
     }
 }
