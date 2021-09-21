@@ -1,5 +1,6 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
+import com.javamentor.qa.platform.exception.VoteException;
 import com.javamentor.qa.platform.models.dto.QuestionDto;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.user.User;
@@ -36,7 +37,7 @@ public class ResourceQuestionController {
     private VoteQuestionService voteQuestionService;
     private ReputationService reputationService;
 
-    public ResourceQuestionController(QuestionDtoService questionDtoService,QuestionService questionService, VoteQuestionService voteQuestionService, ReputationService reputationService) {
+    public ResourceQuestionController(QuestionDtoService questionDtoService, QuestionService questionService, VoteQuestionService voteQuestionService, ReputationService reputationService) {
         this.questionDtoService = questionDtoService;
         this.questionService = questionService;
         this.voteQuestionService = voteQuestionService;
@@ -66,12 +67,17 @@ public class ResourceQuestionController {
         Optional<Question> optionalQuestion = questionService.getById(questionId);
         if (!optionalQuestion.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else if (optionalQuestion.get().getUser().equals(user)) {
+        }
+        if (optionalQuestion.get().getUser().equals(user)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Question question = optionalQuestion.get();
 
-        voteQuestionService.upVote(user, question);
+        try {
+            voteQuestionService.upVote(user, question);
+        } catch (VoteException ve) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         Long sumVote = voteQuestionService.getSumVoteForQuestion(question);
         return new ResponseEntity<>(sumVote, HttpStatus.OK);
@@ -89,12 +95,14 @@ public class ResourceQuestionController {
         Optional<Question> optionalQuestion = questionService.getById(questionId);
         if (!optionalQuestion.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else if (optionalQuestion.get().getUser().equals(user)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         Question question = optionalQuestion.get();
 
-        voteQuestionService.downVote(user, question);
+        try {
+            voteQuestionService.downVote(user, question);
+        } catch (VoteException ve) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         Long sumVote = voteQuestionService.getSumVoteForQuestion(question);
         return new ResponseEntity<>(sumVote, HttpStatus.OK);

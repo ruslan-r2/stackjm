@@ -48,8 +48,12 @@ public class VoteQuestionServiceImpl extends ReadWriteServiceImpl<VoteQuestion, 
 
         Optional<VoteQuestion> optionalVoteQuestion = getByUserAndQuestion(user, question);
         if (optionalVoteQuestion.isPresent()) {
-            optionalVoteQuestion.get().setVote(1);
-            update(optionalVoteQuestion.get());
+            if(optionalVoteQuestion.get().getVote() == 1) {
+                throw new VoteException("пользователь проголосовал 'за' ранее");
+            } else {
+                optionalVoteQuestion.get().setVote(1);
+                update(optionalVoteQuestion.get());
+            }
         } else {
             persist(new VoteQuestion(user, question, 1));
         }
@@ -77,12 +81,16 @@ public class VoteQuestionServiceImpl extends ReadWriteServiceImpl<VoteQuestion, 
             throw new VoteException("пользователь не может голосовать за свой вопрос");
         }
 
-        Optional<VoteQuestion> voteQuestion = getByUserAndQuestion(user, question);
-        if (voteQuestion.isPresent()) {
-            voteQuestion.get().setVote(-1);
-            update(voteQuestion.get());
+        Optional<VoteQuestion> optionalVoteQuestion = getByUserAndQuestion(user, question);
+        if (optionalVoteQuestion.isPresent()) {
+            if(optionalVoteQuestion.get().getVote() == -1) {
+                throw new VoteException("пользователь проголосовал 'против' ранее");
+            } else {
+                optionalVoteQuestion.get().setVote(-1);
+                update(optionalVoteQuestion.get());
+            }
         } else {
-            persist(new VoteQuestion(user, question, -1));
+            persist(new VoteQuestion(user, question, 1));
         }
 
         Optional<Reputation> optionalReputation = reputationService.getByAuthorAndSenderAndQuestionAndType(question.getUser(), user, question, ReputationType.VoteQuestion);

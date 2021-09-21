@@ -92,8 +92,7 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
 
         // повторный положительный голос 101-ого
         mockMvc.perform(post("/api/user/question/100/upVote").header("Authorization", token))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", equalTo(1)));
+                .andExpect(status().isBadRequest());
 
         Assert.assertEquals(getReputationByIdUser(100L), 10L);
 
@@ -124,8 +123,7 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
 
         // повторный отрицательный голос 102-ого
         mockMvc.perform(post("/api/user/question/100/downVote").header("Authorization", token))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", equalTo(0)));
+                .andExpect(status().isBadRequest());
 
         Assert.assertEquals(getReputationByIdUser(100L), 15L);
     }
