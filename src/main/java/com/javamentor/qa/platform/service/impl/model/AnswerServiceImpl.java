@@ -2,37 +2,38 @@ package com.javamentor.qa.platform.service.impl.model;
 
 import com.javamentor.qa.platform.dao.abstracts.model.AnswerDao;
 import com.javamentor.qa.platform.exception.QuestionException;
-import com.javamentor.qa.platform.models.entity.question.Question;
+import com.javamentor.qa.platform.models.dto.AnswerDto;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.user.User;
+import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implements AnswerService {
 
-    private AnswerDao answerDao;
-    private QuestionService questionService;
+    private final AnswerDao answerDao;
+    private final QuestionService questionService;
+    private final AnswerDtoService answerDtoService;
 
     @Autowired
-    public AnswerServiceImpl(AnswerDao answerDao, QuestionService questionService) {
+    public AnswerServiceImpl(AnswerDao answerDao, QuestionService questionService, AnswerDtoService answerDtoService) {
         super(answerDao);
         this.answerDao = answerDao;
         this.questionService = questionService;
+        this.answerDtoService = answerDtoService;
     }
 
     @Override
     @Transactional
-    public Answer addAnswerOnQuestion(User user, Long questionId) {
+    public Answer addAnswerOnQuestion(User user, Long id) {
 
-        if (!questionService.getById(questionId).isPresent()) {
+        if (!questionService.getById(id).isPresent()) {
             throw new QuestionException("Вопроса не существует");
         }
 
@@ -40,12 +41,14 @@ public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implem
         answer.setUser(user);
         answer.setIsDeleted(false);
         answer.setIsHelpful(false);
-        answer.setHtmlBody("выдернуть с ДТО");
-        answer.setQuestion(questionService.getById(questionId).get());
+//        answer.setHtmlBody(answerDtoService.getAnswerById(id).getBody());
+        answer.setQuestion(questionService.getById(id).get());
         answer.setIsDeletedByModerator(false);
         answer.setIsDeleted(false);
         answer.setPersistDateTime(LocalDateTime.now());
         answerDao.persist(answer);
+        answer.setHtmlBody(answerDtoService.getAnswerById(answer.getId()).getBody());
+        answerDao.update(answer);
         return answer;
     }
 

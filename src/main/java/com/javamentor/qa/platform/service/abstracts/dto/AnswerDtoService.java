@@ -6,4 +6,6 @@ import java.util.List;
 public interface AnswerDtoService {
 
     List<AnswerDto> getAllAnswerDtoByQuestionId(Long id);
+
+    AnswerDto getAnswerById(Long id);
 }
