@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-public class TestDataInitService {
+public class    TestDataInitService {
     private UserService userService;
     private RoleService roleService;
     private QuestionService questionService;
@@ -48,7 +48,7 @@ public class TestDataInitService {
 
     @Transactional
     public void createEntity() {
-        //flyway.clean();
+        flyway.clean();
         flyway.migrate();
         createUsers();
         createTags();
