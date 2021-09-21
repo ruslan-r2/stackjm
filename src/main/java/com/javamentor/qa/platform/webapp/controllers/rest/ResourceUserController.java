@@ -1,6 +1,8 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
+import com.javamentor.qa.platform.models.dto.PageDto;
 import com.javamentor.qa.platform.models.dto.UserDto;
+import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.UserDtoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -10,10 +12,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -34,6 +39,20 @@ public class ResourceUserController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<UserDto> getUserDtoById(@Parameter(description = "id по которому нужно найти пользователя", required = true) @PathVariable(value = "id", required = true) Long id) {
         Optional<UserDto> user = userDtoService.getById(id);
-        return user.map(userDto -> new ResponseEntity<>(userDto, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return user.map(userDto -> new ResponseEntity<>(userDto, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(new UserDto(),HttpStatus.NOT_FOUND));
+    }
+
+    @Operation(summary = "Возвращает страницу пользователей")
+    @ApiResponse(responseCode = "200", description = "успешное выполнение",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PageDto.class)))
+    @GetMapping()
+    public ResponseEntity<PageDto<UserDto>> getPage(@Parameter(description = "номер страницы", required = true) @RequestParam(value = "currentPage", required = true) Integer currentPage, @Parameter(description = "кол-во пользователей на странице", required = true) @RequestParam(value = "itemsOnPage", required = true) Integer itemsOnPage) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("currentPage", currentPage);
+        parameters.put("itemsOnPage", itemsOnPage);
+        parameters.put("workPagination", "allUsers");
+        PageDto<UserDto> pageDto = userDtoService.getPageDto(parameters);
+        return new ResponseEntity<>(pageDto, HttpStatus.OK);
     }
 }

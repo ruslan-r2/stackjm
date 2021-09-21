@@ -1,0 +1,138 @@
+role:
+  - id: 100
+    name: "ROLE_ADMIN"
+  - id: 101
+    name: "ROLE_USER"
+user_entity:
+  - id: 100
+    about: "i'm admin"
+    city: "Moscow"
+    email: "admin@mail.ru"
+    full_name: "super admin"
+    image_link: "admin.image.com"
+    is_deleted: "false"
+    is_enabled: "true"
+    last_redaction_date: "2021-08-17 19:10:25"
+    link_github: "admin.github.com"
+    link_site: "adminsite.com"
+    link_vk: "vk.com/admin"
+    nickname: "admin"
+    password: "$2a$10$L7vulI.EeptscIf2.IRL0OVsIwoQIxpHWNIHXn5WjR7LzAGBNMN26"
+    persist_date: "2021-08-17 19:10:25"
+    role_id: 100
+  - id: 101
+    about: "i'm user"
+    city: "Moscow"
+    email: "user@mail.ru"
+    full_name: "just user"
+    image_link: "user.image.com"
+    is_deleted: "false"
+    is_enabled: "true"
+    last_redaction_date: "2021-08-17 19:10:25"
+    link_github: "user.github.com"
+    link_site: "usersite.com"
+    link_vk: "vk.com/user"
+    nickname: "user"
+    password: "$2a$10$EO4tL7b5hFUbHFb46NmGheExGu2p1mJT0alqqggCa6Nl.RT4nOqh."
+    persist_date: "2021-08-17 19:10:25"
+    role_id: 101
+  - id: 102
+    about: "i'm user2"
+    city: "Moscow"
+    email: "user2@mail.ru"
+    full_name: "just user2"
+    image_link: "user2.image.com"
+    is_deleted: "false"
+    is_enabled: "true"
+    last_redaction_date: "2021-08-17 19:10:25"
+    link_github: "user2.github.com"
+    link_site: "user2site.com"
+    link_vk: "vk.com/user2"
+    nickname: "user2"
+    password: "$2a$10$EO4tL7b5hFUbHFb46NmGheExGu2p1mJT0alqqggCa6Nl.RT4nOqh."
+    persist_date: "2021-08-17 19:10:25"
+    role_id: 101
+tag:
+  - id: 100
+    description: "tag_1"
+    name: "tag_name_1"
+    persist_date: "2021-08-26 04:28:16.229"
+question:
+  - id: 100
+    description: "text"
+    is_deleted: "false"
+    last_redaction_date: "1990-10-10 00:00:00"
+    persist_date: "1990-10-10 00:00:00"
+    title: "question"
+    user_id: 100
+  - id: 101
+    description: "text"
+    is_deleted: "false"
+    last_redaction_date: "1990-10-10 00:00:00"
+    persist_date: "1990-10-10 00:00:00"
+    title: "question2"
+    user_id: 100
+answer:
+  - id: 100
+    date_accept_time: "1990-10-10 00:00:00"
+    html_body: "text"
+    is_deleted: "false"
+    is_deleted_by_moderator: "false"
+    is_helpful: "true"
+    persist_date: "1990-10-10 00:00:00"
+    update_date: "1990-10-10 00:00:00"
+    question_id: 100
+    user_id: 101
+  - id: 101
+    date_accept_time: "1990-10-10 00:00:00"
+    html_body: "text2"
+    is_deleted: "false"
+    is_deleted_by_moderator: "false"
+    is_helpful: "true"
+    persist_date: "1990-10-10 00:00:00"
+    update_date: "1990-10-10 00:00:00"
+    question_id: 100
+    user_id: 102
+  - id: 102
+    date_accept_time: "1990-10-10 00:00:00"
+    html_body: "text3"
+    is_deleted: "true"
+    is_deleted_by_moderator: "false"
+    is_helpful: "true"
+    persist_date: "1990-10-10 00:00:00"
+    update_date: "1990-10-10 00:00:00"
+    question_id: 100
+    user_id: 101
+votes_on_answers:
+  - id: 100
+    persist_date: "1990-10-10 00:00:00"
+    vote: 1
+    answer_id: 100
+    user_id: 101
+  - id: 101
+    persist_date: "1990-10-10 00:00:00"
+    vote: 1
+    answer_id: 100
+    user_id: 102
+  - id: 102
+    persist_date: "1990-10-10 00:00:00"
+    vote: -1
+    answer_id: 101
+    user_id: 101
+reputation:
+  - id: 100
+    count: 1
+    persist_date: 1990-01-01 00:00:00
+    type: 1
+    answer_id: 100
+    author_id: 101
+    question_id: 100
+    sender_id: 100
+  - id: 101
+    count: 1
+    persist_date: 1990-01-01 00:00:00
+    type: 1
+    answer_id: 100
+    author_id: 101
+    question_id: 100
+    sender_id: 100
