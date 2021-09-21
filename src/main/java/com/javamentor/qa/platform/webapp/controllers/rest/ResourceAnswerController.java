@@ -1,19 +1,18 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
 
+import com.javamentor.qa.platform.dao.abstracts.model.VoteAnswerDao;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
-import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
-import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
-import com.javamentor.qa.platform.service.abstracts.model.ReputationService;
-import com.javamentor.qa.platform.service.abstracts.model.UserService;
+import com.javamentor.qa.platform.service.abstracts.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,13 +33,14 @@ public class ResourceAnswerController {
     private final AnswerDtoService answerDtoService;
     private final QuestionService questionService;
     private final ReputationService reputationService;
-    private final AnswerService answerService;
+    private final VoteAnswerService voteAnswerService;
 
-    public ResourceAnswerController(AnswerDtoService answerDtoService, QuestionService questionService, ReputationService reputationService, AnswerService answerService) {
+
+    public ResourceAnswerController(AnswerDtoService answerDtoService, QuestionService questionService, ReputationService reputationService, VoteAnswerService voteAnswerService) {
         this.answerDtoService = answerDtoService;
         this.questionService = questionService;
         this.reputationService = reputationService;
-        this.answerService = answerService;
+        this.voteAnswerService = voteAnswerService;
     }
 
 
@@ -60,18 +60,17 @@ public class ResourceAnswerController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @PostMapping("{id}/upVote")
-    public ResponseEntity<Integer> upVote(@PathVariable("questionId") Long questionId,@PathVariable("id") Long answerId,@AuthenticationPrincipal User user){
-        reputationService.changeRep(answerId,user,10);
-        User user1 = questionService.getById(questionId).get().getUser();
-        return new ResponseEntity<>(reputationService.getRepByUserId(user1.getId()),HttpStatus.OK);
+    @PostMapping("/{id}/upVote")
+    public ResponseEntity<Long> upVote(@PathVariable("id") Long answerId,@AuthenticationPrincipal User user){
+        long a = voteAnswerService.voteUp(answerId,user);
+
+        return new ResponseEntity<>(a,HttpStatus.OK);
     }
 
-    @PostMapping("{id}/downVote")
-    public ResponseEntity<Integer> downVote(@PathVariable("questionId") Long questionId,@PathVariable("id") Long answerId,@AuthenticationPrincipal User user ){
-        reputationService.changeRep(answerId,user,-5);
-        User user1 = questionService.getById(questionId).get().getUser();
-        return new ResponseEntity<>(reputationService.getRepByUserId(user1.getId()),HttpStatus.OK);
+    @PostMapping("/{id}/downVote")
+    public ResponseEntity<Long> downVote(@PathVariable("id") Long answerId,@AuthenticationPrincipal User user ){
+        long a = voteAnswerService.voteDown(answerId,user);
+        return new ResponseEntity<>(a,HttpStatus.OK);
     }
 
 

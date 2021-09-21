@@ -13,15 +13,15 @@ import java.util.Optional;
 @Repository
 public class ReputationDaoImpl extends ReadWriteDaoImpl<Reputation,Long> implements ReputationDao {
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Override
-    @Transactional
-    public Integer getRepByUserId(Long id) {
-        Query query = entityManager.createQuery("select COALESCE(SUM(r.count), 0) as count from Reputation r  where r.author.id = :id",Number.class)
-                .setParameter("id", id);
-        Optional<Number> number = Optional.of((Number) query.getSingleResult());
-        return number.get().intValue();
-    }
+//    @PersistenceContext
+//    private EntityManager entityManager;
+//
+//    @Override
+//    @Transactional
+//    public Integer getRepByUserId(Long id) {
+//        Query query = entityManager.createQuery("select COALESCE(SUM(r.count), 0) as count from Reputation r  where r.author.id = :id",Number.class)
+//                .setParameter("id", id);
+//        Optional<Number> number = Optional.of((Number) query.getSingleResult());
+//        return number.get().intValue();
+//    }
 }
