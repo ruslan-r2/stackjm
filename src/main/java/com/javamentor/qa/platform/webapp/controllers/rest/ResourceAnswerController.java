@@ -62,14 +62,14 @@ public class ResourceAnswerController {
 
     @PostMapping("{id}/upVote")
     public ResponseEntity<Integer> upVote(@PathVariable("questionId") Long questionId,@PathVariable("id") Long answerId,@AuthenticationPrincipal User user){
-        reputationService.changeRep(questionId,answerId,user,10);
+        reputationService.changeRep(answerId,user,10);
         User user1 = questionService.getById(questionId).get().getUser();
         return new ResponseEntity<>(reputationService.getRepByUserId(user1.getId()),HttpStatus.OK);
     }
 
     @PostMapping("{id}/downVote")
     public ResponseEntity<Integer> downVote(@PathVariable("questionId") Long questionId,@PathVariable("id") Long answerId,@AuthenticationPrincipal User user ){
-        reputationService.changeRep(questionId,answerId,user,-5);
+        reputationService.changeRep(answerId,user,-5);
         User user1 = questionService.getById(questionId).get().getUser();
         return new ResponseEntity<>(reputationService.getRepByUserId(user1.getId()),HttpStatus.OK);
     }
