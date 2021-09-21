@@ -32,7 +32,7 @@ public class UserDtoPaginationDtoDaoImpl implements PaginationDao<UserDto> {
 
         String sorted = "ORDER BY";
 
-        if (parameters.get("sorted-reputation").equals(true)){
+        if (parameters.keySet().contains("sorted-reputation") && parameters.get("sorted-reputation").equals(true)){
             sorted += " reputation DESC, ";
         }
 
