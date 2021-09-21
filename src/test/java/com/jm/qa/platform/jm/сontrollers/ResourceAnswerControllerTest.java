@@ -1,10 +1,18 @@
 package com.jm.qa.platform.jm.сontrollers;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -12,8 +20,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     private String URL = "/api/user/question/{questionId}/answer";
+    private String markAnswerToDeleteUrl = "/api/user/question/{questionId}/answer/{answerId}";
     private String username;
     private String password;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Test
     @DataSet(value = "resource_answer_controller/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
@@ -56,6 +68,28 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         this.mockMvc.perform(get(URL, idIncorrect).header("Authorization", getToken(username, password)))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DataSet(value = "resource_answer_controller/markAnswerToDelete.yml",
+             cleanBefore = true, cleanAfter = true)
+    public void markAnswerToDelete() throws Exception {
+        username = "user@mail.ru";
+        password = "user";
+
+        Answer answerBeforeDelete = (Answer) entityManager.createQuery("select a from Answer a where a.id = 100").getSingleResult();
+        assertFalse(answerBeforeDelete.getIsDeleted());
+
+        mockMvc.perform(delete(markAnswerToDeleteUrl, 100, 100).
+                        header("Authorization", getToken(username, password))).
+                andExpect(status().isOk());
+
+        Answer answerAfterDelete = (Answer) entityManager.createQuery("select a from Answer a where a.id = 100").getSingleResult();
+        assertTrue(answerAfterDelete.getIsDeleted());
+
+        mockMvc.perform(delete(markAnswerToDeleteUrl, 100, -100).
+                        header("Authorization", getToken(username, password))).
+                andExpect(status().isBadRequest());
     }
 }
 
