@@ -2,6 +2,7 @@ package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.service.abstracts.dto.CommentDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,5 +32,14 @@ public class QuestionController {
         }
 
         return ResponseEntity.badRequest().body("Question with id: " + questionId + " not found");
+    }
+
+
+    @GetMapping("/count")
+    public ResponseEntity<?> getCountQuestion() {
+        return new ResponseEntity<>(
+                questionService.getCountQuestion(),
+                HttpStatus.OK
+        );
     }
 }
