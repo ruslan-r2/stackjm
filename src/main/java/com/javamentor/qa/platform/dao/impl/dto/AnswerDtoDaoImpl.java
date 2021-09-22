@@ -42,9 +42,9 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
     }
 
     @Override
-    public AnswerDto getAnswerDtoById(Long questionId, Long answerId) {
+    public AnswerDto getAnswerDtoById(Long id) {
         Session session = entityManager.unwrap(Session.class);
-        Query query = session.createQuery("select a.id as id, " +
+        Query query = session.createQuery("SELECT a.id as id, " +
                         "a.user.id as userId," +
                         "a.question.id as questionId," +
                         "a.htmlBody as body, " +
@@ -56,9 +56,8 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                         "(select COALESCE(SUM(vote), 0)  from VoteAnswer  where answer.id = a.id) as countValuable, " +
                         "(select COALESCE(SUM(r.count), 0)  from Reputation r  where author.id = a.user.id) as countUserReputation " +
                         "from Answer a " +
-                        "where a.question.id = :id and a.id = :answerid and a.isDeleted = false ")
-                .setParameter("id",questionId)
-                .setParameter("answerid",answerId)
+                        "where a.id = :id and a.isDeleted = false ")
+                .setParameter("id", id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
         return (AnswerDto)query.getSingleResult();
     }

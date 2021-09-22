@@ -7,5 +7,5 @@ public interface AnswerDtoService {
 
     List<AnswerDto> getAllAnswerDtoByQuestionId(Long id);
 
-    AnswerDto getAnswerDtoById(Long questionId, Long answerId);
+    AnswerDto getAnswerDtoById(Long answerId);
 }
