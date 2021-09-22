@@ -5,7 +5,7 @@ reputation:
     type: 1
     answer_id: 100
     author_id: 100
-    question_id: 104
+    question_id: 103
     sender_id: 101
   - id: 101
     count: 10
