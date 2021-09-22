@@ -75,7 +75,7 @@ public class ResourceAnswerController {
     @Operation(summary = "Увеличивает оценку ответа")
     @ApiResponse(responseCode = "200", description = "Оценка ответа увеличена, репутация автора повышена")
     @ApiResponse(responseCode = "400", description = "Ответ не найден")
-    public ResponseEntity<Long> upVote(@Parameter(description = "id вопроса для поднятие оценки")@PathVariable("id") Long answerId,
+    public ResponseEntity<Long> upVote(@Parameter(description = "id ответа для поднятие оценки")@PathVariable("id") Long answerId,
                                        @AuthenticationPrincipal User user){
         Optional<Answer> answer = answerService.getById(answerId);
         if(answer.isPresent() && !answer.get().getUser().equals(user)){
@@ -89,7 +89,7 @@ public class ResourceAnswerController {
     @Operation(summary = "Уменьшает оценку ответа")
     @ApiResponse(responseCode = "200", description = "Оценка ответа уменьшена, репутация автора понижена")
     @ApiResponse(responseCode = "400", description = "Ответ не найден")
-    public ResponseEntity<Long> downVote(@Parameter(description = "id вопроса для снижения оценки")@PathVariable("id") Long answerId,
+    public ResponseEntity<Long> downVote(@Parameter(description = "id ответа для снижения оценки")@PathVariable("id") Long answerId,
                                          @AuthenticationPrincipal User user ){
         Optional<Answer> answer = answerService.getById(answerId);
         if(answer.isPresent() && !answer.get().getUser().equals(user)){
