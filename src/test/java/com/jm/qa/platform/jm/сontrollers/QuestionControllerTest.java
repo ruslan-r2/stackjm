@@ -4,8 +4,12 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.nio.charset.StandardCharsets;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -94,6 +98,46 @@ public class QuestionControllerTest extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
+    }
+
+    @Test
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+    }, cleanBefore = true)
+    public void getCountQuestion() throws Exception {
+        String token = getToken("test1@mail.ru", "user");
+
+        String responseMessage = mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/user/question/count")
+                .header("Authorization", token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        assertThat(responseMessage).isEqualTo(Long.toString(3));
+
+    }
+
+    @Test
+    @DataSet(value = {"resource_question_controller/users.yml", "resource_question_controller/roles.yml", "resource_question_controller/no_questions.yml"}, cleanBefore = true)
+    public void getCountQuestionZero() throws Exception {
+        String token = getToken("test1@mail.ru", "user");
+
+        String responseMessage = mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/user/question/count")
+                .header("Authorization",  token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        assertThat(responseMessage).isEqualTo(Long.toString(0));
     }
 
 
