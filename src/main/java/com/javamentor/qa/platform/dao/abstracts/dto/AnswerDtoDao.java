@@ -8,5 +8,5 @@ public interface AnswerDtoDao {
 
     List<AnswerDto> getAllAnswersByQuestionId(Long id);
 
-    AnswerDto getAnswerDtoById(Long id);
+    AnswerDto getAnswerDtoById(Long answerId);
 }

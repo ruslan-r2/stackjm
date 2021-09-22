@@ -2,10 +2,8 @@ package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.AnswerDtoDao;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
-import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
-import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -45,23 +43,22 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
 
     @Override
     public AnswerDto getAnswerDtoById(Long id) {
-//        Session session = entityManager.unwrap(Session.class);
-        return ((AnswerDto) entityManager.createQuery("select a.id as id, " +
-                "a.user.id as userId," +
-                "a.question.id as questionId," +
-                "a.htmlBody as body, " +
-                "a.persistDateTime as persistDate, " +
-                "a.isHelpful as isHelpful, " +
-                "a.dateAcceptTime as dateAccept, " +
-                "a.user.imageLink as image, " +
-                "a.user.nickname as nickname, " +
-                "(select COALESCE(SUM(vote), 0)  from VoteAnswer  where answer.id = a.id) as countValuable, " +
-                "(select COALESCE(SUM(r.count), 0)  from Reputation r  where author.id = a.user.id) as countUserReputation " +
-                "from Answer a " +
-                "where a.id = :id and a.isDeleted = false " +
-                "group by a.id, a.user.id, a.question.id,a.htmlBody, a.persistDateTime, a.isHelpful, a.dateAcceptTime, a.user.imageLink, a.user.nickname")
+        Session session = entityManager.unwrap(Session.class);
+        Query query = session.createQuery("SELECT a.id as id, " +
+                        "a.user.id as userId," +
+                        "a.question.id as questionId," +
+                        "a.htmlBody as body, " +
+                        "a.persistDateTime as persistDate, " +
+                        "a.isHelpful as isHelpful, " +
+                        "a.dateAcceptTime as dateAccept, " +
+                        "a.user.imageLink as image, " +
+                        "a.user.nickname as nickname, " +
+                        "(select COALESCE(SUM(vote), 0)  from VoteAnswer  where answer.id = a.id) as countValuable, " +
+                        "(select COALESCE(SUM(r.count), 0)  from Reputation r  where author.id = a.user.id) as countUserReputation " +
+                        "from Answer a " +
+                        "where a.id = :id and a.isDeleted = false ")
                 .setParameter("id", id)
-                .unwrap(org.hibernate.query.Query.class)
-                .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class)).getSingleResult());
+                .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
+        return (AnswerDto)query.getSingleResult();
     }
 }
