@@ -2,7 +2,6 @@ package com.javamentor.qa.platform.webapp.controllers.rest;
 
 
 import com.javamentor.qa.platform.models.dto.AnswerDto;
-import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
@@ -79,7 +78,7 @@ public class ResourceAnswerController {
     public ResponseEntity<Long> upVote(@Parameter(description = "id вопроса для поднятие оценки")@PathVariable("id") Long answerId,
                                        @AuthenticationPrincipal User user){
         Optional<Answer> answer = answerService.getById(answerId);
-        if(answer.isPresent()){
+        if(answer.isPresent() && !answer.get().getUser().equals(user)){
             Long count = voteAnswerService.voteUp(answer.get(),user);
             return new ResponseEntity<>(count,HttpStatus.OK);
         }
@@ -93,7 +92,7 @@ public class ResourceAnswerController {
     public ResponseEntity<Long> downVote(@Parameter(description = "id вопроса для снижения оценки")@PathVariable("id") Long answerId,
                                          @AuthenticationPrincipal User user ){
         Optional<Answer> answer = answerService.getById(answerId);
-        if(answer.isPresent()){
+        if(answer.isPresent() && !answer.get().getUser().equals(user)){
             Long count = voteAnswerService.voteDown(answer.get(),user);
             return new ResponseEntity<>(count,HttpStatus.OK);
         }

@@ -12,7 +12,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -98,11 +97,8 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = "resource_answer_controller/voteUp.yml",
-            cleanBefore = true
-//            , cleanAfter = true
-    )
-    public void voteUp() throws Exception{
+    @DataSet(value = "resource_answer_controller/voteAnswer.yml", cleanBefore = true, cleanAfter = true)
+    public void voteAnswer() throws Exception{
         long questionIdCorrect = 100;
         long answerIdCorrect = 100;
         long answerIdIncorrect = -100;
@@ -129,6 +125,30 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         assertTrue(voteAnswerList.get(0).getVote() == 1); //проверка что оценка положительная
         assertFalse(reputationBefore.isPresent());//проверка что до повышения репутации у автора нет
         assertTrue(reputationAfter.get().getCount() == 10); //проверка что репутация у автора ответа увеличилась на 10
+        //изменение своей оценки на минус
+        mockMvc.perform(post(URL+"/"+answerIdCorrect+"/downVote",questionIdCorrect).header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("1"));
+        //ответ и репутация автора после изменения  оценки
+        Answer answerAfterChange = (Answer) entityManager.createQuery("select a from Answer a where a.id = :ansId")
+                .setParameter("ansId",answerIdCorrect).getSingleResult();
+        Optional<Reputation> reputationAfterChange = SingleResultUtil.getSingleResultOrNull(entityManager.createQuery("select r from Reputation r where r.author.id =:id")
+                .setParameter("id",answerAfterChange.getUser().getId()));
+        List<VoteAnswer> voteAnswerListChange = answerAfterChange.getVoteAnswers();
+        assertTrue(answerAfter.getId() == answerAfterChange.getId()); //проверка что ответ тот же
+        assertTrue(voteAnswerListChange.size() == 1); // проверка что у ответа также 1 голос
+        assertTrue(voteAnswerListChange.get(0).getVote() == -1); //проверка что оценка отрицательная
+        assertTrue(reputationAfterChange.get().getCount() == -5); //проверка что репутация у автора ответа уменьшилаь на 5
+
+        //логин автора ответа
+        username = "user2@mail.ru";
+        password = "user";
+        //Попытка повышения оценки своего ответа
+        mockMvc.perform(post(URL+"/"+answerIdCorrect+"/upVote",questionIdCorrect).header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
         //повышение оценки не существующего ответа
         mockMvc.perform(post(URL+"/"+answerIdIncorrect+"/upVote",questionIdCorrect).header("Authorization", getToken(username, password)))
                 .andDo(print())
