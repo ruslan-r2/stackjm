@@ -2,33 +2,20 @@ package com.javamentor.qa.platform.dao.impl.model;
 
 import com.javamentor.qa.platform.dao.abstracts.model.ReputationDao;
 import com.javamentor.qa.platform.dao.util.SingleResultUtil;
-<<<<<<< HEAD
 import com.javamentor.qa.platform.models.entity.user.reputation.Reputation;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Optional;
-
-@Repository
-public class ReputationDaoImpl extends ReadWriteDaoImpl<Reputation,Long> implements ReputationDao {
-=======
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.user.User;
-import com.javamentor.qa.platform.models.entity.user.reputation.Reputation;
 import com.javamentor.qa.platform.models.entity.user.reputation.ReputationType;
-import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.Optional;
 
 @Repository
 public class ReputationDaoImpl extends ReadWriteDaoImpl<Reputation, Long> implements ReputationDao {
->>>>>>> dev
 
     @PersistenceContext
     private EntityManager entityManager;
