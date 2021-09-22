@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-public class TestDataInitService {
+public class    TestDataInitService {
     private UserService userService;
     private RoleService roleService;
     private QuestionService questionService;
