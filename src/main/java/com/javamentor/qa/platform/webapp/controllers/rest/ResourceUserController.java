@@ -2,7 +2,6 @@ package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.models.dto.PageDto;
 import com.javamentor.qa.platform.models.dto.UserDto;
-import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.UserDtoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -51,6 +50,21 @@ public class ResourceUserController {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("currentPage", currentPage);
         parameters.put("itemsOnPage", itemsOnPage);
+        parameters.put("workPagination", "allUsers");
+        PageDto<UserDto> pageDto = userDtoService.getPageDto(parameters);
+        return new ResponseEntity<>(pageDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Возвращает страницу пользователей, отсортированных по репутации")
+    @ApiResponse(responseCode = "200", description = "успешное выполнение",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PageDto.class)))
+    @GetMapping(value = "/reputation")
+    public ResponseEntity<PageDto<UserDto>> getPageWhereUserSortedByReputation(@RequestParam(value = "page", required = true) Integer numberPage, @RequestParam(value = "items", required = false, defaultValue = "10") Integer countItemsOnPage){
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("currentPage", numberPage);
+        parameters.put("itemsOnPage", countItemsOnPage);
+        parameters.put("sorted-reputation", true);
         parameters.put("workPagination", "allUsers");
         PageDto<UserDto> pageDto = userDtoService.getPageDto(parameters);
         return new ResponseEntity<>(pageDto, HttpStatus.OK);
