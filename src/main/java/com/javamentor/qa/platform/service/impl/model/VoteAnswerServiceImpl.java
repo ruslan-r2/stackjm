@@ -6,12 +6,11 @@ import com.javamentor.qa.platform.models.entity.question.answer.VoteAnswer;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.models.entity.user.reputation.Reputation;
 import com.javamentor.qa.platform.models.entity.user.reputation.ReputationType;
-import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.service.abstracts.model.ReputationService;
 import com.javamentor.qa.platform.service.abstracts.model.VoteAnswerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -19,40 +18,47 @@ import java.util.Optional;
 @Service
 public class VoteAnswerServiceImpl extends ReadWriteServiceImpl<VoteAnswer, Long> implements VoteAnswerService {
 
-    private final AnswerService answerService;
     private final VoteAnswerDao voteAnswerDao;
     private final ReputationService reputationService;
 
-    public VoteAnswerServiceImpl(ReadWriteDao<VoteAnswer, Long> readWriteDao, AnswerService answerService, VoteAnswerDao voteAnswerDao, ReputationService reputationService) {
+    public VoteAnswerServiceImpl(ReadWriteDao<VoteAnswer, Long> readWriteDao, VoteAnswerDao voteAnswerDao, ReputationService reputationService) {
         super(readWriteDao);
-        this.answerService = answerService;
         this.voteAnswerDao = voteAnswerDao;
         this.reputationService = reputationService;
     }
 
     @Override
-    public Long voteUp(Long answerId, User user) {
-        return vote(answerId, user, 10,1);
+    @Transactional
+    public Long voteUp( Answer answer, User user) {
+        return vote(answer, user, 10,1);
     }
 
     @Override
-    public Long voteDown(Long answerId, User user) {
-        return vote(answerId, user, -5,-1);
+    @Transactional
+    public Long voteDown( Answer answer, User user) {
+        return vote(answer, user, -5,-1);
     }
-//    @Transactional
-    private Long vote(Long answerId, User user, int count, int vote) {
-        Optional<Answer> answerOptional = answerService.getById(answerId);
-        if (answerOptional.isPresent()) {
-            Answer answer = answerOptional.get();
-            VoteAnswer voteAnswer = new VoteAnswer();
+
+    private Long vote(Answer answer, User user, int repCount, int vote) {
+        Optional<VoteAnswer> voteAnswerOptional = voteAnswerDao.getByAnswerIdAndUserId(answer.getId(),user.getId());
+        Optional<Reputation> reputationOptional = reputationService.getByAnswerIdSenderId(answer.getId(),user.getId());
+            VoteAnswer voteAnswer;
+            Reputation reputation;
+            if (voteAnswerOptional.isPresent() && reputationOptional.isPresent()){
+                voteAnswer = voteAnswerOptional.get();
+                reputation = reputationOptional.get();
+            } else {
+                voteAnswer = new VoteAnswer();
+                reputation = new Reputation();
+            }
             voteAnswer.setVote(vote);
             voteAnswer.setAnswer(answer);
             voteAnswer.setUser(user);
             voteAnswer.setPersistDateTime(LocalDateTime.now());
-            Reputation reputation = new Reputation();
+
             reputation.setAnswer(answer);
             reputation.setAuthor(answer.getUser());
-            reputation.setCount(count);
+            reputation.setCount(repCount);
             reputation.setSender(user);
             reputation.setType(ReputationType.Answer);
             try {
@@ -61,7 +67,6 @@ public class VoteAnswerServiceImpl extends ReadWriteServiceImpl<VoteAnswer, Long
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        return voteAnswerDao.sumVote(answerId);
+        return voteAnswerDao.sumVote(answer.getId());
     }
 }

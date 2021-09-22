@@ -6,7 +6,5 @@ import java.util.Optional;
 
 public interface VoteAnswerDao extends ReadWriteDao<VoteAnswer,Long> {
     Long sumVote(Long answerId);
-
-
     Optional<VoteAnswer> getByAnswerIdAndUserId(Long answerId, Long userId);
 }

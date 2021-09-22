@@ -2,6 +2,8 @@ package com.javamentor.qa.platform.webapp.controllers.rest;
 
 
 import com.javamentor.qa.platform.models.dto.AnswerDto;
+import com.javamentor.qa.platform.models.entity.question.Question;
+import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.*;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Tag(name = "Answers контроллер", description = "Api для работы с Answers")
@@ -32,14 +35,12 @@ public class ResourceAnswerController {
 
     private final QuestionService questionService;
     private final AnswerService answerService;
-    private final ReputationService reputationService;
     private final VoteAnswerService voteAnswerService;
     private final AnswerDtoService answerDtoService;
 
-    public ResourceAnswerController(QuestionService questionService, AnswerService answerService, ReputationService reputationService, VoteAnswerService voteAnswerService, AnswerDtoService answerDtoService) {
+    public ResourceAnswerController(QuestionService questionService, AnswerService answerService, VoteAnswerService voteAnswerService, AnswerDtoService answerDtoService) {
         this.questionService = questionService;
         this.answerService = answerService;
-        this.reputationService = reputationService;
         this.voteAnswerService = voteAnswerService;
         this.answerDtoService = answerDtoService;
     }
@@ -72,15 +73,31 @@ public class ResourceAnswerController {
     }
 
     @PostMapping("/{id}/upVote")
-    public ResponseEntity<Long> upVote(@PathVariable("id") Long answerId,@AuthenticationPrincipal User user){
-        long a = voteAnswerService.voteUp(answerId,user);
-        return new ResponseEntity<>(a,HttpStatus.OK);
+    @Operation(summary = "Увеличивает оценку ответа")
+    @ApiResponse(responseCode = "200", description = "Оценка ответа увеличена, репутация автора повышена")
+    @ApiResponse(responseCode = "400", description = "Ответ не найден")
+    public ResponseEntity<Long> upVote(@Parameter(description = "id вопроса для поднятие оценки")@PathVariable("id") Long answerId,
+                                       @AuthenticationPrincipal User user){
+        Optional<Answer> answer = answerService.getById(answerId);
+        if(answer.isPresent()){
+            Long count = voteAnswerService.voteUp(answer.get(),user);
+            return new ResponseEntity<>(count,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/{id}/downVote")
-    public ResponseEntity<Long> downVote(@PathVariable("id") Long answerId,@AuthenticationPrincipal User user ){
-        long a = voteAnswerService.voteDown(answerId,user);
-        return new ResponseEntity<>(a,HttpStatus.OK);
+    @Operation(summary = "Уменьшает оценку ответа")
+    @ApiResponse(responseCode = "200", description = "Оценка ответа уменьшена, репутация автора понижена")
+    @ApiResponse(responseCode = "400", description = "Ответ не найден")
+    public ResponseEntity<Long> downVote(@Parameter(description = "id вопроса для снижения оценки")@PathVariable("id") Long answerId,
+                                         @AuthenticationPrincipal User user ){
+        Optional<Answer> answer = answerService.getById(answerId);
+        if(answer.isPresent()){
+            Long count = voteAnswerService.voteDown(answer.get(),user);
+            return new ResponseEntity<>(count,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 

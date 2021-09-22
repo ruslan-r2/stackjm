@@ -1,19 +1,24 @@
 package com.jm.qa.platform.jm.сontrollers;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.javamentor.qa.platform.dao.util.SingleResultUtil;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
+import com.javamentor.qa.platform.models.entity.question.answer.VoteAnswer;
+import com.javamentor.qa.platform.models.entity.user.reputation.Reputation;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -90,6 +95,45 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         mockMvc.perform(delete(markAnswerToDeleteUrl, 100, -100).
                         header("Authorization", getToken(username, password))).
                 andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DataSet(value = "resource_answer_controller/voteUp.yml",
+            cleanBefore = true
+//            , cleanAfter = true
+    )
+    public void voteUp() throws Exception{
+        long questionIdCorrect = 100;
+        long answerIdCorrect = 100;
+        long answerIdIncorrect = -100;
+        username = "user@mail.ru";
+        password = "user";
+        //ответ и репутация автора ответа до повышения оценки
+        Answer answerBefore = (Answer) entityManager.createQuery("select a from Answer a where a.id = :ansId")
+                .setParameter("ansId",answerIdCorrect).getSingleResult();
+        Optional<Reputation> reputationBefore = SingleResultUtil.getSingleResultOrNull(entityManager.createQuery("select r from Reputation r where r.author.id =:id")
+                        .setParameter("id",answerBefore.getUser().getId()));
+        //повышение оценки ответа
+        mockMvc.perform(post(URL+"/"+answerIdCorrect+"/upVote",questionIdCorrect).header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("1"));
+        //ответ и репутация автора ответа после повышения оценки
+        Answer answerAfter = (Answer) entityManager.createQuery("select a from Answer a where a.id = :ansId")
+                .setParameter("ansId",answerIdCorrect).getSingleResult();
+        Optional<Reputation> reputationAfter = SingleResultUtil.getSingleResultOrNull(entityManager.createQuery("select r from Reputation r where r.author.id =:id")
+                .setParameter("id",answerAfter.getUser().getId()));
+        List<VoteAnswer> voteAnswerList = answerAfter.getVoteAnswers();
+        assertTrue(answerBefore.getId() == answerAfter.getId()); //проверка что ответ тот же
+        assertTrue(voteAnswerList.size() == 1); // проверка что у ответа появился 1 голос
+        assertTrue(voteAnswerList.get(0).getVote() == 1); //проверка что оценка положительная
+        assertFalse(reputationBefore.isPresent());//проверка что до повышения репутации у автора нет
+        assertTrue(reputationAfter.get().getCount() == 10); //проверка что репутация у автора ответа увеличилась на 10
+        //повышение оценки не существующего ответа
+        mockMvc.perform(post(URL+"/"+answerIdIncorrect+"/upVote",questionIdCorrect).header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
     }
 }
 

@@ -21,7 +21,7 @@ public abstract class ReadWriteDaoImpl<E, K> extends ReadOnlyDaoImpl<E, K> {
     public void persist(E e) {
         entityManager.persist(e);
     }
-    @Transactional
+
     public void update(E e) {
         entityManager.merge(e);
     }
