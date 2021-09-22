@@ -41,17 +41,15 @@ public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implem
         answer.setUser(user);
         answer.setIsDeleted(false);
         answer.setIsHelpful(false);
-//        answer.setHtmlBody(answerDtoService.getAnswerById(id).getBody());
         answer.setQuestion(questionService.getById(id).get());
         answer.setIsDeletedByModerator(false);
-        answer.setIsDeleted(false);
         answer.setPersistDateTime(LocalDateTime.now());
+//        answer.setDateAcceptTime(LocalDateTime.now());
+        answer.setUpdateDateTime(LocalDateTime.now());
+//        answer.setHtmlBody("text");
+        answer.setHtmlBody(answerDtoService.getAnswerDtoById(id).getBody());
         answerDao.persist(answer);
-        answer.setHtmlBody(answerDtoService.getAnswerById(answer.getId()).getBody());
-        answerDao.update(answer);
+//        answerDao.update(answer);
         return answer;
     }
-
-    /*"(select COALESCE(SUM(vote), 0)  from VoteAnswer  where answer.id = a.id) as countValuable, " +
-                "(select COALESCE(SUM(r.count), 0)  from Reputation r  where author.id = a.user.id) as countUserReputation "*/
 }

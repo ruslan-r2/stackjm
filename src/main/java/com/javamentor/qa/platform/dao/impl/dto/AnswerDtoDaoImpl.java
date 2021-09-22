@@ -44,9 +44,9 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
     }
 
     @Override
-    public AnswerDto getAnswerById(Long id) {
-        Session session = entityManager.unwrap(Session.class);
-        return ((AnswerDto) session.createQuery("select a.id as id, " +
+    public AnswerDto getAnswerDtoById(Long id) {
+//        Session session = entityManager.unwrap(Session.class);
+        return ((AnswerDto) entityManager.createQuery("select a.id as id, " +
                 "a.user.id as userId," +
                 "a.question.id as questionId," +
                 "a.htmlBody as body, " +
@@ -61,6 +61,7 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "where a.id = :id and a.isDeleted = false " +
                 "group by a.id, a.user.id, a.question.id,a.htmlBody, a.persistDateTime, a.isHelpful, a.dateAcceptTime, a.user.imageLink, a.user.nickname")
                 .setParameter("id", id)
+                .unwrap(org.hibernate.query.Query.class)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class)).getSingleResult());
     }
 }

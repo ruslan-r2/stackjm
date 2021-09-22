@@ -37,6 +37,7 @@ public class ResourceAnswerController {
     private final AnswerService answerService;
     private final UserService userService;
 
+
     @Autowired
     public ResourceAnswerController(AnswerDtoService answerDtoService, QuestionService questionService,
                                     AnswerService answerService, UserService userService) {
@@ -77,7 +78,8 @@ public class ResourceAnswerController {
         answerDto.setIsHelpful(answer.getIsHelpful());
         answerDto.setQuestionId(answer.getQuestion().getId());
         answerDto.setPersistDate(answer.getPersistDateTime());
-        answerDto.setCountUserReputation(answerDtoService.getAnswerById(answer.getId()).getCountUserReputation());
+        answerDto.setDateAccept(answer.getDateAcceptTime());
+        answerDto.setCountUserReputation(answerDtoService.getAnswerDtoById(answer.getId()).getCountUserReputation());
         return new ResponseEntity<>(answerDto, HttpStatus.OK);
     }
 }
