@@ -39,18 +39,13 @@ public class ResourceAnswerController {
     private final AnswerDtoService answerDtoService;
     private final QuestionService questionService;
     private final AnswerService answerService;
-    private final AnswerService answerService;
     private final UserService userService;
-
-    @Autowired
-    public ResourceAnswerController(AnswerDtoService answerDtoService, QuestionService questionService, AnswerService answerServic) {
 
     @Autowired
     public ResourceAnswerController(AnswerDtoService answerDtoService, QuestionService questionService,
                                     AnswerService answerService, UserService userService) {
         this.answerDtoService = answerDtoService;
         this.questionService = questionService;
-        this.answerService = answerServic;
         this.answerService = answerService;
         this.userService = userService;
     }
@@ -83,6 +78,7 @@ public class ResourceAnswerController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
     @Operation(summary = "Ответ на вопрос", description = "Позволяет добавить ответ на вопрос")
     @ApiResponse(responseCode = "200", description = "Успешное выполнение")
     @ApiResponse(responseCode = "400", description = "Вопрос не найден")
@@ -91,15 +87,16 @@ public class ResourceAnswerController {
                                                          @PathVariable @Parameter(description = "Идентификатор вопроса")
                                                                  Long questionId) throws Exception {
 
-        Answer answer = answerService.addAnswerOnQuestion(user, questionId);
-        answerDto.setId(answer.getId());
-        answerDto.setBody(answer.getHtmlBody());
-        answerDto.setUserId(answer.getUser().getId());
-        answerDto.setIsHelpful(answer.getIsHelpful());
-        answerDto.setQuestionId(answer.getQuestion().getId());
-        answerDto.setPersistDate(answer.getPersistDateTime());
-        answerDto.setDateAccept(answer.getDateAcceptTime());
-        answerDto.setCountUserReputation(answerDtoService.getAnswerDtoById(answer.getId()).getCountUserReputation());
-        return new ResponseEntity<>(answerDto, HttpStatus.OK);
+        Answer answer = answerService.addAnswerOnQuestion(user, questionId, answerDto);
+        AnswerDto answerDto1 = answerDtoService.getAnswerDtoById(answer.getId());
+//        answerDto.setId(answer.getId());
+//        answerDto.setBody(answer.getHtmlBody());
+//        answerDto.setUserId(answer.getUser().getId());
+//        answerDto.setIsHelpful(answer.getIsHelpful());
+//        answerDto.setQuestionId(answer.getQuestion().getId());
+//        answerDto.setPersistDate(answer.getPersistDateTime());
+//        answerDto.setDateAccept(answer.getDateAcceptTime());
+//        answerDto.setCountUserReputation(answerDtoService.getAnswerDtoById(answer.getId()).getCountUserReputation());
+        return new ResponseEntity<>(answerDto1, HttpStatus.OK);
     }
 }
