@@ -91,8 +91,8 @@ public class ResourceAnswerController {
     @ApiResponse(responseCode = "400", description = "Ответ не найден")
     public ResponseEntity<Long> downVote(@Parameter(description = "id ответа для снижения оценки")@PathVariable("id") Long answerId,
                                          @AuthenticationPrincipal User user ){
-        Optional<Answer> answer = answerService.getById(answerId);
-        if(answer.isPresent() && !answer.get().getUser().equals(user)){
+        Optional<Answer> answer = answerService.getAnswerForVote(answerId,user.getId());
+        if(answer.isPresent()){
             Long count = voteAnswerService.voteDown(answer.get(),user);
             return new ResponseEntity<>(count,HttpStatus.OK);
         }
