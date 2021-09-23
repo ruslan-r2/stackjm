@@ -109,9 +109,9 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                 .setParameter("ansId",answerIdCorrect).getSingleResult();
         Optional<Reputation> reputationBefore = SingleResultUtil.getSingleResultOrNull(entityManager.createQuery("select r from Reputation r where r.author.id =:id")
                         .setParameter("id",answerBefore.getUser().getId()));
-        Optional<VoteAnswer> voteBefore = SingleResultUtil.getSingleResultOrNull(entityManager.createQuery("select v from VoteAnswer v where v.answer.id = :ansId")
-                .setParameter("ansId",100L));
-        assertFalse(voteBefore.isPresent()); //проверка что оценки на ответ нет
+        List<VoteAnswer> voteBefore = entityManager.createQuery("select v from VoteAnswer v where v.answer.id = :ansId").setParameter("ansId",answerIdCorrect).getResultList();
+        assertTrue(voteBefore.isEmpty());//проверка что список оценок ответа пустой
+        assertFalse(reputationBefore.isPresent());//проверка что до повышения репутации у автора ответа нет
         //повышение оценки ответа
         mockMvc.perform(post(URL+"/"+answerIdCorrect+"/upVote",questionIdCorrect).header("Authorization", getToken(username, password)))
                 .andDo(print())
@@ -122,11 +122,11 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                 .setParameter("ansId",answerIdCorrect).getSingleResult();
         Optional<Reputation> reputationAfter = SingleResultUtil.getSingleResultOrNull(entityManager.createQuery("select r from Reputation r where r.author.id =:id")
                 .setParameter("id",answerAfter.getUser().getId()));
-        VoteAnswer voteAnswerList = (VoteAnswer) entityManager.createQuery("select v from VoteAnswer v where v.answer.id = :ansId and v.user.id = :senderId")
-                        .setParameter("ansId",answerIdCorrect).setParameter("senderId",100L).getSingleResult();
+        List<VoteAnswer> voteAfter = entityManager.createQuery("select v from VoteAnswer v where v.answer.id = :ansId").setParameter("ansId",answerIdCorrect).getResultList();
+
         assertTrue(answerBefore.getId() == answerAfter.getId()); //проверка что ответ тот же
-        assertTrue(voteAnswerList.getVote() == 1); //проверка что оценка положительная
-        assertFalse(reputationBefore.isPresent());//проверка что до повышения репутации у автора нет
+        assertTrue(voteAfter.size() == 1);//проверка что 1 оценка
+        assertTrue(voteAfter.get(0).getVote() == 1); //проверка что оценка положительная
         assertTrue(reputationAfter.get().getCount() == 10); //проверка что репутация у автора ответа увеличилась на 10
         //изменение своей оценки на минус
         mockMvc.perform(post(URL+"/"+answerIdCorrect+"/downVote",questionIdCorrect).header("Authorization", getToken(username, password)))
@@ -138,10 +138,11 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                 .setParameter("ansId",answerIdCorrect).getSingleResult();
         Optional<Reputation> reputationAfterChange = SingleResultUtil.getSingleResultOrNull(entityManager.createQuery("select r from Reputation r where r.author.id =:id")
                 .setParameter("id",answerAfterChange.getUser().getId()));
-        VoteAnswer voteAnswerListChange =(VoteAnswer) entityManager.createQuery("select v from VoteAnswer v where v.answer.id = :ansId and v.user.id = :senderId")
-                .setParameter("ansId",answerIdCorrect).setParameter("senderId",100L).getSingleResult();
-        assertTrue(answerAfter.getId() == answerAfterChange.getId()); //проверка что ответ тот же
-        assertTrue(voteAnswerListChange.getVote() == -1); //проверка что оценка отрицательная
+        List<VoteAnswer> voteAfterChange = entityManager.createQuery("select v from VoteAnswer v where v.answer.id = :ansId").setParameter("ansId",answerIdCorrect).getResultList();
+
+        assertTrue(answerAfterChange.getId() == answerAfterChange.getId()); //проверка что ответ тот же
+        assertTrue(voteAfterChange.size() == 1);//проверка что оценка также одна
+        assertTrue(voteAfterChange.get(0).getVote() == -1); //проверка что оценка отрицательная
         assertTrue(reputationAfterChange.get().getCount() == -5); //проверка что репутация у автора ответа уменьшилаь на 5
 
         //логин автора ответа
