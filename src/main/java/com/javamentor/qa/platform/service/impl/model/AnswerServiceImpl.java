@@ -6,7 +6,6 @@ import com.javamentor.qa.platform.models.dto.AnswerDto;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.user.User;
-import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +20,13 @@ public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implem
 
     private final AnswerDao answerDao;
     private final QuestionService questionService;
-    private final AnswerDtoService answerDtoService;
+
 
     @Autowired
-    public AnswerServiceImpl(AnswerDao answerDao, QuestionService questionService, AnswerDtoService answerDtoService) {
+    public AnswerServiceImpl(AnswerDao answerDao, QuestionService questionService) {
         super(answerDao);
         this.answerDao = answerDao;
         this.questionService = questionService;
-        this.answerDtoService = answerDtoService;
     }
 
     @Override
@@ -36,7 +34,6 @@ public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implem
     public Answer addAnswerOnQuestion(User user, Long id, AnswerDto answerDto) {
 
         Optional<Question> question = questionService.getById(id);
-
         if (!question.isPresent()) {
             throw new QuestionException("Вопроса не существует");
         }
@@ -48,12 +45,10 @@ public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implem
         answer.setQuestion(question.get());
         answer.setIsDeletedByModerator(false);
         answer.setPersistDateTime(LocalDateTime.now());
-//        answer.setDateAcceptTime(LocalDateTime.now());
         answer.setUpdateDateTime(LocalDateTime.now());
         answer.setHtmlBody(answerDto.getBody());
-        answerDao.update(answer);
-//        answer.setHtmlBody(answerDtoService.getAnswerDtoById(id).getBody());
-//        answerDao.update(answer);
+        answerDao.persist(answer);
+
         return answer;
     }
 }

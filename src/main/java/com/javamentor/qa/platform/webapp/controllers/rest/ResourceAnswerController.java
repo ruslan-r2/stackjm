@@ -3,7 +3,6 @@ package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.models.dto.AnswerDto;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
-import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
@@ -14,7 +13,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @Tag(name = "Answers контроллер", description = "Api для работы с Answers")
@@ -85,18 +82,10 @@ public class ResourceAnswerController {
     @PostMapping
     public ResponseEntity<AnswerDto> addAnswerToQuestion(@AuthenticationPrincipal User user, @RequestBody AnswerDto answerDto,
                                                          @PathVariable @Parameter(description = "Идентификатор вопроса")
-                                                                 Long questionId) throws Exception {
+                                                                 Long questionId) {
 
         Answer answer = answerService.addAnswerOnQuestion(user, questionId, answerDto);
-        AnswerDto answerDto1 = answerDtoService.getAnswerDtoById(answer.getId());
-//        answerDto.setId(answer.getId());
-//        answerDto.setBody(answer.getHtmlBody());
-//        answerDto.setUserId(answer.getUser().getId());
-//        answerDto.setIsHelpful(answer.getIsHelpful());
-//        answerDto.setQuestionId(answer.getQuestion().getId());
-//        answerDto.setPersistDate(answer.getPersistDateTime());
-//        answerDto.setDateAccept(answer.getDateAcceptTime());
-//        answerDto.setCountUserReputation(answerDtoService.getAnswerDtoById(answer.getId()).getCountUserReputation());
-        return new ResponseEntity<>(answerDto1, HttpStatus.OK);
+        AnswerDto answerDtoForReturn = answerDtoService.getAnswerDtoById(answer.getId());
+        return new ResponseEntity<>(answerDtoForReturn, HttpStatus.OK);
     }
 }
