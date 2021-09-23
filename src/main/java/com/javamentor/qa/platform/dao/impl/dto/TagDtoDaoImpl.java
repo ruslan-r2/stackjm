@@ -5,7 +5,6 @@ import com.javamentor.qa.platform.models.dto.TagDto;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import com.javamentor.qa.platform.models.dto.RelatedTagDto;
-import com.javamentor.qa.platform.models.dto.TagDto;
 import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
@@ -42,6 +41,18 @@ public class TagDtoDaoImpl implements TagDtoDao {
                 .setResultTransformer(Transformers.aliasToBean(RelatedTagDto.class))
                 .setMaxResults(10)
                 .getResultList();
+    }
+
+    @Override
+    public List<TagDto> getTrackedByUserId(Long id) {
+        Session session = entityManager.unwrap(Session.class);
+        Query query = session.createQuery("select t.id as id, " +
+                        "t.name as name " +
+                        "from TrackedTag tt " +
+                        "join tt.trackedTag t " +
+                        "where tt.user.id = :id")
+                .setParameter("id", id).setResultTransformer(new AliasToBeanResultTransformer(TagDto.class));
+        return query.getResultList();
     }
 
 }
