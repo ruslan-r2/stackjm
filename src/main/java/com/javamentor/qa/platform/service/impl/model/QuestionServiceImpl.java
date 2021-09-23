@@ -17,4 +17,10 @@ public class QuestionServiceImpl extends ReadWriteServiceImpl<Question, Long> im
         super(questionDao);
         this.questionDao = questionDao;
     }
+
+    @Override
+    public long getCountQuestion() {
+        return questionDao.getCountQuestion();
+
+    }
 }
