@@ -30,13 +30,21 @@ public class UserDtoPaginationDtoDaoImpl implements PaginationDao<UserDto> {
         int itemsOnPage = (int) parameters.get("itemsOnPage");
         int currentPage = (int) parameters.get("currentPage");
 
+        String sorted = "ORDER BY";
+
+        if (parameters.keySet().contains("sorted-reputation") && parameters.get("sorted-reputation").equals(true)){
+            sorted += " reputation DESC, ";
+        }
+
+        sorted += " user.id";
+
         return entityManager.createQuery("SELECT " +
                 "user.id as id, " +
                 "user.email as email, " +
                 "user.fullName as fullName, " +
                 "user.imageLink as linkImage, " +
                 "user.city as city, " +
-                "(SELECT coalesce(SUM(r.count),0) FROM Reputation r WHERE r.author.id = user.id) as reputation FROM User user WHERE user.isDeleted = false ORDER BY user.id")
+                "(SELECT coalesce(SUM(r.count),0) FROM Reputation r WHERE r.author.id = user.id) as reputation FROM User user WHERE user.isDeleted = false " + sorted)
                 .unwrap(org.hibernate.query.Query.class)
                 .setResultTransformer(Transformers.aliasToBean(UserDto.class))
                 .setFirstResult(itemsOnPage * (currentPage - 1))
