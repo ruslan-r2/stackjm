@@ -9,21 +9,23 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AnswerDtoServiceImpl  implements AnswerDtoService {
+public class AnswerDtoServiceImpl implements AnswerDtoService {
 
 
-    private AnswerDtoDao answerDtoDao;
+    private final AnswerDtoDao answerDtoDao;
 
     @Autowired
-    public AnswerDtoServiceImpl( AnswerDtoDao answerDtoDao) {
+    public AnswerDtoServiceImpl(AnswerDtoDao answerDtoDao) {
         this.answerDtoDao = answerDtoDao;
     }
 
     @Override
-    public List<AnswerDto> getAllAnswerDtoByQuestionId(Long id){
+    public List<AnswerDto> getAllAnswerDtoByQuestionId(Long id) {
         return answerDtoDao.getAllAnswersByQuestionId(id);
     }
 
     @Override
-    public AnswerDto getAnswerDtoById(Long answerId) { return answerDtoDao.getAnswerDtoById(answerId);}
+    public AnswerDto getAnswerDtoById(Long answerId) {
+        return answerDtoDao.getAnswerDtoById(answerId);
+    }
 }
