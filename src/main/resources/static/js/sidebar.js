@@ -1,5 +1,4 @@
-document.body.insertAdjacentHTML("afterbegin","<div class=\"container\">" +
-    "<div id=\"left-sidebar\" data-is-here-when=\"md lg\" class=\"left-sidebar js-pinned-left-sidebar ps-relative\">\n" +
+document.querySelector("div").insertAdjacentHTML("afterbegin","<div id=\"left-sidebar\" data-is-here-when=\"md lg\" class=\"left-sidebar js-pinned-left-sidebar ps-relative\">\n" +
     "    <div class=\"left-sidebar--sticky-container js-sticky-leftnav\">\n" +
     "        <nav role=\"navigation\">\n" +
     "            <ol class=\"nav-links\">\n" +
@@ -64,5 +63,4 @@ document.body.insertAdjacentHTML("afterbegin","<div class=\"container\">" +
     "\n" +
     "</div>" +
     "<div id=\"content\" class=\"snippet-hidden\">" +
-    "</div>" +
     "</div>");
