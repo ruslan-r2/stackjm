@@ -80,19 +80,13 @@ public class ResourceTagController {
     }
 
     @Operation(summary = "Возвращает все отслеживаемые теги авторизированного пользователя")
-    @ApiResponse(responseCode = "204", description = "у авторизованного пользователя отсутствуют отслеживаемые теги",
-            content = @Content(schema = @Schema()))
     @ApiResponse(responseCode = "200", description = "успешно",
             content = @Content(mediaType = "application/json",
                     array = @ArraySchema(schema = @Schema(implementation = TagDto.class))))
     @GetMapping("/api/user/tag/tracked")
     public ResponseEntity<List<TagDto>> getAllAuthorizedUserTrackedTags() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<TagDto> tags = tagDtoDao.getTrackedByUserId(user.getId());
-        if (tags.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(tags);
+        return ResponseEntity.ok(tagDtoDao.getTrackedByUserId(user.getId()));
     }
 
 }
