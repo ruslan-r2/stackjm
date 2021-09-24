@@ -57,26 +57,3 @@ public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implem
         return answer;
     }
 }
-
-//    AnswerDto answerDto = new AnswerDto();
-//        answerDto.setId(answerConverter.answerToAnswerDto(answer).getId());
-//                answerDto.setQuestionId(answerConverter.answerToAnswerDto(answer).getId());
-//                answerDto.setUserId(user.getId());
-//                answerDto.setBody(answerConverter.answerToAnswerDto(answer).getBody());
-//                answerDto.setPersistDate(answerConverter.answerToAnswerDto(answer).getPersistDate());
-//                answerDto.setIsHelpful(answerConverter.answerToAnswerDto(answer).getIsHelpful());
-//                answerDto.setCountUserReputation(answerConverter.answerToAnswerDto(answer).getCountUserReputation());
-//                answerDao.update(answerConverter.answerDtoToAnswer(answerDto));
-//                return answerConverter.answerDtoToAnswer(answerDto);
-//        AnswerDto convertAnswer = answerConverter.answerToAnswerDto(answer);
-//
-//        Answer answer1 = new Answer();
-//        answer1.setUser(user);
-//        answer1.setIsDeleted(false);
-//        answer1.setIsHelpful(false);
-//        answer1.setQuestion(question.get());
-//        answer1.setIsDeletedByModerator(false);
-//        answer1.setPersistDateTime(LocalDateTime.now());
-//        answer1.setUpdateDateTime(LocalDateTime.now());
-//        answer1.setHtmlBody(convertAnswer.getBody());
-//        answerDao.persist(answer1);
