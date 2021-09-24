@@ -16,7 +16,7 @@ document.body.insertAdjacentHTML("afterbegin", "<header class=\"top-bar js-top-b
     "  <div class=\"wmx12 mx-auto d-flex ai-center h100\" role=\"menubar\">\n" +
     "    <div class=\"-main flex--item\">\n" +
     "      <a href=\"\" class=\"-logo js-gps-track\" data-gps-track=\"top_nav.click({is_current:true, location:1, destination:8})\">\n" +
-    "<img src=\"stackJM.PNG\" width=\"150px\" height=\"50px\"/>" +
+    "<img src=\"images/logoStackJM.PNG\" width=\"150px\" height=\"50px\"/>" +
     "      </a>\n" +
     "\n" +
     "\n" +
