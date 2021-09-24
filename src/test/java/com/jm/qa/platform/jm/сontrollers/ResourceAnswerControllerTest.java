@@ -98,6 +98,8 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     @DataSet(value = "resource_answer_controller/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
     public void addAnswerToQuestionTest_getQuestionId() throws Exception {
         AnswerDto answerDto = new AnswerDto();
+        answerDto.setUserId(101L);
+        answerDto.setQuestionId(100L);
         answerDto.setBody("body");
 
         String jsonAnswerDto = objectMapper.writeValueAsString(answerDto);
