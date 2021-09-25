@@ -8,4 +8,5 @@ import java.util.List;
 public interface TagDtoDao {
     List<RelatedTagDto> getTopTags();
     List<TagDto> getByQuestionId(Long id);
+    List<TagDto> getIgnoredTagsByUserId(Long id);
 }

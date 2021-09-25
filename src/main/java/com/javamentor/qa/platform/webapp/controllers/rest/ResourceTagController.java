@@ -1,6 +1,7 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.TagDtoDao;
+import com.javamentor.qa.platform.models.dto.IgnoredTagDto;
 import com.javamentor.qa.platform.models.dto.RelatedTagDto;
 import com.javamentor.qa.platform.models.dto.TagDto;
 import com.javamentor.qa.platform.models.entity.question.IgnoredTag;
@@ -76,6 +77,16 @@ public class ResourceTagController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ignoredTagService.persist(new IgnoredTag(tag.get(), user));
         return new ResponseEntity<>(tagConverter.TagToTagDto(tag.get()), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Возвращает игнорируемые теги пользователя")
+    @ApiResponse(responseCode = "200", description = "успешно",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = IgnoredTagDto.class)))
+    @GetMapping("/api/user/tag/ignored")
+    public ResponseEntity<List<TagDto>> getIgnoreTags() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(tagDtoDao.getIgnoredTagsByUserId(user.getId()));
     }
 
 }
