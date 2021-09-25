@@ -45,14 +45,17 @@ public class TagDtoDaoImpl implements TagDtoDao {
     }
 
     public List<TagDto> getIgnoredTagsByUserId(Long id) {
-        Session session = entityManager.unwrap(Session.class);
-        Query query = session.createQuery("SELECT t.id AS id, " +
+        return entityManager.unwrap(Session.class)
+                .getSession()
+                .createQuery(
+                    "SELECT t.id AS id, " +
                         "t.name AS name " +
                         "FROM IgnoredTag it " +
                         "JOIN it.ignoredTag t " +
                         "WHERE it.user.id = :id")
-                .setParameter("id", id).setResultTransformer(new AliasToBeanResultTransformer(IgnoredTagDto.class));
-        return query.getResultList();
+                .setParameter("id", id)
+                .setResultTransformer(new AliasToBeanResultTransformer(IgnoredTagDto.class))
+                .getResultList();
     }
 
 }
