@@ -1,0 +1,19 @@
+comment:
+  - id: 100
+    user_id: 100
+    text: "Text comment good"
+    persist_date: 1990-10-10 00:00:00
+    last_redaction_date: 1990-10-10 00:00:00
+    conmment_type: 1
+  - id: 101
+    user_id: 101
+    text: "Text comment bad"
+    persist_date: 1990-10-10 00:00:00
+    last_redaction_date: 1990-10-10 00:00:00
+    conmment_type: 1
+  - id: 102
+    user_id: 101
+    text: "Text comment perfect"
+    persist_date: 1990-10-10 00:00:00
+    last_redaction_date: 1990-10-10 00:00:00
+    conmment_type: 1
