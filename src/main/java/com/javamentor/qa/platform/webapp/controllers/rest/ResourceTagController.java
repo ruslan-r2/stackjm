@@ -91,7 +91,7 @@ public class ResourceTagController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = IgnoredTagDto.class)))
     @GetMapping("/api/user/tag/ignored")
-    public ResponseEntity<List<TagDto>> getIgnoreTags() {
+    public ResponseEntity<List<IgnoredTagDto>> getIgnoreTags() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(tagDtoService.getIgnoredTagsByUserId(user.getId()));
     }

@@ -1,9 +1,9 @@
 package com.javamentor.qa.platform.service.abstracts.dto;
 
-import com.javamentor.qa.platform.models.dto.TagDto;
+import com.javamentor.qa.platform.models.dto.IgnoredTagDto;
 
 import java.util.List;
 
 public interface TagDtoService {
-    List<TagDto> getIgnoredTagsByUserId(Long id);
+    List<IgnoredTagDto> getIgnoredTagsByUserId(Long id);
 }
