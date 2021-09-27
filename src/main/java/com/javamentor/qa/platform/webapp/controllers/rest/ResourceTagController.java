@@ -3,9 +3,11 @@ package com.javamentor.qa.platform.webapp.controllers.rest;
 import com.javamentor.qa.platform.dao.abstracts.dto.TagDtoDao;
 import com.javamentor.qa.platform.models.dto.RelatedTagDto;
 import com.javamentor.qa.platform.models.dto.TagDto;
+import com.javamentor.qa.platform.models.dto.TrackedTagDto;
 import com.javamentor.qa.platform.models.entity.question.IgnoredTag;
 import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.javamentor.qa.platform.models.entity.user.User;
+import com.javamentor.qa.platform.service.abstracts.dto.TagDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.IgnoredTagService;
 import com.javamentor.qa.platform.service.abstracts.model.TagService;
 import com.javamentor.qa.platform.service.abstracts.model.UserService;
@@ -47,6 +49,9 @@ public class ResourceTagController {
     @Autowired
     private IgnoredTagService ignoredTagService;
 
+    @Autowired
+    private TagDtoService tagDtoService;
+
     public ResourceTagController(TagDtoDao tagDtoDao, UserService userService, TagService tagService, TagConverter tagConverter, IgnoredTagService ignoredTagService) {
         this.tagDtoDao = tagDtoDao;
         this.userService = userService;
@@ -82,11 +87,11 @@ public class ResourceTagController {
     @Operation(summary = "Возвращает все отслеживаемые теги авторизированного пользователя")
     @ApiResponse(responseCode = "200", description = "успешно",
             content = @Content(mediaType = "application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = TagDto.class))))
+                    array = @ArraySchema(schema = @Schema(implementation = TrackedTagDto.class))))
     @GetMapping("/api/user/tag/tracked")
-    public ResponseEntity<List<TagDto>> getAllAuthorizedUserTrackedTags() {
+    public ResponseEntity<List<TrackedTagDto>> getAllAuthorizedUserTrackedTags() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok(tagDtoDao.getTrackedByUserId(user.getId()));
+        return ResponseEntity.ok(tagDtoService.getTrackedByUserId(user.getId()));
     }
 
 }

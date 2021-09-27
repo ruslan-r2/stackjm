@@ -2,6 +2,7 @@ package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.TagDtoDao;
 import com.javamentor.qa.platform.models.dto.TagDto;
+import com.javamentor.qa.platform.models.dto.TrackedTagDto;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import com.javamentor.qa.platform.models.dto.RelatedTagDto;
@@ -44,15 +45,14 @@ public class TagDtoDaoImpl implements TagDtoDao {
     }
 
     @Override
-    public List<TagDto> getTrackedByUserId(Long id) {
-        Session session = entityManager.unwrap(Session.class);
-        Query query = session.createQuery("select t.id as id, " +
-                        "t.name as name " +
-                        "from TrackedTag tt " +
-                        "join tt.trackedTag t " +
-                        "where tt.user.id = :id")
-                .setParameter("id", id).setResultTransformer(new AliasToBeanResultTransformer(TagDto.class));
-        return query.getResultList();
+    public List<TrackedTagDto> getTrackedByUserId(Long id) {
+        return entityManager.createQuery(
+                "select new com.javamentor.qa.platform.models.dto.TrackedTagDto(" +
+                        "t.id, " +
+                        "t.name) " +
+                        "from TrackedTag tt join tt.trackedTag t where tt.user.id = :id", TrackedTagDto.class)
+                .setParameter("id", id)
+                .getResultList();
     }
 
 }
