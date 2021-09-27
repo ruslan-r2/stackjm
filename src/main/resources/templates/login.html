@@ -12,18 +12,30 @@
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript"
             src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+            src="/js/login.js"></script>
 </head>
 
 <body>
 <h1>Login</h1>
 <div class="container unauthenticated">
     <div>
+        <form onsubmit="loginSubmit(event, this)">
+            <label for="inputUsername">Username</label><br>
+            <input id="inputUsername" type="email" name="login"><br>
+
+            <label for="inputPassword">Password</label><br>
+            <input id="inputPassword" type="password" name="pass"><br>
+
+            <input id="inputSubmit" type="submit" value="Login"><br><br>
+        </form>
+    </div>
+    <div>
         With GitHub: <a href="/oauth2/authorization/github">click here</a>
     </div>
     <div>
         With Google: <a href="/oauth2/authorization/google">click here</a>
     </div>
-
     <div>
         With vk: <a href="/oauth2/authorization/vk">click here</a>
     </div>
