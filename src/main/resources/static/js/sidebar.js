@@ -61,6 +61,4 @@ document.querySelector("div").insertAdjacentHTML("afterbegin","<div id=\"left-si
     "\n" +
     "\n" +
     "\n" +
-    "</div>" +
-    "<div id=\"content\" class=\"snippet-hidden\">" +
     "</div>");
