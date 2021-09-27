@@ -50,8 +50,8 @@ public class TagDtoDaoImpl implements TagDtoDao {
                                 "FROM IgnoredTag it " +
                                 "JOIN it.ignoredTag t " +
                                 "WHERE it.user.id = :id")
-                .unwrap(Query.class)
                 .setParameter("id", id)
+                .unwrap(org.hibernate.query.Query.class)
                 .getResultList();
     }
 

@@ -11,7 +11,6 @@ import com.javamentor.qa.platform.service.abstracts.dto.TagDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.IgnoredTagService;
 import com.javamentor.qa.platform.service.abstracts.model.TagService;
 import com.javamentor.qa.platform.service.abstracts.model.UserService;
-import com.javamentor.qa.platform.service.impl.dto.TagDtoServiceImpl;
 import com.javamentor.qa.platform.webapp.converters.TagConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -52,7 +51,9 @@ public class ResourceTagController {
     @Autowired
     private TagDtoService tagDtoService;
 
-    public ResourceTagController(TagDtoDao tagDtoDao, UserService userService, TagService tagService, TagConverter tagConverter, IgnoredTagService ignoredTagService, TagDtoService tagDtoService) {
+    public ResourceTagController(TagDtoDao tagDtoDao, UserService userService, TagService tagService,
+                                 TagConverter tagConverter, IgnoredTagService ignoredTagService,
+                                 TagDtoService tagDtoService) {
         this.tagDtoDao = tagDtoDao;
         this.userService = userService;
         this.tagService = tagService;
