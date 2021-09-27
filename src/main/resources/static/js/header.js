@@ -1,4 +1,4 @@
-function CSSLoad(file){
+function CSSLoad(file) {
     var link = document.createElement("link");
     link.setAttribute("rel", "stylesheet");
     link.setAttribute("type", "text/css");
@@ -10,6 +10,7 @@ function CSSLoad(file){
     link1.setAttribute("href", "https://cdn.sstatic.net/Sites/ru/primary.css?v=624cbd0eddf4");
     document.getElementsByTagName("head")[0].appendChild(link1)
 }
+
 CSSLoad('/addStyles.css');
 
 document.body.insertAdjacentHTML("afterbegin", "<header class=\"top-bar js-top-bar top-bar__network\">\n" +
