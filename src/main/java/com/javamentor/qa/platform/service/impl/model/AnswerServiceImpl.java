@@ -9,8 +9,8 @@ import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -27,6 +27,10 @@ public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implem
         this.answerDao = answerDao;
         this.questionService = questionService;
     }
+    @Override
+    public Optional<Answer> getAnswerForVote(Long answerId, Long userId) {
+        return answerDao.getAnswerForVote(answerId,userId);
+    }
 
     @Override
     @Transactional
@@ -36,7 +40,6 @@ public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implem
         if (!question.isPresent()) {
             throw new QuestionException("Вопроса не существует");
         }
-
         Answer answer = new Answer();
         answer.setUser(answerMakeFromDto.getUser());
         answer.setIsDeleted(false);
@@ -47,7 +50,6 @@ public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implem
         answer.setUpdateDateTime(LocalDateTime.now());
         answer.setHtmlBody(answerMakeFromDto.getHtmlBody());
         answerDao.persist(answer);
-
         return answer;
     }
 }
