@@ -1,11 +1,18 @@
 package com.javamentor.qa.platform.service.impl.model;
 
 import com.javamentor.qa.platform.dao.abstracts.model.AnswerDao;
-import com.javamentor.qa.platform.dao.impl.model.AnswerDaoImpl;
+import com.javamentor.qa.platform.exception.QuestionException;
+import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
+import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
+import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implements AnswerService {
@@ -20,12 +27,10 @@ public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implem
         this.answerDao = answerDao;
         this.questionService = questionService;
     }
-
     @Override
     public Optional<Answer> getAnswerForVote(Long answerId, Long userId) {
         return answerDao.getAnswerForVote(answerId,userId);
     }
-}
 
     @Override
     @Transactional
@@ -35,7 +40,6 @@ public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implem
         if (!question.isPresent()) {
             throw new QuestionException("Вопроса не существует");
         }
-
         Answer answer = new Answer();
         answer.setUser(answerMakeFromDto.getUser());
         answer.setIsDeleted(false);
@@ -46,7 +50,6 @@ public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implem
         answer.setUpdateDateTime(LocalDateTime.now());
         answer.setHtmlBody(answerMakeFromDto.getHtmlBody());
         answerDao.persist(answer);
-
         return answer;
     }
 }
