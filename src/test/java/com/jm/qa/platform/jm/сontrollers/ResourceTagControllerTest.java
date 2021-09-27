@@ -85,7 +85,7 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$[1].name", is("Spring")));
 
         mockMvc.perform(get("/api/user/tag/ignored")
-                        .header("Authorization", getToken("user1@mail.ru", "user1"))
+                        .header("Authorization", getToken("ruslan@mail.ru", "user1"))
                 )
                 .andDo(print())
                 .andExpect(status().isOk())

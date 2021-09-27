@@ -10,10 +10,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(name="IgnoredTagDto", description = "DTO возвращающая игнорируемые тэги")
+@Schema(name="IgnoredTagDto", description = "Игнорируемый тэг")
 public class IgnoredTagDto {
-    @Schema(description = "id тэга")
+    @Schema(description = "Id тэга")
     private Long id;
-    @Schema(description = "название тэга")
+    @Schema(description = "Название тэга")
     private String name;
 }
