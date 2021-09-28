@@ -23,7 +23,7 @@ public class TagDtoServiceImpl implements TagDtoService {
     public List<IgnoredTagDto> getIgnoredTagsByUserId(Long id) {
         return tagDtoDao.getIgnoredTagsByUserId(id);
     }
-}
+
     public List<TrackedTagDto> getTrackedByUserId(Long id) {
         return tagDtoDao.getTrackedByUserId(id);
     }
