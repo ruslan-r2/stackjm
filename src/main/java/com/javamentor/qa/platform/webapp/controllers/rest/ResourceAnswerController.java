@@ -3,18 +3,15 @@ package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.models.dto.AnswerDto;
 import com.javamentor.qa.platform.models.dto.CommentAnswerDto;
-import com.javamentor.qa.platform.models.entity.Comment;
-import com.javamentor.qa.platform.models.entity.CommentType;
+import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.question.answer.CommentAnswer;
 import com.javamentor.qa.platform.models.entity.user.User;
-import com.javamentor.qa.platform.models.entity.question.answer.Answer;
-import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
+import com.javamentor.qa.platform.service.abstracts.dto.CommentAnswerDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
+import com.javamentor.qa.platform.service.abstracts.model.CommentAnswerService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
-import com.javamentor.qa.platform.service.abstracts.model.UserService;
 import com.javamentor.qa.platform.webapp.converters.AnswerConverter;
-import com.javamentor.qa.platform.webapp.converters.CommentAnswerConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,10 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -44,26 +38,24 @@ import java.util.List;
 public class ResourceAnswerController {
 
     private final AnswerDtoService answerDtoService;
+    private final CommentAnswerDtoService commentAnswerDtoService;
     private final QuestionService questionService;
     private final AnswerService answerService;
+    private final CommentAnswerService commentAnswerService;
     private final AnswerConverter answerConverter;
-    private final UserService userService;
-    private final AnswerService answerService;
-    private final CommentAnswerConverter commentAnswerConverter;
+
 
     @Autowired
-    public ResourceAnswerController(AnswerDtoService answerDtoService, QuestionService questionService,
-                                    AnswerService answerService, AnswerConverter answerConverter, UserService userService) {
-    public ResourceAnswerController(AnswerDtoService answerDtoService, QuestionService questionService, AnswerService answerService, CommentAnswerConverter commentAnswerConverter) {
+    public ResourceAnswerController(AnswerDtoService answerDtoService, CommentAnswerDtoService commentAnswerDtoService,
+                                    QuestionService questionService, AnswerService answerService,
+                                    CommentAnswerService commentAnswerService, AnswerConverter answerConverter) {
         this.answerDtoService = answerDtoService;
+        this.commentAnswerDtoService = commentAnswerDtoService;
         this.questionService = questionService;
         this.answerService = answerService;
+        this.commentAnswerService = commentAnswerService;
         this.answerConverter = answerConverter;
-        this.userService = userService;
-        this.answerService = answerService;
-        this.commentAnswerConverter = commentAnswerConverter;
     }
-
 
     @GetMapping
     @Operation(summary = "Возвращает лист DTO ответов по id вопроса")
@@ -105,37 +97,20 @@ public class ResourceAnswerController {
         Answer answerOnQuestion = answerService.addAnswerOnQuestion(user, questionId, answerMakeFromDto);
         return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerOnQuestion.getId()), HttpStatus.OK);
     }
+
     @Operation(summary = "Комментарий к ответу", description = "Позволяет добавить комментарий к ответу на вопрос")
     @ApiResponse(responseCode = "200", description = "Успешное выполнение")
     @ApiResponse(responseCode = "400", description = "Ответ не найден")
     @PostMapping("/{answerId}/comment")
     public ResponseEntity<CommentAnswerDto> addCommentToAnswer(@AuthenticationPrincipal User user,
-                                                               @Parameter(description = "комментарий который будет добавлен к ответу") String comment,
+                                                               @Parameter(description = "комментарий который будет добавлен к ответу")
+                                                               @RequestBody String comment,
                                                                @Parameter(description = "id ответа к которому добавляем комментарий")
-                                                               @PathVariable("answerId") Long id, @PathVariable Long questionId) {
+                                                               @PathVariable("answerId") Long id) {
 
-        if (!answerService.getById(id).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        Comment commentType = new Comment();
-        commentType.setCommentType(CommentType.ANSWER);
-        commentType.setText(comment);
-        commentType.setUser(user);
-        commentType.setLastUpdateDateTime(LocalDateTime.now());
-        commentType.setPersistDateTime(LocalDateTime.now());
-
-
-        CommentAnswer commentForAnswer = new CommentAnswer();
-        commentForAnswer.setAnswer(answerService.getById(id).get());
-        commentForAnswer.setComment(commentType);
-        commentForAnswer.setUser(user);
-//        if (comment == null || comment.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//        commentForAnswer.setText(comment);
-
-
-        return new ResponseEntity<>(commentAnswerConverter.commentAnswerToCommentAnswerDto(commentForAnswer), HttpStatus.OK);
+        CommentAnswer commentAnswer = commentAnswerService.addCommentToAnswer(user, id, comment);
+        return new ResponseEntity<>(commentAnswerDtoService.getCommentAnswerDtoById(commentAnswer.getAnswer().getId()), HttpStatus.OK);
     }
 }
+
+
