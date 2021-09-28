@@ -31,3 +31,19 @@ user_entity:
     password: "$2a$10$EO4tL7b5hFUbHFb46NmGheExGu2p1mJT0alqqggCa6Nl.RT4nOqh."
     persist_date: "2021-08-17 19:10:25"
     role_id: 101
+  - id: 102
+    about: "i'm user"
+    city: "Yeisk"
+    email: "ruslan@mail.ru"
+    full_name: "just ruslan"
+    image_link: "ruslan.image.com"
+    is_deleted: "false"
+    is_enabled: "true"
+    last_redaction_date: "2021-08-17 20:22:25"
+    link_github: "ruslan.github.com"
+    link_site: "ruslan.site.com"
+    link_vk: "vk.com/ruslan"
+    nickname: "ruslan"
+    password: "$2a$10$FTpvafkPK1JYZbBmPyA3Pugk1tFUfYL.uGgWOUmHIe0vfxPZkRPRy"
+    persist_date: "2021-08-17 19:10:25"
+    role_id: 101
