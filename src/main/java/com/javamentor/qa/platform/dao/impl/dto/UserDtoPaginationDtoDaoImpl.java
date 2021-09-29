@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository("allUsers")
-public class UserDtoPaginationDtoDaoImpl implements PaginationDao<Object> {
+public class UserDtoPaginationDtoDaoImpl implements PaginationDao<UserDto> {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -26,7 +26,7 @@ public class UserDtoPaginationDtoDaoImpl implements PaginationDao<Object> {
 
     @Override
     @SuppressWarnings("deprecation")
-    public List<Object> getItems(Map<String, Object> parameters) {
+    public List<UserDto> getItems(Map<String, Object> parameters) {
         int itemsOnPage = (int) parameters.get("itemsOnPage");
         int currentPage = (int) parameters.get("currentPage");
 
