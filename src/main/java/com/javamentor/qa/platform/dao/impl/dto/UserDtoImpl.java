@@ -25,7 +25,8 @@ public class UserDtoImpl implements UserDtoDao {
                         "u.fullName," +
                         "u.imageLink," +
                         "u.city," +
-                        "COALESCE(SUM(r.count), 0)) " +
+                        "COALESCE(SUM(r.count), 0)," +
+                        "u.persistDateTime) " +
                         "FROM Reputation r RIGHT JOIN r.author u WHERE u.id = :id GROUP BY u.id, u.email, u.fullName, u.imageLink, u.city",
                 UserDto.class).setParameter("id", id);
         return SingleResultUtil.getSingleResultOrNull(typedQuery);
