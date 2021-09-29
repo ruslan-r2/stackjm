@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository("allUsers")
-public class UserDtoPaginationDtoDaoImpl implements PaginationDao<UserDto> {
+public class UserDtoPaginationDtoDaoImpl implements PaginationDao<Object> {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -26,14 +26,17 @@ public class UserDtoPaginationDtoDaoImpl implements PaginationDao<UserDto> {
 
     @Override
     @SuppressWarnings("deprecation")
-    public List<UserDto> getItems(Map<String, Object> parameters) {
+    public List<Object> getItems(Map<String, Object> parameters) {
         int itemsOnPage = (int) parameters.get("itemsOnPage");
         int currentPage = (int) parameters.get("currentPage");
 
         String sorted = "ORDER BY";
 
-        if (parameters.keySet().contains("sorted-reputation") && parameters.get("sorted-reputation").equals(true)){
+        if (parameters.containsKey("sorted-reputation") && parameters.get("sorted-reputation").equals(true)){
             sorted += " reputation DESC, ";
+        }
+        if (parameters.containsKey("sorted-registrationDate") && parameters.get("sorted-registrationDate").equals(true)){
+            sorted += " registrationDate DESC, ";
         }
 
         sorted += " user.id";
@@ -44,7 +47,8 @@ public class UserDtoPaginationDtoDaoImpl implements PaginationDao<UserDto> {
                 "user.fullName as fullName, " +
                 "user.imageLink as linkImage, " +
                 "user.city as city, " +
-                "(SELECT coalesce(SUM(r.count),0) FROM Reputation r WHERE r.author.id = user.id) as reputation FROM User user WHERE user.isDeleted = false " + sorted)
+                "(SELECT coalesce(SUM(r.count),0) FROM Reputation r WHERE r.author.id = user.id) as reputation, " +
+                "user.persistDateTime as registrationDate FROM User user WHERE user.isDeleted = false " + sorted)
                 .unwrap(org.hibernate.query.Query.class)
                 .setResultTransformer(Transformers.aliasToBean(UserDto.class))
                 .setFirstResult(itemsOnPage * (currentPage - 1))

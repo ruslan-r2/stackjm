@@ -69,4 +69,19 @@ public class ResourceUserController {
         PageDto<UserDto> pageDto = userDtoService.getPageDto(parameters);
         return new ResponseEntity<>(pageDto, HttpStatus.OK);
     }
+
+    @Operation(summary = "Возвращает страницу пользователей, отсортированных по дате регистрации")
+    @ApiResponse(responseCode = "200", description = "успешное выполнение",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PageDto.class)))
+    @GetMapping(value = "/new")
+    public ResponseEntity<PageDto<UserDto>> getPageWhereUserSortedByRegistrationDate(@RequestParam(value = "page", required = true) Integer numberPage, @RequestParam(value = "items", required = false, defaultValue = "10") Integer countItemsOnPage) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("currentPage", numberPage);
+        parameters.put("itemsOnPage", countItemsOnPage);
+        parameters.put("sorted-registrationDate", true);
+        parameters.put("workPagination", "allUsers");
+        PageDto<UserDto> pageDto = userDtoService.getPageDto(parameters);
+        return new ResponseEntity<>(pageDto, HttpStatus.OK);
+    }
 }

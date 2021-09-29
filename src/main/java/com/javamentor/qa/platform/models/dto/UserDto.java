@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -25,4 +27,6 @@ public class UserDto {
     private String city;
     @Schema(description = "репутация пользователя")
     private Long reputation;
+    @Schema(description = "дата регистрации пользователя")
+    private LocalDateTime registrationDate;
 }
