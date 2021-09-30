@@ -1,0 +1,10 @@
+tag_tracked:
+  - id: 100
+    tracked_tag_id: 100
+    user_id: 101
+  - id: 101
+    tracked_tag_id: 101
+    user_id: 101
+  - id: 102
+    tracked_tag_id: 102
+    user_id: 101

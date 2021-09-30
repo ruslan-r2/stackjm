@@ -4,6 +4,7 @@ import com.javamentor.qa.platform.dao.abstracts.dto.TagDtoDao;
 import com.javamentor.qa.platform.models.dto.IgnoredTagDto;
 import com.javamentor.qa.platform.models.dto.RelatedTagDto;
 import com.javamentor.qa.platform.models.dto.TagDto;
+import com.javamentor.qa.platform.models.dto.TrackedTagDto;
 import com.javamentor.qa.platform.models.entity.question.IgnoredTag;
 import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.javamentor.qa.platform.models.entity.user.User;
@@ -13,6 +14,7 @@ import com.javamentor.qa.platform.service.abstracts.model.TagService;
 import com.javamentor.qa.platform.service.abstracts.model.UserService;
 import com.javamentor.qa.platform.webapp.converters.TagConverter;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -94,6 +96,16 @@ public class ResourceTagController {
     public ResponseEntity<List<IgnoredTagDto>> getIgnoreTags() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(tagDtoService.getIgnoredTagsByUserId(user.getId()));
+    }
+
+    @Operation(summary = "Возвращает все отслеживаемые теги авторизированного пользователя")
+    @ApiResponse(responseCode = "200", description = "успешно",
+            content = @Content(mediaType = "application/json",
+                    array = @ArraySchema(schema = @Schema(implementation = TrackedTagDto.class))))
+    @GetMapping("/api/user/tag/tracked")
+    public ResponseEntity<List<TrackedTagDto>> getAllAuthorizedUserTrackedTags() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(tagDtoService.getTrackedByUserId(user.getId()));
     }
 
 }
