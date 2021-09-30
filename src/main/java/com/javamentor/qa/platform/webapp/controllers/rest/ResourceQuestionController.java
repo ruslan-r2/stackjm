@@ -122,7 +122,7 @@ public class ResourceQuestionController {
                                         description = "Ответ успешно добавлен",
                                         content = @Content(mediaType = "application/json",
                                                            schema = @Schema(implementation = QuestionDto.class))),
-                           @ApiResponse(responseCode = "500",
+                           @ApiResponse(responseCode = "400",
                                         description = "Ответ не добавлен, проверьте обязательные поля")})
     @ResponseBody
     public ResponseEntity<?> addNewQuestion(@Parameter(description = "DTO создаваемого вопроса")
