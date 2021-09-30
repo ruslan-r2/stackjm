@@ -107,8 +107,8 @@ public class ResourceTagController {
                                 description = "Тег успешно добавлен в отслеживаемые",
                                 content = @Content(mediaType = "application/json",
                                 schema = @Schema(implementation = TagDto.class))),
-                  @ApiResponse(responseCode = "400",
-                               description = "Тег не найден")})
+                   @ApiResponse(responseCode = "400",
+                                description = "Тег не найден")})
     public ResponseEntity<?> addTagToTracked(@PathVariable Long id) {
         Optional<Tag> tag = tagService.getById(id);
         if (!tag.isPresent()) {
