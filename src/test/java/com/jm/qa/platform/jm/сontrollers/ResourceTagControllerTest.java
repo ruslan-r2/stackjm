@@ -93,4 +93,21 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$[0].name", is("ООП")));
     }
 
+    @Test
+    @DataSet(value = {"topTagController/tags.yml", "topTagController/users.yml", "topTagController/tracked_tags.yml",
+            "topTagController/roles.yml"}, cleanBefore = true, cleanAfter = true)
+    public void getAuthorizedUserTrackedTags() throws Exception {
+        String username = "user@mail.ru";
+        String password = "user";
+        mockMvc.perform(get("/api/user/tag/tracked")
+                        .header("Authorization", getToken(username, password))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(3)))
+                .andExpect(jsonPath("$[0].name", is("Hibernate")))
+                .andExpect(jsonPath("$[1].name", is("Spring")))
+                .andExpect(jsonPath("$[2].name", is("ООП")));
+    }
+
 }

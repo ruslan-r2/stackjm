@@ -32,8 +32,11 @@ public class UserDtoPaginationDtoDaoImpl implements PaginationDao<UserDto> {
 
         String sorted = "ORDER BY";
 
-        if (parameters.keySet().contains("sorted-reputation") && parameters.get("sorted-reputation").equals(true)){
+        if (parameters.containsKey("sorted-reputation") && parameters.get("sorted-reputation").equals(true)){
             sorted += " reputation DESC, ";
+        }
+        if (parameters.containsKey("sorted-registrationDate") && parameters.get("sorted-registrationDate").equals(true)){
+            sorted += " registrationDate DESC, ";
         }
 
         sorted += " user.id";
@@ -44,7 +47,8 @@ public class UserDtoPaginationDtoDaoImpl implements PaginationDao<UserDto> {
                 "user.fullName as fullName, " +
                 "user.imageLink as linkImage, " +
                 "user.city as city, " +
-                "(SELECT coalesce(SUM(r.count),0) FROM Reputation r WHERE r.author.id = user.id) as reputation FROM User user WHERE user.isDeleted = false " + sorted)
+                "(SELECT coalesce(SUM(r.count),0) FROM Reputation r WHERE r.author.id = user.id) as reputation, " +
+                "user.persistDateTime as registrationDate FROM User user WHERE user.isDeleted = false " + sorted)
                 .unwrap(org.hibernate.query.Query.class)
                 .setResultTransformer(Transformers.aliasToBean(UserDto.class))
                 .setFirstResult(itemsOnPage * (currentPage - 1))
