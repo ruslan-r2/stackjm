@@ -7,6 +7,7 @@ import com.javamentor.qa.platform.models.dto.TagDto;
 import com.javamentor.qa.platform.models.dto.TrackedTagDto;
 import com.javamentor.qa.platform.models.entity.question.IgnoredTag;
 import com.javamentor.qa.platform.models.entity.question.Tag;
+import com.javamentor.qa.platform.models.entity.question.TrackedTag;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.TagDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.IgnoredTagService;
@@ -18,12 +19,14 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -96,6 +99,25 @@ public class ResourceTagController {
     public ResponseEntity<List<IgnoredTagDto>> getIgnoreTags() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(tagDtoService.getIgnoredTagsByUserId(user.getId()));
+    }
+
+    @PostMapping("/api/user/tag/{id}/tracked")
+    @Operation(summary = "Добавляет тег в отслеживаемые")
+    @ApiResponses({@ApiResponse(responseCode = "200",
+                                description = "Тег успешно добавлен в отслеживаемые",
+                                content = @Content(mediaType = "application/json",
+                                schema = @Schema(implementation = TagDto.class))),
+                  @ApiResponse(responseCode = "400",
+                               description = "Тег не найден")})
+    public ResponseEntity<?> addTagToTracked(@PathVariable Long id) {
+        Optional<Tag> tag = tagService.getById(id);
+        if (!tag.isPresent()) {
+            return ResponseEntity.badRequest().build();
+        }
+        TrackedTag trackedTag = new TrackedTag();
+        trackedTag.setUser((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        trackedTag.setTrackedTag(tag.get());
+        return ResponseEntity.ok(tagConverter.TagToTagDto(tag.get()));
     }
 
     @Operation(summary = "Возвращает все отслеживаемые теги авторизированного пользователя")
