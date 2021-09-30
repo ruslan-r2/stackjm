@@ -49,11 +49,10 @@ public class ResourceAnswerController {
 
 
     @Autowired
-    public ResourceAnswerController(AnswerDtoService answerDtoService, QuestionService questionService,
-                                    AnswerService answerService, AnswerConverter answerConverter, VoteAnswerService voteAnswerService) {
     public ResourceAnswerController(AnswerDtoService answerDtoService, CommentAnswerDtoService commentAnswerDtoService,
                                     QuestionService questionService, AnswerService answerService,
-                                    CommentAnswerService commentAnswerService, AnswerConverter answerConverter) {
+                                    CommentAnswerService commentAnswerService, AnswerConverter answerConverter,
+                                    VoteAnswerService voteAnswerService) {
         this.answerDtoService = answerDtoService;
         this.commentAnswerDtoService = commentAnswerDtoService;
         this.questionService = questionService;

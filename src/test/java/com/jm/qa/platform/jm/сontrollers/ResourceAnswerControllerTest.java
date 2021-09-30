@@ -246,7 +246,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.reputation", is(2)));
 
         Optional<CommentAnswer> commentAfter = SingleResultUtil.getSingleResultOrNull(entityManager
-                .createQuery("select ca from Comment ca where ca.id = 1"));
+                .createQuery("select ca from CommentAnswer ca where ca.id = 1"));
         assertTrue(commentAfter.isPresent());
     }
 }
