@@ -210,23 +210,19 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("Return 404 answer no exists")
+    @DisplayName("Return 400 answer no exists")
     @DataSet(value = "resource_answer_controller/addCommentToAnswer.yml",
             cleanBefore = true, cleanAfter = true)
-    public void addCommentToAnswer_isNoFound() throws Exception {
+    public void addCommentToAnswer_isBadRequest() throws Exception {
         username = "user@mail.ru";
         password = "user";
         String comment = "test comment";
         String jsonCommentAnswerDto = objectMapper.writeValueAsString(comment);
 
-        Optional<Answer> answerBefore = SingleResultUtil.getSingleResultOrNull(entityManager
-                .createQuery("select a from Answer a where a.id = 99"));
-        assertFalse(answerBefore.isPresent());
-
         mockMvc.perform(post(addCommentToAnswerUrl, 99, 99)
                 .header("Authorization", getToken(username, password))
                 .contentType(MediaType.APPLICATION_JSON).content(jsonCommentAnswerDto))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 
     @Test

@@ -53,6 +53,6 @@ public class AdviceController {
 
     @ExceptionHandler(AnswerException.class)
     public ResponseEntity<String> handleAnswerException(AnswerException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }
