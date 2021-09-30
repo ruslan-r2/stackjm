@@ -1,17 +1,29 @@
 package com.jm.qa.platform.jm.сontrollers;
 
 import com.github.database.rider.core.api.dataset.DataSet;
+import com.javamentor.qa.platform.models.dto.QuestionCreateDto;
+import com.javamentor.qa.platform.models.dto.TagDto;
+import com.javamentor.qa.platform.models.entity.question.Question;
+import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
+import io.jsonwebtoken.lang.Collections;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -23,6 +35,7 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
     private String username;
     private String password;
     private String token;
+    private String resourceQuestionControllerUrl = "/api/user/question";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -137,4 +150,192 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
         mockMvc.perform(post("/api/user/question/100/upVote").header("Authorization", getToken(username, password)))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @DataSet(value = {"resource_question_controller/addNewQuestion.yml"},
+             cleanBefore = true, cleanAfter = true)
+    void addNewQuestion_title_empty_or_null() throws Exception {
+
+        username = "user@mail.ru";
+        password = "user";
+
+        QuestionCreateDto questionCreateDto = new QuestionCreateDto();
+        List<TagDto> tags = new ArrayList<>();
+        TagDto tag = new TagDto();
+        tag.setName("tag_name");
+        tag.setDescription("tag_description");
+        tags.add(tag);
+        questionCreateDto.setDescription("question_description");
+        questionCreateDto.setTags(tags);
+
+        mockMvc.perform(post(resourceQuestionControllerUrl).
+                contentType(MediaType.APPLICATION_JSON).
+                accept(MediaType.APPLICATION_JSON).
+                content(objectMapper.writeValueAsString(questionCreateDto)).
+                header("Authorization", getToken(username, password))).
+                andDo(print()).
+                andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DataSet(value = {"resource_question_controller/addNewQuestion.yml"},
+            cleanBefore = true, cleanAfter = true)
+    void addNewQuestion_description_empty_or_null() throws Exception {
+
+        username = "user@mail.ru";
+        password = "user";
+
+        QuestionCreateDto questionCreateDto = new QuestionCreateDto();
+        List<TagDto> tags = new ArrayList<>();
+        TagDto tag = new TagDto();
+        tag.setName("tag_name");
+        tag.setDescription("tag_description");
+        tags.add(tag);
+        questionCreateDto.setTitle("question_title");
+        questionCreateDto.setTags(tags);
+
+        mockMvc.perform(post(resourceQuestionControllerUrl).
+                contentType(MediaType.APPLICATION_JSON).
+                accept(MediaType.APPLICATION_JSON).
+                content(objectMapper.writeValueAsString(questionCreateDto)).
+                header("Authorization", getToken(username, password))).
+                andDo(print()).
+                andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DataSet(value = {"resource_question_controller/addNewQuestion.yml"},
+            cleanBefore = true, cleanAfter = true)
+    void addNewQuestion_without_tags() throws Exception {
+
+        username = "user@mail.ru";
+        password = "user";
+
+        QuestionCreateDto questionCreateDto = new QuestionCreateDto();
+        questionCreateDto.setTitle("question_title");
+        questionCreateDto.setDescription("question_description");
+
+        mockMvc.perform(post(resourceQuestionControllerUrl).
+                contentType(MediaType.APPLICATION_JSON).
+                accept(MediaType.APPLICATION_JSON).
+                content(objectMapper.writeValueAsString(questionCreateDto)).
+                header("Authorization", getToken(username, password))).
+                andDo(print()).
+                andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DataSet(value = {"resource_question_controller/addNewQuestion.yml"},
+            cleanBefore = true, cleanAfter = true)
+    void addNewQuestion_with_new_tags() throws Exception {
+
+        username = "user@mail.ru";
+        password = "user";
+
+        //проверка, что такого тега нет в базе
+        List<Tag> newTagListBeforePersist = (List<Tag>) entityManager.
+                createQuery("select t from Tag t where t.name = :name and t.description = :description").
+                setParameter("name", "new_tag_name").
+                setParameter("description", "new_tag_description").getResultList();
+        assertTrue(Collections.isEmpty(newTagListBeforePersist));
+
+        QuestionCreateDto questionCreateDto = new QuestionCreateDto();
+        List<TagDto> tags = new ArrayList<>();
+        TagDto tag = new TagDto();
+        tag.setName("new_tag_name");
+        tag.setDescription("new_tag_description");
+        tags.add(tag);
+        questionCreateDto.setTitle("question_title");
+        questionCreateDto.setDescription("question_description");
+        questionCreateDto.setTags(tags);
+
+        //отправляем запрос на персист вопроса с новым тегом
+        mockMvc.perform(post(resourceQuestionControllerUrl).
+                contentType(MediaType.APPLICATION_JSON).
+                accept(MediaType.APPLICATION_JSON).
+                content(objectMapper.writeValueAsString(questionCreateDto)).
+                header("Authorization", getToken(username, password))).
+                andDo(print()).
+                andExpect(status().isOk()).
+                andExpect(jsonPath("$.title", is("question_title"))).
+                andExpect(jsonPath("$.description", is("question_description"))).
+                andExpect(jsonPath("$.listTagDto.*", hasSize(1))).
+                andExpect(jsonPath("$.listTagDto[0].name", is("new_tag_name"))).
+                andExpect(jsonPath("$.listTagDto[0].description", is("new_tag_description")));
+
+        //проверяем наличие вопроса в бд, после сохранения
+        List<Question> questionAfterPersist = (List<Question>) entityManager.
+                createQuery("select q from Question q where q.title = :title and q.description = :description").
+                setParameter("title", "question_title").
+                setParameter("description", "question_description").getResultList();
+        Long questionId = questionAfterPersist.get(0).getId();
+
+        //проверяем наличие тега в бд после сохранения
+        List<Tag> newTagListAfterPersist = (List<Tag>) entityManager.
+                createQuery("select t from Tag t where t.name = :name and t.description = :description").
+                setParameter("name", "new_tag_name").
+                setParameter("description", "new_tag_description").getResultList();
+        Long tagId = newTagListAfterPersist.get(0).getId();
+
+        //проверяем привязку тега к вопросу после сохранеия
+        assertFalse((entityManager.createNativeQuery("select * from question_has_tag where question_id = :questionId and tag_id = :tagId").
+                setParameter("questionId", questionId).setParameter("tagId", tagId).getHints()).isEmpty());;
+    }
+
+    @Test
+    @DataSet(value = {"resource_question_controller/addNewQuestion.yml"},
+            cleanBefore = true, cleanAfter = true)
+    void addNewQuestion_wit_existing_tags() throws Exception {
+
+        username = "user@mail.ru";
+        password = "user";
+
+        List<Tag> existingTagList = (List<Tag>) entityManager.
+                createQuery("select t from Tag t where t.name = :name and t.description = :description").
+                setParameter("name", "tag_name").
+                setParameter("description", "tag_description").getResultList();
+        assertFalse(Collections.isEmpty(existingTagList));
+
+        QuestionCreateDto questionCreateDto = new QuestionCreateDto();
+        List<TagDto> tags = new ArrayList<>();
+        TagDto tag = new TagDto();
+        tag.setName("tag_name");
+        tag.setDescription("tag_description");
+        tags.add(tag);
+        questionCreateDto.setTitle("question_title");
+        questionCreateDto.setDescription("question_description");
+        questionCreateDto.setTags(tags);
+
+        mockMvc.perform(post(resourceQuestionControllerUrl).
+                contentType(MediaType.APPLICATION_JSON).
+                accept(MediaType.APPLICATION_JSON).
+                content(objectMapper.writeValueAsString(questionCreateDto)).
+                header("Authorization", getToken(username, password))).
+                andDo(print()).
+                andExpect(status().isOk()).
+                andExpect(jsonPath("$.title", is("question_title"))).
+                andExpect(jsonPath("$.description", is("question_description"))).
+                andExpect(jsonPath("$.listTagDto.*", hasSize(1))).
+                andExpect(jsonPath("$.listTagDto[0].name", is("tag_name"))).
+                andExpect(jsonPath("$.listTagDto[0].description", is("tag_description")));
+
+        //проверяем наличие вопроса в бд, после сохранения
+        List<Question> questionAfterPersist = (List<Question>) entityManager.
+                createQuery("select q from Question q where q.title = :title and q.description = :description").
+                setParameter("title", "question_title").
+                setParameter("description", "question_description").getResultList();
+        Long questionId = questionAfterPersist.get(0).getId();
+
+        //проверяем наличие тега в бд после сохранения
+        List<Tag> existingTagListAfterPersist = (List<Tag>) entityManager.
+                createQuery("select t from Tag t where t.name = :name and t.description = :description").
+                setParameter("name", "tag_name").
+                setParameter("description", "tag_description").getResultList();
+        Long tagId = existingTagListAfterPersist.get(0).getId();
+
+        //проверяем привязку тега к вопросу после сохранеия
+        assertFalse((entityManager.createNativeQuery("select * from question_has_tag where question_id = :questionId and tag_id = :tagId").
+                setParameter("questionId", questionId).setParameter("tagId", tagId).getHints()).isEmpty());;
+    }
+
 }
