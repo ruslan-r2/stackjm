@@ -210,7 +210,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("Return 404 answer no found")
+    @DisplayName("Return 404 answer no exists")
     @DataSet(value = "resource_answer_controller/addCommentToAnswer.yml",
             cleanBefore = true, cleanAfter = true)
     public void addCommentToAnswer_isNoFound() throws Exception {
@@ -218,6 +218,11 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         password = "user";
         String comment = "test comment";
         String jsonCommentAnswerDto = objectMapper.writeValueAsString(comment);
+
+        Optional<Answer> answerBefore = SingleResultUtil.getSingleResultOrNull(entityManager
+                .createQuery("select a from Answer a where a.id = 99"));
+        assertFalse(answerBefore.isPresent());
+
         mockMvc.perform(post(addCommentToAnswerUrl, 99, 99)
                 .header("Authorization", getToken(username, password))
                 .contentType(MediaType.APPLICATION_JSON).content(jsonCommentAnswerDto))
@@ -230,7 +235,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     public void addCommentToAnswer_isOk() throws Exception {
         username = "user@mail.ru";
         password = "user";
-        String jsonCommentAnswerDto = objectMapper.writeValueAsString("test comment");
+        String comment = objectMapper.writeValueAsString("test comment");
 
         Optional<CommentAnswer> commentBefore = SingleResultUtil.getSingleResultOrNull(entityManager
                 .createQuery("select ca from CommentAnswer ca where ca.id = 1"));
@@ -238,7 +243,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post(addCommentToAnswerUrl, 100, 100)
                 .header("Authorization", getToken(username, password))
-                .contentType(MediaType.APPLICATION_JSON).content(jsonCommentAnswerDto))
+                .contentType(MediaType.APPLICATION_JSON).content(comment))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.userId", is(101)))

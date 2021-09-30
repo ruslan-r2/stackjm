@@ -142,9 +142,11 @@ public class ResourceAnswerController {
                                                                @RequestBody String comment,
                                                                @Parameter(description = "id ответа к которому добавляем комментарий")
                                                                @PathVariable("answerId") Long id) {
-
-        CommentAnswer commentAnswer = commentAnswerService.addCommentToAnswer(user, id, comment);
-        return new ResponseEntity<>(commentAnswerDtoService.getCommentAnswerDtoById(commentAnswer.getAnswer().getId()), HttpStatus.OK);
+        if (comment == null || comment.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        commentAnswerService.addCommentToAnswer(user, id, comment);
+        return new ResponseEntity<>(commentAnswerDtoService.getCommentAnswerDtoById(id), HttpStatus.OK);
     }
 }
 

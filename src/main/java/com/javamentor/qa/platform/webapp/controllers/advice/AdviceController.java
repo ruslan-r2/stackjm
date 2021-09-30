@@ -55,9 +55,4 @@ public class AdviceController {
     public ResponseEntity<String> handleAnswerException(AnswerException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
-
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<String> NullPointerException(NullPointerException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
 }

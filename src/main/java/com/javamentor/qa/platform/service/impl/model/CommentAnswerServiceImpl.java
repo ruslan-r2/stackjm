@@ -30,23 +30,17 @@ public class CommentAnswerServiceImpl extends ReadWriteServiceImpl<CommentAnswer
 
     @Override
     @Transactional
-    public CommentAnswer addCommentToAnswer(User user, Long answerId, String comment) {
+    public void addCommentToAnswer(User user, Long answerId, String comment) {
 
         Optional<Answer> answer = answerService.getById(answerId);
         if (!answer.isPresent()) {
             throw new AnswerException("Ответа не существует");
         }
-
         CommentAnswer commentAnswer = new CommentAnswer();
         commentAnswer.setComment(new Comment(CommentType.ANSWER));
         commentAnswer.setAnswer(answer.get());
-        if (comment == null || comment.isEmpty()) {
-            throw new NullPointerException("Комментарий не должен быть пустым или null");
-        }
         commentAnswer.setText(comment);
         commentAnswer.setUser(user);
         commentAnswerDao.persist(commentAnswer);
-
-        return commentAnswer;
     }
 }
