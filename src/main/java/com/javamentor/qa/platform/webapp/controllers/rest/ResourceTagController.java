@@ -1,6 +1,5 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
-import com.javamentor.qa.platform.dao.abstracts.dto.TagDtoDao;
 import com.javamentor.qa.platform.models.dto.IgnoredTagDto;
 import com.javamentor.qa.platform.models.dto.RelatedTagDto;
 import com.javamentor.qa.platform.models.dto.TagDto;
@@ -11,14 +10,13 @@ import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.TagDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.IgnoredTagService;
 import com.javamentor.qa.platform.service.abstracts.model.TagService;
-import com.javamentor.qa.platform.service.abstracts.model.UserService;
 import com.javamentor.qa.platform.webapp.converters.TagConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,36 +31,13 @@ import java.util.Optional;
 @RestController
 @io.swagger.v3.oas.annotations.tags.Tag(name = "Контроллер тегов", description = "Api для тегов")
 @RequestMapping
+@AllArgsConstructor
 public class ResourceTagController {
 
-    @Autowired
-    private TagDtoDao tagDtoDao;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private TagService tagService;
-
-    @Autowired
-    private TagConverter tagConverter;
-
-    @Autowired
-    private IgnoredTagService ignoredTagService;
-
-    @Autowired
-    private TagDtoService tagDtoService;
-
-    public ResourceTagController(TagDtoDao tagDtoDao, UserService userService, TagService tagService,
-                                 TagConverter tagConverter, IgnoredTagService ignoredTagService,
-                                 TagDtoService tagDtoService) {
-        this.tagDtoDao = tagDtoDao;
-        this.userService = userService;
-        this.tagService = tagService;
-        this.tagConverter = tagConverter;
-        this.ignoredTagService = ignoredTagService;
-        this.tagDtoService = tagDtoService;
-    }
+    private final TagService tagService;
+    private final TagConverter tagConverter;
+    private final IgnoredTagService ignoredTagService;
+    private final TagDtoService tagDtoService;
 
     @Operation(summary = "Возвращает лист содержащий топ-10 тегов")
     @ApiResponse(responseCode = "200", description = "успешно",
@@ -70,7 +45,7 @@ public class ResourceTagController {
                     schema = @Schema(implementation = RelatedTagDto.class)))
     @GetMapping("/api/user/tag/related")
     public ResponseEntity<List<RelatedTagDto>> getTop10Tags() {
-        return new ResponseEntity<>(tagDtoDao.getTopTags(), HttpStatus.OK);
+        return new ResponseEntity<>(tagDtoService.getTopTags(), HttpStatus.OK);
     }
 
     @Operation(summary = "добавляет тег в игнорируемые теги")
