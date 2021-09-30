@@ -7,6 +7,8 @@ import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.question.answer.CommentAnswer;
 import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
+import com.javamentor.qa.platform.models.entity.question.answer.VoteAnswer;
+import com.javamentor.qa.platform.models.entity.user.reputation.Reputation;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,8 @@ import org.springframework.http.MediaType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -35,11 +39,6 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Autowired
-    private AnswerService answerService;
-    @Autowired
-    private AnswerDtoService answerDtoService;
 
     @Test
     @DataSet(value = "resource_answer_controller/getAllAnswers.yml", cleanBefore = true, cleanAfter = true)
@@ -126,7 +125,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     @Test
     @DataSet(value = "resource_answer_controller/markAnswerToDelete.yml",
-            cleanBefore = true, cleanAfter = true)
+             cleanBefore = true, cleanAfter = true)
     public void markAnswerToDelete() throws Exception {
         username = "user@mail.ru";
         password = "user";
@@ -135,15 +134,79 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         assertFalse(answerBeforeDelete.getIsDeleted());
 
         mockMvc.perform(delete(markAnswerToDeleteUrl, 100, 100).
-                header("Authorization", getToken(username, password))).
+                        header("Authorization", getToken(username, password))).
                 andExpect(status().isOk());
 
         Answer answerAfterDelete = (Answer) entityManager.createQuery("select a from Answer a where a.id = 100").getSingleResult();
         assertTrue(answerAfterDelete.getIsDeleted());
 
         mockMvc.perform(delete(markAnswerToDeleteUrl, 100, -100).
-                header("Authorization", getToken(username, password))).
+                        header("Authorization", getToken(username, password))).
                 andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DataSet(value = "resource_answer_controller/voteAnswer.yml", cleanBefore = true, cleanAfter = true)
+    public void voteAnswer() throws Exception{
+        long questionIdCorrect = 100L;
+        long answerIdCorrect = 100L;
+        long answerIdIncorrect = -100L;
+        username = "user@mail.ru";
+        password = "user";
+        //ответ и репутация автора ответа до повышения оценки
+        Answer answerBefore = (Answer) entityManager.createQuery("select a from Answer a where a.id = :ansId")
+                .setParameter("ansId",answerIdCorrect).getSingleResult();
+        Optional<Reputation> reputationBefore = SingleResultUtil.getSingleResultOrNull(entityManager.createQuery("select r from Reputation r where r.author.id =:id")
+                        .setParameter("id",answerBefore.getUser().getId()));
+        List<VoteAnswer> voteBefore = entityManager.createQuery("select v from VoteAnswer v where v.answer.id = :ansId").setParameter("ansId",answerIdCorrect).getResultList();
+        assertTrue(voteBefore.isEmpty());//проверка что список оценок ответа пустой
+        assertFalse(reputationBefore.isPresent());//проверка что до повышения репутации у автора ответа нет
+        //повышение оценки ответа
+        mockMvc.perform(post(URL+"/"+answerIdCorrect+"/upVote",questionIdCorrect).header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("1"));
+        //ответ и репутация автора ответа после повышения оценки
+        Answer answerAfter = (Answer) entityManager.createQuery("select a from Answer a where a.id = :ansId")
+                .setParameter("ansId",answerIdCorrect).getSingleResult();
+        Optional<Reputation> reputationAfter = SingleResultUtil.getSingleResultOrNull(entityManager.createQuery("select r from Reputation r where r.author.id =:id")
+                .setParameter("id",answerAfter.getUser().getId()));
+        List<VoteAnswer> voteAfter = entityManager.createQuery("select v from VoteAnswer v where v.answer.id = :ansId").setParameter("ansId",answerIdCorrect).getResultList();
+
+        assertTrue(answerBefore.getId() == answerAfter.getId()); //проверка что ответ тот же
+        assertTrue(voteAfter.size() == 1);//проверка что 1 оценка
+        assertTrue(voteAfter.get(0).getVote() == 1); //проверка что оценка положительная
+        assertTrue(reputationAfter.get().getCount() == 10); //проверка что репутация у автора ответа увеличилась на 10
+        //изменение своей оценки на минус
+        mockMvc.perform(post(URL+"/"+answerIdCorrect+"/downVote",questionIdCorrect).header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string("1"));
+        //ответ и репутация автора после изменения  оценки
+        Answer answerAfterChange = (Answer) entityManager.createQuery("select a from Answer a where a.id = :ansId")
+                .setParameter("ansId",answerIdCorrect).getSingleResult();
+        Optional<Reputation> reputationAfterChange = SingleResultUtil.getSingleResultOrNull(entityManager.createQuery("select r from Reputation r where r.author.id =:id")
+                .setParameter("id",answerAfterChange.getUser().getId()));
+        List<VoteAnswer> voteAfterChange = entityManager.createQuery("select v from VoteAnswer v where v.answer.id = :ansId").setParameter("ansId",answerIdCorrect).getResultList();
+
+        assertTrue(answerAfterChange.getId() == answerAfterChange.getId()); //проверка что ответ тот же
+        assertTrue(voteAfterChange.size() == 1);//проверка что оценка также одна
+        assertTrue(voteAfterChange.get(0).getVote() == -1); //проверка что оценка отрицательная
+        assertTrue(reputationAfterChange.get().getCount() == -5); //проверка что репутация у автора ответа уменьшилаь на 5
+
+        //логин автора ответа
+        username = "user2@mail.ru";
+        password = "user";
+        //Попытка повышения оценки своего ответа
+        mockMvc.perform(post(URL+"/"+answerIdCorrect+"/upVote",questionIdCorrect).header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+        //повышение оценки не существующего ответа
+        mockMvc.perform(post(URL+"/"+answerIdIncorrect+"/upVote",questionIdCorrect).header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
     }
 
     @Test

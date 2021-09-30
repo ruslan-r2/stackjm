@@ -70,4 +70,27 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @DataSet(value = {"topTagController/tags.yml", "topTagController/users.yml", "topTagController/ignored_tags.yml",
+            "topTagController/roles.yml"}, cleanBefore = true, cleanAfter = true)
+    public void getIgnoreTags() throws Exception {
+
+        mockMvc.perform(get("/api/user/tag/ignored")
+                        .header("Authorization", getToken("user@mail.ru", "user"))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(2)))
+                .andExpect(jsonPath("$[0].name", is("Hibernate")))
+                .andExpect(jsonPath("$[1].name", is("Spring")));
+
+        mockMvc.perform(get("/api/user/tag/ignored")
+                        .header("Authorization", getToken("ruslan@mail.ru", "user1"))
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(1)))
+                .andExpect(jsonPath("$[0].name", is("ООП")));
+    }
+
 }

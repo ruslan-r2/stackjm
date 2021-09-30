@@ -1,11 +1,11 @@
 package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.TagDtoDao;
+import com.javamentor.qa.platform.models.dto.IgnoredTagDto;
 import com.javamentor.qa.platform.models.dto.TagDto;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import com.javamentor.qa.platform.models.dto.RelatedTagDto;
-import com.javamentor.qa.platform.models.dto.TagDto;
 import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
@@ -41,6 +41,18 @@ public class TagDtoDaoImpl implements TagDtoDao {
                                 "FROM Tag tag ORDER BY tag.questions.size DESC").unwrap(Query.class)
                 .setResultTransformer(Transformers.aliasToBean(RelatedTagDto.class))
                 .setMaxResults(10)
+                .getResultList();
+    }
+
+    public List<IgnoredTagDto> getIgnoredTagsByUserId(Long id) {
+        return entityManager
+                .createQuery(
+                        "SELECT NEW com.javamentor.qa.platform.models.dto.IgnoredTagDto(t.id, t.name)" +
+                                "FROM IgnoredTag it " +
+                                "JOIN it.ignoredTag t " +
+                                "WHERE it.user.id = :id")
+                .setParameter("id", id)
+                .unwrap(org.hibernate.query.Query.class)
                 .getResultList();
     }
 
