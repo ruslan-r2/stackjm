@@ -4,6 +4,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.javamentor.qa.platform.dao.util.SingleResultUtil;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
+import com.javamentor.qa.platform.models.entity.question.answer.CommentAnswer;
 import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
@@ -28,6 +29,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     private String URL = "/api/user/question/{questionId}/answer";
     private String markAnswerToDeleteUrl = "/api/user/question/{questionId}/answer/{answerId}";
+    private String addCommentToAnswerUrl = "/api/user/question/{questionId}/answer/{answerId}/comment";
     private String username;
     private String password;
 
@@ -142,6 +144,47 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         mockMvc.perform(delete(markAnswerToDeleteUrl, 100, -100).
                 header("Authorization", getToken(username, password))).
                 andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Return 404 answer no found")
+    @DataSet(value = "resource_answer_controller/addCommentToAnswer.yml",
+            cleanBefore = true, cleanAfter = true)
+    public void addCommentToAnswer_isNoFound() throws Exception {
+        username = "user@mail.ru";
+        password = "user";
+        String comment = "test comment";
+        String jsonCommentAnswerDto = objectMapper.writeValueAsString(comment);
+        mockMvc.perform(post(addCommentToAnswerUrl, 99, 99)
+                .header("Authorization", getToken(username, password))
+                .contentType(MediaType.APPLICATION_JSON).content(jsonCommentAnswerDto))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Return 200 answer id exists")
+    @DataSet(value = "resource_answer_controller/addCommentToAnswer.yml", cleanBefore = true, cleanAfter = true)
+    public void addCommentToAnswer_isOk() throws Exception {
+        username = "user@mail.ru";
+        password = "user";
+        String jsonCommentAnswerDto = objectMapper.writeValueAsString("test comment");
+
+        Optional<CommentAnswer> commentBefore = SingleResultUtil.getSingleResultOrNull(entityManager
+                .createQuery("select ca from CommentAnswer ca where ca.id = 1"));
+        assertFalse(commentBefore.isPresent());
+
+        mockMvc.perform(post(addCommentToAnswerUrl, 100, 100)
+                .header("Authorization", getToken(username, password))
+                .contentType(MediaType.APPLICATION_JSON).content(jsonCommentAnswerDto))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.userId", is(101)))
+                .andExpect(jsonPath("$.answerId", is(100)))
+                .andExpect(jsonPath("$.reputation", is(2)));
+
+        Optional<CommentAnswer> commentAfter = SingleResultUtil.getSingleResultOrNull(entityManager
+                .createQuery("select ca from Comment ca where ca.id = 1"));
+        assertTrue(commentAfter.isPresent());
     }
 }
 
