@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,5 +113,22 @@ public class ResourceAnswerController {
         Answer answerMakeFromDto = answerConverter.answerDtoToAnswer(answerDto);
         Answer answerOnQuestion = answerService.addAnswerOnQuestion(user, questionId, answerMakeFromDto);
         return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerOnQuestion.getId()), HttpStatus.OK);
+    }
+    @Operation(summary = "Обновляет тело комментария")
+    @ApiResponse(responseCode = "200", description = "Тело комментария успешно обновлено")
+    @ApiResponse(responseCode = "500", description = "Комментарий не найден")
+    @PutMapping("/{answerId}/body")
+    public ResponseEntity<?> updateAnswerBody(@RequestBody AnswerDto answerDto,
+                                              @PathVariable ("answerId") Long answerId) {
+        try {
+            answerDtoService.updateAnswer(answerId, answerDto);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerId),HttpStatus.OK);
+        } catch (NoResultException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

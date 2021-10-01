@@ -7,8 +7,11 @@ import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -42,7 +45,7 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
     }
 
     @Override
-    public AnswerDto getAnswerDtoById(Long id) {
+    public AnswerDto getAnswerDtoById(Long id) throws NoResultException {
         Session session = entityManager.unwrap(Session.class);
         Query query = session.createQuery("SELECT a.id as id, " +
                         "a.user.id as userId," +
@@ -60,5 +63,20 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 .setParameter("id", id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
         return (AnswerDto)query.getSingleResult();
+    }
+
+    @Override
+    @Transactional
+    public void updateAnswer(Long answerId, AnswerDto answerDto) throws RuntimeException{
+
+        if(answerDto.getBody().isEmpty() || answerDto.getBody().length() == 0) {
+            throw new RuntimeException();
+        }
+
+        entityManager.createQuery("UPDATE Answer a SET a.htmlBody = :body, a.updateDateTime = :time WHERE a.id = :id ")
+                .setParameter("id", answerId)
+                .setParameter("body", answerDto.getBody())
+                .setParameter("time", LocalDateTime.now())
+                .executeUpdate();
     }
 }

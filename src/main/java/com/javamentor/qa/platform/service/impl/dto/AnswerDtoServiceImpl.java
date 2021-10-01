@@ -28,4 +28,7 @@ public class AnswerDtoServiceImpl implements AnswerDtoService {
     public AnswerDto getAnswerDtoById(Long answerId) {
         return answerDtoDao.getAnswerDtoById(answerId);
     }
+
+    @Override
+    public void updateAnswer(Long answerId, AnswerDto answerDto) { answerDtoDao.updateAnswer(answerId, answerDto);}
 }

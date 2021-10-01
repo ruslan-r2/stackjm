@@ -1,5 +1,6 @@
 package com.jm.qa.platform.jm.сontrollers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.javamentor.qa.platform.dao.util.SingleResultUtil;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,6 +31,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
     private String URL = "/api/user/question/{questionId}/answer";
     private String markAnswerToDeleteUrl = "/api/user/question/{questionId}/answer/{answerId}";
+    private String  updateAnswerBodyUrl = "/api/user/question/{questionId}/answer/{answerId}/body";
     private String username;
     private String password;
 
@@ -203,6 +206,66 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                 .andExpect(status().isBadRequest());
 
     }
+
+    @Test
+    @DataSet(value = "resource_answer_controller/updateAnswerBody.yml", cleanBefore = true, cleanAfter = true)
+    public void updateAnswerBodyTest () throws Exception {
+        int questionId = 100;
+        int answerIdCorrect = 101;
+        int answerIdIsDeleted = 102; //isDeleted = true
+        int answerIdIsNotExist = 110; //нет в базе
+
+        username = "user@mail.ru";
+        password = "user";
+        String updatedBody = "ALL RIGHT!";
+
+        //создание Dto и JSON для теста
+        AnswerDto updateAnswerBodyDto = new AnswerDto();
+        updateAnswerBodyDto.setBody(updatedBody);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String incomingJson = objectMapper.writeValueAsString(updateAnswerBodyDto);
+
+        //Получения значения body до обновления
+        Answer answer = (Answer) entityManager.createQuery("SELECT a FROM Answer a WHERE a.id = 100").getSingleResult();
+        String bodyValueBeforeUpdate = answer.getHtmlBody();
+
+        //Тест, валидные данные
+        mockMvc.perform(put(updateAnswerBodyUrl, questionId , answerIdCorrect)
+                        .contentType(MediaType.APPLICATION_JSON).content(incomingJson)
+                        .header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("body", is(updatedBody)));
+
+        // Тест, проверка обновился ли body
+        mockMvc.perform(put(updateAnswerBodyUrl, questionId , answerIdCorrect)
+                        .contentType(MediaType.APPLICATION_JSON).content(incomingJson)
+                        .header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("body", is(not(bodyValueBeforeUpdate))));
+
+        updateAnswerBodyDto.setBody("");
+        String incomingJsonEmptyBody = objectMapper.writeValueAsString(updateAnswerBodyDto);
+        //Тест, пустая строка в anwerbody
+        mockMvc.perform(put(updateAnswerBodyUrl, questionId , answerIdCorrect)
+                        .contentType(MediaType.APPLICATION_JSON).content(incomingJsonEmptyBody)
+                        .header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+
+        //Тест, обращение к isDeleted = truе коментарию
+        mockMvc.perform(put(updateAnswerBodyUrl, questionId , answerIdIsDeleted)
+                        .contentType(MediaType.APPLICATION_JSON).content(incomingJson)
+                        .header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+
+        //Тест, обращение к несуществующему коментарию
+        mockMvc.perform(put(updateAnswerBodyUrl, questionId , answerIdIsNotExist)
+                        .contentType(MediaType.APPLICATION_JSON).content(incomingJson)
+                        .header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().is4xxClientError());
+    }
 }
-
-

@@ -8,4 +8,6 @@ public interface AnswerDtoService {
     List<AnswerDto> getAllAnswerDtoByQuestionId(Long id);
 
     AnswerDto getAnswerDtoById(Long answerId);
+
+    void updateAnswer (Long answerId, AnswerDto answerDto);
 }
