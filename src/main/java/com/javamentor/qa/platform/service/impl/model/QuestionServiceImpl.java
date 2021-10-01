@@ -47,7 +47,6 @@ public class QuestionServiceImpl extends ReadWriteServiceImpl<Question, Long> im
             }
         });
         tagDao.persistAll(notExistingTags);
-        question.setTags(notExistingTags);
         questionDao.persist(question);
     }
 }

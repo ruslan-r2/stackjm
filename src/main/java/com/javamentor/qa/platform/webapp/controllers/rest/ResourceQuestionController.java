@@ -125,10 +125,10 @@ public class ResourceQuestionController {
                            @ApiResponse(responseCode = "400",
                                         description = "Ответ не добавлен, проверьте обязательные поля")})
     @ResponseBody
-    public ResponseEntity<?> addNewQuestion(@Parameter(description = "DTO создаваемого вопроса")
-                                            @Valid
-                                            @RequestBody
-                                            QuestionCreateDto questionCreateDto) {
+    public ResponseEntity<QuestionDto> addNewQuestion(@Parameter(description = "DTO создаваемого вопроса")
+                                                      @Valid
+                                                      @RequestBody
+                                                      QuestionCreateDto questionCreateDto) {
 
         Question question = questionConverter.questionCreateDtotoEntity(questionCreateDto);
         question.setUser((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
