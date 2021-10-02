@@ -52,13 +52,7 @@ public class ResourceTagController {
     @PostMapping("/api/user/tag/{id}/ignored")
     public ResponseEntity<TagDto> addTagToIgnoreTag(@PathVariable(name = "id") Long tagId,
                                                     @AuthenticationPrincipal User user) {
-        try {
-            return ResponseEntity.ok(tagConverter.TagToTagDto(ignoredTagService.add(tagId, user)));
-        } catch (TagNotFoundException notFoundException) {
-            return ResponseEntity.notFound().build();
-        } catch (TagAlreadyExistsException alreadyExistsException) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(tagConverter.TagToTagDto(ignoredTagService.add(tagId, user)));
     }
 
     @Operation(summary = "Возвращает игнорируемые теги пользователя")

@@ -31,10 +31,10 @@ public class IgnoredTagServiceImpl extends ReadWriteServiceImpl<IgnoredTag, Long
     public Tag add(Long tagId, User user) {
         Optional<Tag> tag = tagService.getById(tagId);
         if (!tag.isPresent()) {
-            throw new TagNotFoundException("Такого тега не существует");
+            throw new TagNotFoundException("тег с таким id не найден");
         }
         if (ignoredTagDao.getByUserAndTag(user, tag.get()).isPresent()) {
-            throw new TagAlreadyExistsException("Тег уже был добавлен в игнорируемые ранее");
+            throw new TagAlreadyExistsException("тег уже был добавлен в игнорируемые ранее");
         }
         super.persist(new IgnoredTag(tag.get(), user));
         return tag.get();
