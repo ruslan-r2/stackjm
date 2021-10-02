@@ -1,6 +1,7 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
-import com.javamentor.qa.platform.exception.TagException;
+import com.javamentor.qa.platform.exception.TagAlreadyExistsException;
+import com.javamentor.qa.platform.exception.TagNotFoundException;
 import com.javamentor.qa.platform.models.dto.IgnoredTagDto;
 import com.javamentor.qa.platform.models.dto.RelatedTagDto;
 import com.javamentor.qa.platform.models.dto.TagDto;
@@ -46,12 +47,16 @@ public class ResourceTagController {
     @ApiResponse(responseCode = "200", description = "успешно",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = TagDto.class)))
+    @ApiResponse(responseCode = "404", description = "тег с таким id не найден")
+    @ApiResponse(responseCode = "400", description = "тег уже был добавлен в игнорируемые ранее")
     @PostMapping("/api/user/tag/{id}/ignored")
     public ResponseEntity<TagDto> addTagToIgnoreTag(@PathVariable(name = "id") Long tagId,
                                                     @AuthenticationPrincipal User user) {
         try {
             return ResponseEntity.ok(tagConverter.TagToTagDto(ignoredTagService.add(tagId, user)));
-        } catch (TagException e) {
+        } catch (TagNotFoundException notFoundException) {
+            return ResponseEntity.notFound().build();
+        } catch (TagAlreadyExistsException alreadyExistsException) {
             return ResponseEntity.badRequest().build();
         }
     }

@@ -1,12 +1,13 @@
 package com.javamentor.qa.platform.exception;
 
-public class TagException extends RuntimeException {
+public class TagNotFoundException extends RuntimeException {
     private static final long serialVersionUID = 3093952821622304752L;
 
-    public TagException() {
+    public TagNotFoundException() {
     }
 
-    public TagException(String message) {
+    public TagNotFoundException(String message) {
         super(message);
     }
+
 }

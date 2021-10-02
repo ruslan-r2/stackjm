@@ -1,7 +1,8 @@
 package com.javamentor.qa.platform.service.impl.model;
 
 import com.javamentor.qa.platform.dao.abstracts.model.IgnoredTagDao;
-import com.javamentor.qa.platform.exception.TagException;
+import com.javamentor.qa.platform.exception.TagAlreadyExistsException;
+import com.javamentor.qa.platform.exception.TagNotFoundException;
 import com.javamentor.qa.platform.models.entity.question.IgnoredTag;
 import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.javamentor.qa.platform.models.entity.user.User;
@@ -30,10 +31,10 @@ public class IgnoredTagServiceImpl extends ReadWriteServiceImpl<IgnoredTag, Long
     public Tag add(Long tagId, User user) {
         Optional<Tag> tag = tagService.getById(tagId);
         if (!tag.isPresent()) {
-            throw new TagException("Такого тега не существует");
+            throw new TagNotFoundException("Такого тега не существует");
         }
         if (ignoredTagDao.getByUserAndTag(user, tag.get()).isPresent()) {
-            throw new TagException("Данный тег уже был добавлен в игнорируемые ранее");
+            throw new TagAlreadyExistsException("Тег уже был добавлен в игнорируемые ранее");
         }
         super.persist(new IgnoredTag(tag.get(), user));
         return tag.get();
