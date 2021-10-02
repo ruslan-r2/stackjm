@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,7 +46,7 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
         String password = "user";
         Long id = 101L;
 
-        mockMvc.perform(get("/api/user/tag/{id}/ignored", id)
+        mockMvc.perform(post("/api/user/tag/{id}/ignored", id)
                 .header("Authorization", getToken(username, password)))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -65,7 +66,7 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
     public void addNotExistTagToIgnoredTag() throws Exception {
         String username = "user@mail.ru";
         String password = "user";
-        mockMvc.perform(get("/api/user/tag/999/ignored")
+        mockMvc.perform(post("/api/user/tag/999/ignored")
                 .header("Authorization", getToken(username, password)))
                 .andExpect(status().isBadRequest());
     }
