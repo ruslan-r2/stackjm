@@ -1,6 +1,7 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.exception.VoteException;
+import com.javamentor.qa.platform.models.dto.QuestionCreateDto;
 import com.javamentor.qa.platform.models.dto.QuestionDto;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.user.User;
@@ -8,22 +9,27 @@ import com.javamentor.qa.platform.service.abstracts.dto.QuestionDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
 import com.javamentor.qa.platform.service.abstracts.model.ReputationService;
 import com.javamentor.qa.platform.service.abstracts.model.VoteQuestionService;
+import com.javamentor.qa.platform.webapp.converters.QuestionConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 
@@ -34,14 +40,16 @@ public class ResourceQuestionController {
 
     private final QuestionDtoService questionDtoService;
     private QuestionService questionService;
+    private QuestionConverter questionConverter;
     private VoteQuestionService voteQuestionService;
     private ReputationService reputationService;
 
-    public ResourceQuestionController(QuestionDtoService questionDtoService, QuestionService questionService, VoteQuestionService voteQuestionService, ReputationService reputationService) {
+    public ResourceQuestionController(QuestionDtoService questionDtoService, QuestionService questionService, VoteQuestionService voteQuestionService, ReputationService reputationService, QuestionConverter questionConverter) {
         this.questionDtoService = questionDtoService;
         this.questionService = questionService;
         this.voteQuestionService = voteQuestionService;
         this.reputationService = reputationService;
+        this.questionConverter = questionConverter;
     }
 
     @GetMapping("/{id}")
@@ -106,5 +114,27 @@ public class ResourceQuestionController {
 
         Long sumVote = voteQuestionService.getSumVoteForQuestion(question);
         return new ResponseEntity<>(sumVote, HttpStatus.OK);
+    }
+
+    @PostMapping
+    @Operation(summary = "Добавляет новый вопрос, возвращает QuestionDto")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200",
+                                        description = "Ответ успешно добавлен",
+                                        content = @Content(mediaType = "application/json",
+                                                           schema = @Schema(implementation = QuestionDto.class))),
+                           @ApiResponse(responseCode = "400",
+                                        description = "Ответ не добавлен, проверьте обязательные поля")})
+    @ResponseBody
+    public ResponseEntity<QuestionDto> addNewQuestion(@Parameter(description = "DTO создаваемого вопроса")
+                                                      @Valid
+                                                      @RequestBody
+                                                      QuestionCreateDto questionCreateDto) {
+
+        Question question = questionConverter.questionCreateDtotoEntity(questionCreateDto);
+        question.setUser((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        questionService.persist(question);
+
+        QuestionDto questionDto = questionConverter.entityToQuestionDto(question);
+        return ResponseEntity.ok(questionDto);
     }
 }

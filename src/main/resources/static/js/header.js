@@ -1,4 +1,4 @@
-function CSSLoad(file){
+function CSSLoad(file) {
     var link = document.createElement("link");
     link.setAttribute("rel", "stylesheet");
     link.setAttribute("type", "text/css");
@@ -48,7 +48,7 @@ document.body.insertAdjacentHTML("afterbegin", "<header class=\"top-bar js-top-b
     "\n" +
     "    <ol class=\"overflow-x-auto ml-auto -secondary d-flex ai-center list-reset h100 user-logged-out\" role=\"presentation\">\n" +
     "      <li class=\"-ctas\">\n" +
-    "        <a href=\"\" class=\"login-link s-btn s-btn__filled py8 js-gps-track\" rel=\"nofollow\" data-gps-track=\"login.click\" data-ga=\"[&quot;top navigation&quot;,&quot;login button click&quot;,null,null,null]\">Мой профиль</a>\n" +
+    "        <a href=\"/profile\" class=\"login-link s-btn s-btn__filled py8 js-gps-track\" rel=\"nofollow\" data-gps-track=\"login.click\" data-ga=\"[&quot;top navigation&quot;,&quot;login button click&quot;,null,null,null]\">Мой профиль</a>\n" +
     "\n" +
     "      </li>\n" +
     "\n" +
