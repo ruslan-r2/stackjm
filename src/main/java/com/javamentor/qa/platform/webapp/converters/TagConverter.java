@@ -17,4 +17,6 @@ public abstract class TagConverter {
 
     public abstract TagDto TagToTagDto(Tag tag);
 
+    public abstract Tag tagToTagDto(TagDto tagDto);
+
 }
