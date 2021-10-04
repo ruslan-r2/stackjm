@@ -36,36 +36,13 @@ import java.util.Optional;
 @RestController
 @io.swagger.v3.oas.annotations.tags.Tag(name = "Контроллер тегов", description = "Api для тегов")
 @RequestMapping
+@AllArgsConstructor
 public class ResourceTagController {
 
-    @Autowired
-    private TagDtoDao tagDtoDao;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private TagService tagService;
-
-    @Autowired
-    private TagConverter tagConverter;
-
-    @Autowired
-    private IgnoredTagService ignoredTagService;
-
-    @Autowired
-    private TagDtoService tagDtoService;
-
-    public ResourceTagController(TagDtoDao tagDtoDao, UserService userService, TagService tagService,
-                                 TagConverter tagConverter, IgnoredTagService ignoredTagService,
-                                 TagDtoService tagDtoService) {
-        this.tagDtoDao = tagDtoDao;
-        this.userService = userService;
-        this.tagService = tagService;
-        this.tagConverter = tagConverter;
-        this.ignoredTagService = ignoredTagService;
-        this.tagDtoService = tagDtoService;
-    }
+    private final TagService tagService;
+    private final TagConverter tagConverter;
+    private final IgnoredTagService ignoredTagService;
+    private final TagDtoService tagDtoService;
 
     @Operation(summary = "Возвращает лист содержащий топ-10 тегов")
     @ApiResponse(responseCode = "200", description = "успешно",
@@ -73,7 +50,7 @@ public class ResourceTagController {
                     schema = @Schema(implementation = RelatedTagDto.class)))
     @GetMapping("/api/user/tag/related")
     public ResponseEntity<List<RelatedTagDto>> getTop10Tags() {
-        return new ResponseEntity<>(tagDtoDao.getTopTags(), HttpStatus.OK);
+        return new ResponseEntity<>(tagDtoService.getTopTags(), HttpStatus.OK);
     }
 
     @Operation(summary = "добавляет тег в игнорируемые теги")

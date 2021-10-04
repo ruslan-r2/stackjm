@@ -2,12 +2,12 @@ package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.TagDtoDao;
 import com.javamentor.qa.platform.models.dto.IgnoredTagDto;
+import com.javamentor.qa.platform.models.dto.RelatedTagDto;
 import com.javamentor.qa.platform.models.dto.TagDto;
 import com.javamentor.qa.platform.models.dto.TrackedTagDto;
 import org.hibernate.Session;
-import org.hibernate.transform.AliasToBeanResultTransformer;
-import com.javamentor.qa.platform.models.dto.RelatedTagDto;
 import org.hibernate.query.Query;
+import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 

@@ -1,0 +1,79 @@
+question:
+  - id: 100
+    description: text
+    is_deleted: false
+    last_redaction_date: 1990-10-10 00:00:00
+    persist_date: 1990-10-10 00:00:00
+    title: text
+    user_id: 100
+answer:
+  - id: 100
+    date_accept_time: 1990-10-10 00:00:00
+    html_body: text
+    is_deleted: false
+    is_deleted_by_moderator: false
+    is_helpful: true
+    persist_date: 1990-10-10 00:00:00
+    update_date: 1990-10-10 00:00:00
+    question_id: 100
+    user_id: 100
+reputation:
+  - id: 100
+    count: 5
+    persist_date: 1990-01-01 00:00:00
+    type: 1
+    answer_id: 100
+    author_id: 100
+    question_id: 100
+    sender_id: 100
+  - id: 101
+    count: 10
+    persist_date: 1990-01-01 00:00:01
+    type: 1
+    answer_id: 100
+    author_id: 100
+    question_id: 100
+    sender_id: 100
+tag:
+  - id: 100
+    description: "tag_description"
+    name: "tag_name"
+    persist_date: "2021-08-26 04:28:16.229"
+user_entity:
+  - id: 100
+    about: "i'm admin"
+    city: "Moscow"
+    email: "admin@mail.ru"
+    full_name: "super admin"
+    image_link: "admin.image.com"
+    is_deleted: "false"
+    is_enabled: "true"
+    last_redaction_date: "2021-08-17 19:10:25"
+    link_github: "admin.github.com"
+    link_site: "adminsite.com"
+    link_vk: "vk.com/admin"
+    nickname: "admin"
+    password: "$2a$10$L7vulI.EeptscIf2.IRL0OVsIwoQIxpHWNIHXn5WjR7LzAGBNMN26"
+    persist_date: "2021-08-17 19:10:25"
+    role_id: 100
+  - id: 101
+    about: "i'm user"
+    city: "Moscow"
+    email: "user@mail.ru"
+    full_name: "just user"
+    image_link: "user.image.com"
+    is_deleted: "false"
+    is_enabled: "true"
+    last_redaction_date: "2021-08-17 19:10:25"
+    link_github: "user.github.com"
+    link_site: "usersite.com"
+    link_vk: "vk.com/user"
+    nickname: "user"
+    password: "$2a$10$EO4tL7b5hFUbHFb46NmGheExGu2p1mJT0alqqggCa6Nl.RT4nOqh."
+    persist_date: "2021-08-17 19:10:25"
+    role_id: 101
+role:
+  - id: 100
+    name: "ROLE_ADMIN"
+  - id: 101
+    name: "ROLE_USER"
