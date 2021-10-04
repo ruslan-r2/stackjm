@@ -11,7 +11,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
-
 @Repository
 public class AnswerDtoDaoImpl implements AnswerDtoDao {
 
@@ -30,8 +29,10 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "a.dateAcceptTime as dateAccept, " +
                 "a.user.imageLink as image, " +
                 "a.user.nickname as nickname, " +
-                "(select COALESCE(SUM(vote), 0)  from VoteAnswer  where answer.id = a.id) as countValuable, " +
-                "(select COALESCE(SUM(r.count), 0)  from Reputation r  where author.id = a.user.id) as countUserReputation " +
+                "((select count(va.voteType) from VoteAnswer va where answer.id = a.id and va.voteType = 'UP') - " +
+                "(select count(va.voteType) from VoteAnswer va where answer.id = a.id and va.voteType = 'DOWN')) " +
+                "as countValuable, " +
+                "(select COALESCE(SUM(r.count), 0) from Reputation r where author.id = a.user.id) as countUserReputation " +
                 "from Answer a " +
                 "where a.question.id = :id and a.isDeleted = false " +
                 "group by a.id, a.user.id, a.question.id,a.htmlBody, a.persistDateTime, a.isHelpful, a.dateAcceptTime, a.user.imageLink, a.user.nickname")

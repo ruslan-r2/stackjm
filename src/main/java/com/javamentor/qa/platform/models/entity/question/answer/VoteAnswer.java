@@ -32,12 +32,12 @@ public class VoteAnswer {
     @Type(type = "org.hibernate.type.LocalDateTimeType")
     private LocalDateTime persistDateTime;
 
-    @Column
-    private Integer vote;
+    @Enumerated(EnumType.STRING)
+    private VoteType voteType;
 
-    public VoteAnswer(User user, Answer answer, int vote) {
+    public VoteAnswer(User user, Answer answer, VoteType voteType) {
         this.user = user;
         this.answer = answer;
-        this.vote = vote;
+        this.voteType = voteType;
     }
 }
