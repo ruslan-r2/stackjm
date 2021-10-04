@@ -126,7 +126,6 @@ reputation:
     type: 1
     answer_id: 100
     author_id: 101
-    question_id: 100
     sender_id: 100
   - id: 101
     count: 1
@@ -134,5 +133,4 @@ reputation:
     type: 1
     answer_id: 100
     author_id: 101
-    question_id: 100
     sender_id: 100
