@@ -62,8 +62,6 @@ drop table if exists user_favorite_question cascade;
 drop table if exists votes_on_answers cascade;
 drop table if exists votes_on_questions cascade;
 
-create type vote_type as enum('UP', 'DOWN');
-
 create table answer
 (
     id                      bigint    not null,
@@ -287,7 +285,7 @@ create table votes_on_answers
 (
     id           bigint not null,
     persist_date timestamp,
-    vote_type    vote_type not null,
+    vote_type    varchar(255) not null,
     answer_id    bigint not null,
     user_id      bigint not null,
     primary key (id)
