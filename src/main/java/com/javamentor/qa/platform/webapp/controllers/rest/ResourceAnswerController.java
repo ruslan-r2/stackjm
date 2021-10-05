@@ -129,11 +129,10 @@ public class ResourceAnswerController {
     @PutMapping("/{answerId}/body")
     public ResponseEntity<AnswerDto> updateAnswerBody(@RequestBody @Valid AnswerDto answerDto,
                                                       @PathVariable("answerId") Long answerId) {
-        answerDtoService.updateAnswer(answerId, answerDto);
-
         if (!answerDtoService.getAnswerDtoById(answerId).isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        answerDtoService.updateAnswer(answerId, answerDto);
         return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerId).get(), HttpStatus.OK);
     }
 }
