@@ -29,7 +29,7 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "a.dateAcceptTime as dateAccept, " +
                 "a.user.imageLink as image, " +
                 "a.user.nickname as nickname, " +
-                "(select sum(case when va.voteType = 'UP' then 1 when va.voteType = 'DOWN' then -1 end) " +
+                "(select coalesce(sum(case when va.voteType = 'UP' then 1 when va.voteType = 'DOWN' then -1 end), 0) " +
                 "from VoteAnswer va where answer.id = a.id) as countValuable, " +
                 "(select coalesce(sum(r.count), 0) from Reputation r where author.id = a.user.id) as countUserReputation " +
                 "from Answer a " +
@@ -53,7 +53,7 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "a.dateAcceptTime as dateAccept, " +
                 "a.user.imageLink as image, " +
                 "a.user.nickname as nickname, " +
-                "(select sum(case when va.voteType = 'UP' then 1 when va.voteType = 'DOWN' then -1 end) " +
+                "(select coalesce(sum(case when va.voteType = 'UP' then 1 when va.voteType = 'DOWN' then -1 end), 0) " +
                 "from VoteAnswer va where answer.id = a.id) as countValuable, " +
                 "(select coalesce(sum(r.count), 0) from Reputation r where author.id = a.user.id) as countUserReputation " +
                 "from Answer a " +
