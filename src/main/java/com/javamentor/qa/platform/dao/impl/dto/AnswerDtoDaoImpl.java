@@ -31,9 +31,11 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "a.user.nickname as nickname, " +
                 "(select sum(case when va.voteType = 'UP' then 1 when va.voteType = 'DOWN' then -1 end) " +
                 "from VoteAnswer va where answer.id = a.id) as countValuable, " +
-                "(select coalesce(sum(r.count), 0)  from Reputation r  where author.id = a.user.id) as countUserReputation " +
+                "(select coalesce(sum(r.count), 0) from Reputation r where author.id = a.user.id) as countUserReputation " +
                 "from Answer a " +
-                "where a.id = :id and a.isDeleted = false ")
+                "where a.question.id = :id and a.isDeleted = false " +
+                "group by a.id, a.user.id, a.question.id, a.htmlBody, a.persistDateTime, a.isHelpful, " +
+                "a.dateAcceptTime, a.user.imageLink, a.user.nickname")
                 .setParameter("id", id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
         return query.getResultList();
@@ -53,9 +55,9 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "a.user.nickname as nickname, " +
                 "(select sum(case when va.voteType = 'UP' then 1 when va.voteType = 'DOWN' then -1 end) " +
                 "from VoteAnswer va where answer.id = a.id) as countValuable, " +
-                "(select coalesce(sum(r.count), 0)  from Reputation r  where author.id = a.user.id) as countUserReputation " +
+                "(select coalesce(sum(r.count), 0) from Reputation r where author.id = a.user.id) as countUserReputation " +
                 "from Answer a " +
-                "where a.id = :id and a.isDeleted = false ")
+                "where a.id = :id and a.isDeleted = false")
                 .setParameter("id", id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
         return (AnswerDto) query.getSingleResult();
