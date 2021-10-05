@@ -47,7 +47,7 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
     }
 
     @Override
-    public Optional<AnswerDto> getAnswerDtoById(Long id) throws NoResultException {
+    public Optional<AnswerDto> getAnswerDtoById(Long id) {
         Session session = entityManager.unwrap(Session.class);
         Query query = session.createQuery("SELECT a.id as id, " +
                         "a.user.id as userId," +
