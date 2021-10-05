@@ -1,9 +1,6 @@
 package com.javamentor.qa.platform.webapp.controllers.advice;
 
-import com.javamentor.qa.platform.exception.AnswerException;
-import com.javamentor.qa.platform.exception.ConstrainException;
-import com.javamentor.qa.platform.exception.QuestionException;
-import com.javamentor.qa.platform.exception.VoteException;
+import com.javamentor.qa.platform.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -55,4 +52,15 @@ public class AdviceController {
     public ResponseEntity<String> handleAnswerException(AnswerException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
+    @ExceptionHandler(TagNotFoundException.class)
+    public ResponseEntity<String> handleTagNotFoundException(TagNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(TagAlreadyExistsException.class)
+    public ResponseEntity<String> handleTagAlreadyExistsException(TagAlreadyExistsException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
 }
