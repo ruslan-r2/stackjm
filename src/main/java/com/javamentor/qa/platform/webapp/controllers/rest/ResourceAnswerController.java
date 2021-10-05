@@ -19,13 +19,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.NoResultException;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Validated
 @Tag(name = "Answers контроллер", description = "Api для работы с Answers")
 @RequestMapping("api/user/question/{questionId}/answer")
 public class ResourceAnswerController {
@@ -112,23 +121,19 @@ public class ResourceAnswerController {
 
         Answer answerMakeFromDto = answerConverter.answerDtoToAnswer(answerDto);
         Answer answerOnQuestion = answerService.addAnswerOnQuestion(user, questionId, answerMakeFromDto);
-        return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerOnQuestion.getId()), HttpStatus.OK);
+        return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerOnQuestion.getId()).get(), HttpStatus.OK);
     }
     @Operation(summary = "Обновляет тело комментария")
     @ApiResponse(responseCode = "200", description = "Тело комментария успешно обновлено")
     @ApiResponse(responseCode = "500", description = "Комментарий не найден")
     @PutMapping("/{answerId}/body")
-    public ResponseEntity<?> updateAnswerBody(@RequestBody AnswerDto answerDto,
-                                              @PathVariable ("answerId") Long answerId) {
-        try {
-            answerDtoService.updateAnswer(answerId, answerDto);
-        } catch (RuntimeException e) {
+    public ResponseEntity<AnswerDto> updateAnswerBody(@RequestBody @Valid AnswerDto answerDto,
+                                                      @PathVariable("answerId") Long answerId) {
+        answerDtoService.updateAnswer(answerId, answerDto);
+
+        if (!answerDtoService.getAnswerDtoById(answerId).isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        try {
-            return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerId),HttpStatus.OK);
-        } catch (NoResultException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerId).get(), HttpStatus.OK);
     }
 }

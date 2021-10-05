@@ -1,6 +1,7 @@
 package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.AnswerDtoDao;
+import com.javamentor.qa.platform.dao.util.SingleResultUtil;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
@@ -13,6 +14,7 @@ import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -45,7 +47,7 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
     }
 
     @Override
-    public AnswerDto getAnswerDtoById(Long id) throws NoResultException {
+    public Optional<AnswerDto> getAnswerDtoById(Long id) throws NoResultException {
         Session session = entityManager.unwrap(Session.class);
         Query query = session.createQuery("SELECT a.id as id, " +
                         "a.user.id as userId," +
@@ -62,16 +64,12 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                         "where a.id = :id and a.isDeleted = false ")
                 .setParameter("id", id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
-        return (AnswerDto)query.getSingleResult();
+        return SingleResultUtil.getSingleResultOrNull(query);
     }
 
     @Override
     @Transactional
     public void updateAnswer(Long answerId, AnswerDto answerDto) throws RuntimeException{
-
-        if(answerDto.getBody().isEmpty() || answerDto.getBody().length() == 0) {
-            throw new RuntimeException();
-        }
 
         entityManager.createQuery("UPDATE Answer a SET a.htmlBody = :body, a.updateDateTime = :time WHERE a.id = :id ")
                 .setParameter("id", answerId)
