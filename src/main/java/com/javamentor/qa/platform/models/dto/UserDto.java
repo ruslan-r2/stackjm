@@ -29,4 +29,6 @@ public class UserDto {
     private Long reputation;
     @Schema(description = "дата регистрации пользователя")
     private LocalDateTime registrationDate;
+    @Schema(description = "количество голосов пользователя")
+    private Long votes;
 }

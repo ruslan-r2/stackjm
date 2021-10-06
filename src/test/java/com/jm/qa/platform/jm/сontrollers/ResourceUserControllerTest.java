@@ -177,6 +177,74 @@ public class ResourceUserControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[2].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[2].registrationDate", equalTo("2021-08-17T19:10:25")));
     }
+    @Test
+    @DataSet(value = {"resource_user_controller/users.yml",
+            "resource_user_controller/roles.yml",
+            "resource_user_controller/votes_on_questions.yml",
+            "resource_user_controller/votes_on_answers.yml",
+            "resource_user_controller/answers.yml",
+            "resource_user_controller/questions.yml"}, cleanAfter = true, cleanBefore = true)
+    public void should_return_users_with_id_one_hundred_one_and_one_hundred_two_where_sorted_votes() throws Exception {
+        username = "user@mail.ru";
+        password = "user";
+        mockMvc.perform(get("/api/user/vote?page=1&items=2").header("Authorization", getToken(username, password)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentPageNumber", equalTo(1)))
+                .andExpect(jsonPath("$.totalPageCount", equalTo(2)))
+                .andExpect(jsonPath("$.totalResultCount", equalTo(3)))
+                .andExpect(jsonPath("$.itemsOnPage", equalTo(2)))
+                .andExpect(jsonPath("$.items.length()", equalTo(2)))
+                .andExpect(jsonPath("$.items[0].id", equalTo(101)))
+                .andExpect(jsonPath("$.items[0].votes", equalTo(5)))
+                .andExpect(jsonPath("$.items[1].id", equalTo(102)))
+                .andExpect(jsonPath("$.items[1].votes", equalTo(3)));
+    }
+
+    @Test
+    @DataSet(value = {"resource_user_controller/users.yml",
+            "resource_user_controller/roles.yml",
+            "resource_user_controller/votes_on_questions.yml",
+            "resource_user_controller/votes_on_answers.yml",
+            "resource_user_controller/answers.yml",
+            "resource_user_controller/questions.yml"}, cleanAfter = true, cleanBefore = true)
+    public void should_return_user_with_id_one_hundred_where_sorted_votes() throws Exception {
+        username = "user@mail.ru";
+        password = "user";
+        mockMvc.perform(get("/api/user/vote?page=2&items=2").header("Authorization", getToken(username, password)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentPageNumber", equalTo(2)))
+                .andExpect(jsonPath("$.totalPageCount", equalTo(2)))
+                .andExpect(jsonPath("$.totalResultCount", equalTo(3)))
+                .andExpect(jsonPath("$.itemsOnPage", equalTo(2)))
+                .andExpect(jsonPath("$.items.length()", equalTo(1)))
+                .andExpect(jsonPath("$.items[0].id", equalTo(100)))
+                .andExpect(jsonPath("$.items[0].votes", equalTo(0)));
+    }
+
+    @Test
+    @DataSet(value = {"resource_user_controller/users.yml",
+            "resource_user_controller/roles.yml",
+            "resource_user_controller/votes_on_questions.yml",
+            "resource_user_controller/votes_on_answers.yml",
+            "resource_user_controller/answers.yml",
+            "resource_user_controller/questions.yml"}, cleanAfter = true, cleanBefore = true)
+    public void should_return_users_where_sorted_votes_without_parameter_items() throws Exception {
+        username = "user@mail.ru";
+        password = "user";
+        mockMvc.perform(get("/api/user/vote?page=1").header("Authorization", getToken(username, password)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentPageNumber", equalTo(1)))
+                .andExpect(jsonPath("$.totalPageCount", equalTo(1)))
+                .andExpect(jsonPath("$.totalResultCount", equalTo(3)))
+                .andExpect(jsonPath("$.itemsOnPage", equalTo(10)))
+                .andExpect(jsonPath("$.items.length()", equalTo(3)))
+                .andExpect(jsonPath("$.items[0].id", equalTo(101)))
+                .andExpect(jsonPath("$.items[0].votes", equalTo(5)))
+                .andExpect(jsonPath("$.items[1].id", equalTo(102)))
+                .andExpect(jsonPath("$.items[1].votes", equalTo(3)))
+                .andExpect(jsonPath("$.items[2].id", equalTo(100)))
+                .andExpect(jsonPath("$.items[2].votes", equalTo(0)));
+    }
 
     @Test
     @DataSet(value = {"resource_user_controller/users.yml",
