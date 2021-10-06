@@ -1,8 +1,7 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.exception.VoteException;
-import com.javamentor.qa.platform.models.dto.QuestionCreateDto;
-import com.javamentor.qa.platform.models.dto.QuestionDto;
+import com.javamentor.qa.platform.models.dto.*;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.QuestionDtoService;
@@ -21,15 +20,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -136,5 +132,26 @@ public class ResourceQuestionController {
 
         QuestionDto questionDto = questionConverter.entityToQuestionDto(question);
         return ResponseEntity.ok(questionDto);
+    }
+
+    @GetMapping("/noAnswer")
+    public ResponseEntity<PageDto<QuestionDto>> getQuestionsWithoutAnswers (
+            @Parameter(description = "номер страницы", required = true)
+            @RequestParam(value = "currentPage") Integer currentPage,
+            @Parameter(description = "кол-во элементов на странице", required = false)
+            @RequestParam(value = "itemsOnPage", required = false, defaultValue = "10") Integer itemsOnPage,
+            @Parameter(description = "список отслеживаемых тегов", required = false)
+            @RequestParam(value = "trackedTags", required = false) List<TrackedTagDto> trackedTags,
+            @Parameter(description = "список игнорируемых тегов", required = false)
+            @RequestParam(value = "ignoredTags", required = false) List<IgnoredTagDto> ignoredTags) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("currentPage", currentPage);
+        parameters.put("itemsOnPage", itemsOnPage);
+        parameters.put("hasAnswers", false);
+        parameters.put("trackedTags", trackedTags);
+        parameters.put("ignoredTags", ignoredTags);
+        parameters.put("workPagination", "allQuestions");
+        PageDto<QuestionDto> pageDto = questionDtoService.getPageDto(parameters);
+        return ResponseEntity.ok(pageDto);
     }
 }
