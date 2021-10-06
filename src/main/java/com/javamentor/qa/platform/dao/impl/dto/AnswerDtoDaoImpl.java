@@ -8,11 +8,8 @@ import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,16 +62,5 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 .setParameter("id", id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
         return SingleResultUtil.getSingleResultOrNull(query);
-    }
-
-    @Override
-    @Transactional
-    public void updateAnswer(Long answerId, AnswerDto answerDto) throws RuntimeException{
-
-        entityManager.createQuery("UPDATE Answer a SET a.htmlBody = :body, a.updateDateTime = :time WHERE a.id = :id ")
-                .setParameter("id", answerId)
-                .setParameter("body", answerDto.getBody())
-                .setParameter("time", LocalDateTime.now())
-                .executeUpdate();
     }
 }

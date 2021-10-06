@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface AnswerDao extends ReadWriteDao<Answer, Long> {
     Optional<Answer> getAnswerForVote(Long answerId, Long userId);
+    void updateAnswerSpecial (Long answerId, Answer answer);
 }

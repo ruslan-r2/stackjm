@@ -15,11 +15,13 @@ import org.springframework.http.MediaType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -211,7 +213,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
     @DataSet(value = "resource_answer_controller/updateAnswerBody.yml", cleanBefore = true, cleanAfter = true)
     public void updateAnswerBodyTest () throws Exception {
         int questionId = 100;
-        int answerIdCorrect = 101;
+        int answerIdCorrect = 100;
         int answerIdIsDeleted = 102; //isDeleted = true
         int answerIdIsNotExist = 110; //нет в базе
 
@@ -220,10 +222,14 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         String updatedBody = "ALL RIGHT!";
 
         //создание Dto и JSON для теста
-        AnswerDto updateAnswerBodyDto = new AnswerDto();
-        updateAnswerBodyDto.setBody(updatedBody);
+        AnswerDto updateAnswerDto = new AnswerDto();
+        updateAnswerDto.setId(100L);
+        updateAnswerDto.setUserId(101L);
+        updateAnswerDto.setQuestionId(100L);
+        updateAnswerDto.setBody(updatedBody);
+
         ObjectMapper objectMapper = new ObjectMapper();
-        String incomingJson = objectMapper.writeValueAsString(updateAnswerBodyDto);
+        String incomingJson = objectMapper.writeValueAsString(updateAnswerDto);
 
         //Получения значения body до обновления
         Answer answer = (Answer) entityManager.createQuery("SELECT a FROM Answer a WHERE a.id = 100").getSingleResult();
@@ -236,8 +242,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("body", is(updatedBody)));
-
-        // Тест, проверка обновился ли body
+        //Тест, проверка обновился ли body
         mockMvc.perform(put(updateAnswerBodyUrl, questionId , answerIdCorrect)
                         .contentType(MediaType.APPLICATION_JSON).content(incomingJson)
                         .header("Authorization", getToken(username, password)))
@@ -245,8 +250,8 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("body", is(not(bodyValueBeforeUpdate))));
 
-        updateAnswerBodyDto.setBody("");
-        String incomingJsonEmptyBody = objectMapper.writeValueAsString(updateAnswerBodyDto);
+        updateAnswerDto.setBody("");
+        String incomingJsonEmptyBody = objectMapper.writeValueAsString(updateAnswerDto);
         //Тест, пустая строка в anwerbody
         mockMvc.perform(put(updateAnswerBodyUrl, questionId , answerIdCorrect)
                         .contentType(MediaType.APPLICATION_JSON).content(incomingJsonEmptyBody)

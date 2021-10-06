@@ -123,13 +123,15 @@ public class ResourceAnswerController {
         Answer answerOnQuestion = answerService.addAnswerOnQuestion(user, questionId, answerMakeFromDto);
         return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerOnQuestion.getId()).get(), HttpStatus.OK);
     }
+
     @Operation(summary = "Обновляет тело комментария")
     @ApiResponse(responseCode = "200", description = "Тело комментария успешно обновлено")
     @ApiResponse(responseCode = "500", description = "Комментарий не найден")
     @PutMapping("/{answerId}/body")
     public ResponseEntity<AnswerDto> updateAnswerBody(@RequestBody @Valid AnswerDto answerDto,
                                                       @PathVariable("answerId") Long answerId) {
-        if (!answerDtoService.getAnswerDtoById(answerId).isPresent()) {
+        if ((answerId != answerDto.getId()) ||
+        !answerService.getById(answerId).isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         answerDtoService.updateAnswer(answerId, answerDto);
