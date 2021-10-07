@@ -1,5 +1,6 @@
 package com.javamentor.qa.platform.webapp.controllers.advice;
 
+import com.javamentor.qa.platform.exception.AnswerException;
 import com.javamentor.qa.platform.exception.ConstrainException;
 import com.javamentor.qa.platform.exception.QuestionException;
 import com.javamentor.qa.platform.exception.VoteException;
@@ -47,6 +48,11 @@ public class AdviceController {
 
     @ExceptionHandler(QuestionException.class)
     public ResponseEntity<String> handleQuestionException(QuestionException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(AnswerException.class)
+    public ResponseEntity<String> handleAnswerException(AnswerException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }

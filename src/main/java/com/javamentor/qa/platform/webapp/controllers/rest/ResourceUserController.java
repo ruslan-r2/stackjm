@@ -11,10 +11,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -80,6 +80,21 @@ public class ResourceUserController {
         parameters.put("currentPage", numberPage);
         parameters.put("itemsOnPage", countItemsOnPage);
         parameters.put("sorted-registrationDate", true);
+        parameters.put("workPagination", "allUsers");
+        PageDto<UserDto> pageDto = userDtoService.getPageDto(parameters);
+        return new ResponseEntity<>(pageDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Возвращает страницу пользователей, отсортированных по количеству голосов")
+    @ApiResponse(responseCode = "200", description = "успешное выполнение",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PageDto.class)))
+    @GetMapping(value = "/vote")
+    public ResponseEntity<PageDto<UserDto>> getPageWhereUserSortedByVotes(@RequestParam(value = "page", required = true) Integer numberPage, @RequestParam(value = "items", required = false, defaultValue = "10") Integer countItemsOnPage){
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("currentPage", numberPage);
+        parameters.put("itemsOnPage", countItemsOnPage);
+        parameters.put("sorted-votes", true);
         parameters.put("workPagination", "allUsers");
         PageDto<UserDto> pageDto = userDtoService.getPageDto(parameters);
         return new ResponseEntity<>(pageDto, HttpStatus.OK);

@@ -25,10 +25,10 @@ public class UserDtoImpl implements UserDtoDao {
                         "u.fullName," +
                         "u.imageLink," +
                         "u.city," +
-                        "COALESCE(SUM(r.count), 0)," +
-                        "u.persistDateTime) " +
-                        "FROM Reputation r RIGHT JOIN r.author u WHERE u.id = :id GROUP BY u.id, u.email, u.fullName, u.imageLink, u.city",
-                UserDto.class).setParameter("id", id);
+                        "(SELECT COALESCE(SUM(r.count), 0) FROM Reputation r WHERE r.author.id = u.id)," +
+                        "u.persistDateTime," +
+                        "((SELECT COUNT(*) FROM VoteQuestion vq WHERE vq.user.id = u.id) + (SELECT COUNT(*) FROM VoteAnswer va WHERE va.user.id = u.id)))" +
+                        "FROM User u WHERE u.id = :id", UserDto.class).setParameter("id", id);
         return SingleResultUtil.getSingleResultOrNull(typedQuery);
     }
 }
