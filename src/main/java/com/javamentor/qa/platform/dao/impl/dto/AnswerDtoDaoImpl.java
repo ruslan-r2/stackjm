@@ -1,6 +1,7 @@
 package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.AnswerDtoDao;
+import com.javamentor.qa.platform.dao.util.SingleResultUtil;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
@@ -10,6 +11,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -42,7 +44,7 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
     }
 
     @Override
-    public AnswerDto getAnswerDtoById(Long id) {
+    public Optional<AnswerDto> getAnswerDtoById(Long id) {
         Session session = entityManager.unwrap(Session.class);
         Query query = session.createQuery("SELECT a.id as id, " +
                         "a.user.id as userId," +
@@ -59,6 +61,6 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                         "where a.id = :id and a.isDeleted = false ")
                 .setParameter("id", id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
-        return (AnswerDto)query.getSingleResult();
+        return SingleResultUtil.getSingleResultOrNull(query);
     }
 }
