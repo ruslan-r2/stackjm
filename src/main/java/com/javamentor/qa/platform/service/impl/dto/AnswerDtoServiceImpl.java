@@ -37,6 +37,6 @@ public class AnswerDtoServiceImpl implements AnswerDtoService {
 
     @Override
     public void updateAnswer(Long answerId, AnswerDto answerDto) {
-        answerDao.updateAnswerSpecial(answerId, answerConverter.answerDtoToAnswer(answerDto));
+        answerDao.updateAnswerSpecial(answerConverter.answerDtoToAnswer(answerDto));
     }
 }

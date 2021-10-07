@@ -34,10 +34,10 @@ public class AnswerDaoImpl extends ReadWriteDaoImpl<Answer, Long> implements Ans
 
     //пробовал использовать обычный update, для него не работает. Поэтому создал update, который обновляет не все поля, ап только указанные в задании
     @Override
-    public void updateAnswerSpecial(Long answerId, Answer answer) {
+    public void updateAnswerSpecial(Answer answer) {
 
         entityManager.createQuery("UPDATE Answer a SET a.htmlBody = :body, a.updateDateTime = :time WHERE a.id = :id ")
-                .setParameter("id", answerId)
+                .setParameter("id", answer.getId())
                 .setParameter("body", answer.getHtmlBody())
                 .setParameter("time", LocalDateTime.now())
                 .executeUpdate();
