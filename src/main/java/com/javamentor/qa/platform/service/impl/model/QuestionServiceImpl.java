@@ -38,33 +38,32 @@ public class QuestionServiceImpl extends ReadWriteServiceImpl<Question, Long> im
         List<String> tagNames = new ArrayList<>();
         tags.forEach(tag -> tagNames.add(tag.getName()));
         List<Tag> existingTags = tagDao.getTagsByNames(tagNames);
-        List<Tag> notExistingTags = new ArrayList<>();
+        List<Tag> newTags = new ArrayList<>();
 
         tags.forEach(tag -> {
-            if ( !existingTags.isEmpty() ) {
-                for (Tag t : existingTags) {
-                    if (t.getName().equals(tag.getName())) {
-                        List<Question> listQuestion = t.getQuestions();
-                        if (listQuestion == null) {
-                            listQuestion = new ArrayList<>();
-                        }
-                        listQuestion.add(question);
-                        t.setQuestions(listQuestion);
-                        notExistingTags.add(t);
-                    }
+            for (Tag t : existingTags ) {
+                if (tag.getName().equals(t.getName())) {
+                    newTags.add(t);
+                    tag.setId(t.getId());
                 }
-            }else{
-                List<Question> listQuestion = tag.getQuestions();
-                if (listQuestion == null) {
-                    listQuestion = new ArrayList<>();
-                }
-                listQuestion.add(question);
-                tag.setQuestions(listQuestion);
-                notExistingTags.add(tag);
             }
-
         });
-        question.setTags(notExistingTags);
+        tags.forEach(tag -> {
+            if (tag.getId() == null ) {
+                newTags.add(tag);
+            }
+        });
+
+        newTags.forEach(tag -> {
+            List<Question> listQuestion = tag.getQuestions();
+            if (listQuestion == null) {
+                listQuestion = new ArrayList<>();
+            }
+            listQuestion.add(question);
+            tag.setQuestions(listQuestion);
+        });
+
+        question.setTags(newTags);
         questionDao.persist(question);
     }
 }
