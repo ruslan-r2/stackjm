@@ -17,7 +17,9 @@ public class TagDaoImpl extends ReadWriteDaoImpl<Tag, Long> implements TagDao {
 
     @Override
     public List<Tag> getTagsByNames(Collection<String> names) {
-        return entityManager.createNativeQuery("select * from tag where name in :names").
-                setParameter("names", names).getResultList();
+
+        return entityManager.createNativeQuery("SELECT * FROM Tag WHERE name in :names", Tag.class)
+                .setParameter("names", names)
+                .getResultList();
     }
 }
