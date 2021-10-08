@@ -30,11 +30,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Validated
 @Tag(name = "Answers контроллер", description = "Api для работы с Answers")
 @RequestMapping("api/user/question/{questionId}/answer")
 public class ResourceAnswerController {
@@ -130,7 +141,21 @@ public class ResourceAnswerController {
 
         Answer answerMakeFromDto = answerConverter.answerDtoToAnswer(answerDto);
         Answer answerOnQuestion = answerService.addAnswerOnQuestion(user, questionId, answerMakeFromDto);
-        return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerOnQuestion.getId()), HttpStatus.OK);
+        return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerOnQuestion.getId()).get(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Обновляет тело комментария")
+    @ApiResponse(responseCode = "200", description = "Тело комментария успешно обновлено")
+    @ApiResponse(responseCode = "500", description = "Комментарий не найден")
+    @PutMapping("/{answerId}/body")
+    public ResponseEntity<AnswerDto> updateAnswerBody(@RequestBody @Valid AnswerDto answerDto,
+                                                      @PathVariable("answerId") Long answerId) {
+        if ((answerId != answerDto.getId()) ||
+        !answerService.getById(answerId).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        answerDtoService.updateAnswer(answerId, answerDto);
+        return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerId).get(), HttpStatus.OK);
     }
 
     @Operation(summary = "Комментарий к ответу", description = "Позволяет добавить комментарий к ответу на вопрос")
