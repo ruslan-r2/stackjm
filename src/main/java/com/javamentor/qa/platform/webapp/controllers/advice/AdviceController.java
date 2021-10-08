@@ -1,6 +1,11 @@
 package com.javamentor.qa.platform.webapp.controllers.advice;
 
-import com.javamentor.qa.platform.exception.*;
+import com.javamentor.qa.platform.exception.AnswerException;
+import com.javamentor.qa.platform.exception.ConstrainException;
+import com.javamentor.qa.platform.exception.QuestionException;
+import com.javamentor.qa.platform.exception.VoteException;
+import com.javamentor.qa.platform.exception.TagNotFoundException;
+import com.javamentor.qa.platform.exception.TagAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
