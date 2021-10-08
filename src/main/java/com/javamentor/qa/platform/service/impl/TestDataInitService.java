@@ -108,6 +108,7 @@ public class    TestDataInitService {
     }
 
     private List<Tag> tags = new ArrayList<>();
+    private List<Tag> tags2 = new ArrayList<>();
 
     private void createTags() {
         int tagCount = new Random().nextInt(4) + 1;

@@ -2,8 +2,11 @@ package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.exception.VoteException;
 import com.javamentor.qa.platform.models.dto.QuestionCreateDto;
+import com.javamentor.qa.platform.models.dto.PageDto;
 import com.javamentor.qa.platform.models.dto.QuestionDto;
+import com.javamentor.qa.platform.models.entity.question.IgnoredTag;
 import com.javamentor.qa.platform.models.entity.question.Question;
+import com.javamentor.qa.platform.models.entity.question.TrackedTag;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.QuestionDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
@@ -20,6 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -50,6 +57,32 @@ public class ResourceQuestionController {
         this.voteQuestionService = voteQuestionService;
         this.reputationService = reputationService;
         this.questionConverter = questionConverter;
+    }
+
+    @GetMapping
+    @Operation(summary = "Возвращает страницу вопросов, возможна выборка по тэгам")
+    @ApiResponse(responseCode = "200", description = "успешно",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PageDto.class)))
+    @ApiResponse(responseCode = "400", description = "Нет вопросов, удовлетворяюших запросу")
+    @ApiResponse(responseCode = "500", description = "Ошибка при обработке запроса")
+    public ResponseEntity<PageDto<QuestionDto>> getPageByTagsIfNecessary(@Parameter(description = "номер страницы",
+            required = true) @RequestParam(value = "page") Integer page, @Parameter
+                                                                                 (description = "кол-во вопросов на странице", required = true) @RequestParam(value = "items",
+            defaultValue = "10") Integer items, @Parameter(description = "список отслеживаемых тэгов") @RequestParam(required = false, value = "trackedTag") List<Long> trackedTag,
+                                                                         @Parameter(description = "список игнорируемых тэгов") @RequestParam
+                                                                                 (required = false, value = "ignoredTag") List<Long> ignoredTag) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("workPagination", "allQuestions");
+        parameters.put("currentPage", page);
+        parameters.put("itemsOnPage", items);
+        parameters.put("trackedTag", trackedTag);
+        parameters.put("ignoredTag", ignoredTag);
+        PageDto<QuestionDto> pageDto = questionDtoService.getPageDto(parameters);
+        if (pageDto.getItems().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(pageDto, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
