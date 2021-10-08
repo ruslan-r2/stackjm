@@ -16,10 +16,8 @@ import java.util.Optional;
 
 @Service
 public class AnswerServiceImpl extends ReadWriteServiceImpl<Answer, Long> implements AnswerService {
-
     private final AnswerDao answerDao;
     private final QuestionService questionService;
-
 
     @Autowired
     public AnswerServiceImpl(AnswerDao answerDao, QuestionService questionService) {

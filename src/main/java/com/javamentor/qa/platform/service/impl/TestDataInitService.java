@@ -3,13 +3,12 @@ package com.javamentor.qa.platform.service.impl;
 
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.Tag;
+import com.javamentor.qa.platform.models.entity.question.VoteQuestion;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
+import com.javamentor.qa.platform.models.entity.question.answer.VoteAnswer;
 import com.javamentor.qa.platform.models.entity.user.Role;
 import com.javamentor.qa.platform.models.entity.user.User;
-import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
-import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
-import com.javamentor.qa.platform.service.abstracts.model.RoleService;
-import com.javamentor.qa.platform.service.abstracts.model.UserService;
+import com.javamentor.qa.platform.service.abstracts.model.*;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -50,7 +49,7 @@ public class    TestDataInitService {
         createUsers();
         createQuestions();
         createAnswers();
-
+        createVotes();
     }
 
     private User admin;
@@ -144,6 +143,30 @@ public class    TestDataInitService {
             answer.setUser(user);
             answers.add(answer);
             answerService.persist(answer);
+        }
+    }
+
+    private List<VoteQuestion> votesQuestion = new ArrayList<>();
+    private List<VoteAnswer> votesAnswer = new ArrayList<>();
+
+    private void createVotes() {
+        for (int i = 0; i < 30; i++) {
+            VoteQuestion voteQuestion = new VoteQuestion();
+            voteQuestion.setQuestion(questions.get(i % questions.size()));
+            voteQuestion.setVote(new Random().nextBoolean() ? 1 : -1);
+            voteQuestion.setUser(user);
+            votesQuestion.add(voteQuestion);
+            voteQuestionService.persist(voteQuestion);
+        }
+
+        for (int i = 0; i < 30; i++) {
+            VoteAnswer voteAnswer = new VoteAnswer(
+                    user,
+                    answers.get(i % answers.size()),
+                    new Random().nextBoolean() ? 1 : -1
+            );
+            votesAnswer.add(voteAnswer);
+            voteAnswerService.persist(voteAnswer);
         }
     }
 }
