@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -23,6 +26,9 @@ public class AnswerDto {
     @Parameter(description = "id вопроса")
     private Long questionId;
     @Schema(description = "текст ответа")
+    @NotEmpty
+    @NotBlank
+    @NotNull
     private String body;
     @Schema(description = "дата создания ответа")
     private LocalDateTime persistDate;
