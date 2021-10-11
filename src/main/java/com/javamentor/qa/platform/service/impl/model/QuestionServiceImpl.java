@@ -54,15 +54,6 @@ public class QuestionServiceImpl extends ReadWriteServiceImpl<Question, Long> im
             }
         });
 
-        newTags.forEach(tag -> {
-            List<Question> listQuestion = tag.getQuestions();
-            if (listQuestion == null) {
-                listQuestion = new ArrayList<>();
-            }
-            listQuestion.add(question);
-            tag.setQuestions(listQuestion);
-        });
-
         question.setTags(newTags);
         questionDao.persist(question);
     }
