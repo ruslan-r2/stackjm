@@ -3,15 +3,13 @@ package com.javamentor.qa.platform.service.impl;
 
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.Tag;
+import com.javamentor.qa.platform.models.entity.question.VoteQuestion;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.question.answer.VoteAnswer;
 import com.javamentor.qa.platform.models.entity.question.answer.VoteType;
 import com.javamentor.qa.platform.models.entity.user.Role;
 import com.javamentor.qa.platform.models.entity.user.User;
-import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
-import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
-import com.javamentor.qa.platform.service.abstracts.model.RoleService;
-import com.javamentor.qa.platform.service.abstracts.model.UserService;
+import com.javamentor.qa.platform.service.abstracts.model.*;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,14 +28,20 @@ public class    TestDataInitService {
     private RoleService roleService;
     private QuestionService questionService;
     private AnswerService answerService;
+    private VoteAnswerService voteAnswerService;
+    private VoteQuestionService voteQuestionService;
     private final Flyway flyway;
 
     @Autowired
-    public TestDataInitService(UserService userService, RoleService roleService, QuestionService questionService, AnswerService answerService, Flyway flyway) {
+    public TestDataInitService(UserService userService, RoleService roleService, QuestionService questionService,
+                               AnswerService answerService, VoteAnswerService voteAnswerService,
+                               VoteQuestionService voteQuestionService, Flyway flyway) {
         this.userService = userService;
         this.roleService = roleService;
         this.questionService = questionService;
         this.answerService = answerService;
+        this.voteAnswerService = voteAnswerService;
+        this.voteQuestionService = voteQuestionService;
         this.flyway = flyway;
     }
 
@@ -52,6 +56,7 @@ public class    TestDataInitService {
         createUsers();
         createQuestions();
         createAnswers();
+        createVotes();
 
     }
 
