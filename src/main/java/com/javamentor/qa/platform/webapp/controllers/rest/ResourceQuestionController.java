@@ -1,7 +1,9 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.exception.VoteException;
-import com.javamentor.qa.platform.models.dto.*;
+import com.javamentor.qa.platform.models.dto.QuestionCreateDto;
+import com.javamentor.qa.platform.models.dto.PageDto;
+import com.javamentor.qa.platform.models.dto.QuestionDto;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.QuestionDtoService;
@@ -20,12 +22,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.validation.Valid;
 import java.util.Optional;
 
 
@@ -115,16 +124,16 @@ public class ResourceQuestionController {
     @PostMapping
     @Operation(summary = "Добавляет новый вопрос, возвращает QuestionDto")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",
-                                        description = "Ответ успешно добавлен",
-                                        content = @Content(mediaType = "application/json",
-                                                           schema = @Schema(implementation = QuestionDto.class))),
-                           @ApiResponse(responseCode = "400",
-                                        description = "Ответ не добавлен, проверьте обязательные поля")})
+            description = "Ответ успешно добавлен",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = QuestionDto.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "Ответ не добавлен, проверьте обязательные поля")})
     @ResponseBody
     public ResponseEntity<QuestionDto> addNewQuestion(@Parameter(description = "DTO создаваемого вопроса")
                                                       @Valid
                                                       @RequestBody
-                                                      QuestionCreateDto questionCreateDto) {
+                                                              QuestionCreateDto questionCreateDto) {
 
         Question question = questionConverter.questionCreateDtotoEntity(questionCreateDto);
         question.setUser((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
@@ -141,15 +150,16 @@ public class ResourceQuestionController {
             @Parameter(description = "кол-во элементов на странице", required = false)
             @RequestParam(value = "itemsOnPage", required = false, defaultValue = "10") Integer itemsOnPage,
             @Parameter(description = "список отслеживаемых тегов", required = false)
-            @RequestParam(value = "trackedTags", required = false) List<TrackedTagDto> trackedTags,
+            @RequestParam(value = "trackedTag", required = false) List<Long> trackedTag,
             @Parameter(description = "список игнорируемых тегов", required = false)
-            @RequestParam(value = "ignoredTags", required = false) List<IgnoredTagDto> ignoredTags) {
+            @RequestParam(value = "ignoredTag", required = false) List<Long> ignoredTag,
+            @AuthenticationPrincipal User user) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("currentPage", currentPage);
         parameters.put("itemsOnPage", itemsOnPage);
-        parameters.put("hasAnswers", false);
-        parameters.put("trackedTags", trackedTags);
-        parameters.put("ignoredTags", ignoredTags);
+        parameters.put("noAnswers", true);
+        parameters.put("trackedTag", trackedTag);
+        parameters.put("ignoredTag", ignoredTag);
         parameters.put("workPagination", "allQuestions");
         PageDto<QuestionDto> pageDto = questionDtoService.getPageDto(parameters);
         return ResponseEntity.ok(pageDto);

@@ -1,6 +1,11 @@
 package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.TagDtoDao;
+import com.javamentor.qa.platform.models.dto.RelatedTagDto;
+import com.javamentor.qa.platform.models.dto.TagDto;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+import org.hibernate.transform.AliasToBeanResultTransformer;
 import com.javamentor.qa.platform.models.dto.IgnoredTagDto;
 import com.javamentor.qa.platform.models.dto.RelatedTagDto;
 import com.javamentor.qa.platform.models.dto.TagDto;
@@ -33,6 +38,19 @@ public class TagDtoDaoImpl implements TagDtoDao {
         return query.getResultList();
     }
 
+    @SuppressWarnings("deprecation")
+    public List<TagDto> getTagsByQuestionIdList(List<Long> questionIdList) {
+        Query query = entityManager.createQuery("select distinct t.id as id, " +
+                        "t.name as name, " +
+                        "t.description as description " +
+                        "from Tag t " +
+                        "join t.questions q " +
+                        "where q.id in :list").setParameter("list", questionIdList)
+                .unwrap(org.hibernate.query.Query.class)
+                .setResultTransformer(new AliasToBeanResultTransformer(TagDto.class));
+        return query.getResultList();
+    }
+
     @SuppressWarnings("unchecked")
     public List<RelatedTagDto> getTopTags() {
         return (List<RelatedTagDto>) entityManager.createQuery(
@@ -60,10 +78,10 @@ public class TagDtoDaoImpl implements TagDtoDao {
     @Override
     public List<TrackedTagDto> getTrackedByUserId(Long id) {
         return entityManager.createQuery(
-                "select new com.javamentor.qa.platform.models.dto.TrackedTagDto(" +
-                        "t.id, " +
-                        "t.name) " +
-                        "from TrackedTag tt join tt.trackedTag t where tt.user.id = :id", TrackedTagDto.class)
+                        "select new com.javamentor.qa.platform.models.dto.TrackedTagDto(" +
+                                "t.id, " +
+                                "t.name) " +
+                                "from TrackedTag tt join tt.trackedTag t where tt.user.id = :id", TrackedTagDto.class)
                 .setParameter("id", id)
                 .getResultList();
     }
