@@ -72,36 +72,35 @@ public class TagDtoDaoImpl implements TagDtoDao {
     @Override
     public List<TagDto> getTop3TagsByUserId(Long id) {
         return entityManager.createQuery(
-                "SELECT q_h_t.tag_id AS id, " +
-                        "COUNT(q_h_t.tag_id) AS rep, " +
-                        "t.name AS name, " +
-                        "t.description as description " +
-                        "FROM Reputation r " +
-                        "JOIN question_has_tag q_h_t " +
-                        "ON r.question = q_h_t.question_id " +
-                        "JOIN tag t " +
-                        "ON q_h_t.tag_id = t.id " +
-                        "WHERE r.type = 3 AND r.author = :id " +
-                        "GROUP BY q_h_t.tag_id, t.name, t.description " +
-                        "ORDER BY COUNT(q_h_t.tag_id) DESC")
+                "SELECT q_h_t.tag_id AS id, COUNT(q_h_t.tag_id) AS reputation, \n" +
+                        "                        t.name AS name, \n" +
+                        "                        t.description as description \n" +
+                        "                        FROM reputation r \n" +
+                        "                        JOIN question_has_tag q_h_t \n" +
+                        "                        ON r.question_id = q_h_t.question_id \n" +
+                        "                        JOIN tag t \n" +
+                        "                        ON q_h_t.tag_id = t.id \n" +
+                        "                        WHERE r.type = 3 AND r.author_id = 5\n" +
+                        "                        GROUP BY q_h_t.tag_id, t.name, t.description\n" +
+                        "                        ORDER BY COUNT(q_h_t.tag_id) DESC \n" +
+                        "                        LIMIT 3")
                 .unwrap(Query.class)
                 .setParameter("id", id)
-                .setResultTransformer(Transformers.aliasToBean(TagDto.class))
-//                .setResultTransformer(new ResultTransformer() {
-//                    @Override
-//                    public Object transformTuple(Object[] tuples, String[] aliases) {
-//                        TagDto tagDto = new TagDto();
-//                        tagDto.setId((Long) tuples[0]);
-//                        tagDto.setName((String) tuples[2]);
-//                        tagDto.setDescription((String) tuples[3]);
-//                        return tagDto;
-//                    }
-//
-//                    @Override
-//                    public List transformList(List list) {
-//                        return list;
-//                    }
-//                })
+                .setResultTransformer(new ResultTransformer() {
+                    @Override
+                    public Object transformTuple(Object[] tuples, String[] aliases) {
+                        TagDto tagDto = new TagDto();
+                        tagDto.setId((Long) tuples[0]);
+                        tagDto.setName((String) tuples[2]);
+                        tagDto.setDescription((String) tuples[3]);
+                        return tagDto;
+                    }
+
+                    @Override
+                    public List transformList(List list) {
+                        return list;
+                    }
+                })
                 .getResultList();
     }
 }
