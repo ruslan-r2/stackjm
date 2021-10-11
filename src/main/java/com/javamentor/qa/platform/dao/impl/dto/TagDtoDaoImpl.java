@@ -67,5 +67,24 @@ public class TagDtoDaoImpl implements TagDtoDao {
                 .setParameter("id", id)
                 .getResultList();
     }
+    @Override
+    public List<TagDto> getTop3TagsByUserId(Long id){
+        return entityManager.createQuery(
+                "SELECT q_h_t.tag_id AS id, " +
+                        "COUNT(q_h_t.tag_id) AS reputation, " +
+                        "t.name AS name, " +
+                        "t.description as description " +
+                        "FROM reputation r " +
+                        "JOIN question_has_tag q_h_t " +
+                        "ON r.question_id = q_h_t.question_id" +
+                        "JOIN tag t " +
+                        "ON q_h_t.tag_id = t.id " +
+                        "WHERE r.type = 3 AND r.author_id = :id " +
+                        "GROUP BY q_h_t.tag_id " +
+                        "ORDER BY COUNT(q_h_t.tag_id) DESC " +
+                        "LIMIT 3",TagDto.class)
+                .setParameter("id", id)
+                .getResultList();
+    }
 
 }

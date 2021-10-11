@@ -12,4 +12,5 @@ public interface TagDtoDao {
     List<TagDto> getByQuestionId(Long id);
     List<IgnoredTagDto> getIgnoredTagsByUserId(Long id);
     List<TrackedTagDto> getTrackedByUserId(Long id);
+    List<TagDto> getTop3TagsByUserId(Long id);
 }
