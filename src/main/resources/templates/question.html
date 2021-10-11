@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>Question</title>
     <script>
         // после загрузки страницы
         window.addEventListener('load', function () {
@@ -57,44 +57,10 @@
         </div>
     </div>
 </div>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="#">StackJM</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">О Нас<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" style="color: azure" href="#" id="navbarDropdown"
-                       role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Домашняя Страница
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Вопросы</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Пользователи</a>
-                        <a class="dropdown-item" href="#">Тэги</a>
-                    </div>
-                </li>
-
-            </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Поиск..." aria-label="Search">
-                <button class="btn btn-primary my-2 my-sm-0" type="submit">Найти</button>
-            </form>
-        </div>
-    </div>
-</nav>
 <div class="p-1 text-black"
-     style="background-image: url('https://sun9-31.userapi.com/impg/TPMLQnngx2T8CEAhtDPHLmeDPNivvRz1VI78RA/uEWkYmvm95M.jpg?size=2560x1709&quality=96&sign=30778c109d45a780268cd491d84db3e2&type=album'); height: 925px;">
-    <form th:action="@{/question/add}" th:object="${question}" method="post">
-        <input type="hidden" th:field="*{id}" />
+     style="background-image: url('https://cutewallpaper.org/21/kate-spade-computer-background/40-Kate-Spade-Floral-Desktop-Wallpapers-Download-at-.jpg'); height: 925px;">
+    <form action="/api/user/question/add" method="post">
+        <input type="hidden"  />
         <div class="container">
             <div class="row">
                 <div class="col-12" style="height: 100px"></div>
@@ -108,21 +74,21 @@
                         <small id="titleHelp" class="form-text text-primary">Будьте конкретны и представьте, что вы
                             задаете вопрос
                             другому человеку</small>
-                        <input type="text" th:field="*{title}"  class="form-control" id="title" aria-describedby="titleHelp">
+                        <input type="text"   class="form-control" name="title" id="title" aria-describedby="titleHelp" required>
                     </div>
                     <div class="form-group">
                         <label for="description"><h5>Описание проблемы</h5></label>
                         <small id="textHelp" class="form-text text-primary">Включите всю информацию, которая может
                             понадобится,
                             чтобы ответить на ваш вопрос</small>
-                        <textarea th:field="*{description}" class="form-control" id="description" rows="10"></textarea>
+                        <textarea  class="form-control" name="description" id="description"  rows="10" required></textarea>
                     </div>
                     <div class="form-group">
                         <label for="tags"><h5>ТЭГи</h5></label>
                         <small id="tagsHelp" class="form-text text-primary">Добавьте несколько тэгов, чтобы описать, о
                             чем ваш
                             вопрос</small>
-                        <input type="text" th:field="*{tags}" class="form-control" id="tags" aria-describedby="tagsHelp">
+                        <input type="text"  class="form-control" name="tags" id="tags" aria-describedby="tagsHelp" required>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Задать вопрос</button>
@@ -186,6 +152,8 @@
         </div>
     </form>
 </div>
+<script type="text/javascript" src="/js/header.js"></script>
+<script type="text/javascript" src="/js/footer.js"></script>
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
