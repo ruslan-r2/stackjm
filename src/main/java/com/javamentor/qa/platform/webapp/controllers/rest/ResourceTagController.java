@@ -4,7 +4,6 @@ import com.javamentor.qa.platform.models.dto.IgnoredTagDto;
 import com.javamentor.qa.platform.models.dto.RelatedTagDto;
 import com.javamentor.qa.platform.models.dto.TagDto;
 import com.javamentor.qa.platform.models.dto.TrackedTagDto;
-import com.javamentor.qa.platform.models.entity.question.IgnoredTag;
 import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.javamentor.qa.platform.models.entity.question.TrackedTag;
 import com.javamentor.qa.platform.models.entity.user.User;
@@ -21,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,16 +54,13 @@ public class ResourceTagController {
     @Operation(summary = "добавляет тег в игнорируемые теги")
     @ApiResponse(responseCode = "200", description = "успешно",
             content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = RelatedTagDto.class)))
-    @GetMapping("/api/user/tag/{id}/ignored")
-    public ResponseEntity<TagDto> addTagToIgnoreTag(@PathVariable(name = "id") Long tagId) {
-        Optional<Tag> tag = tagService.getById(tagId);
-        if (!tag.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ignoredTagService.persist(new IgnoredTag(tag.get(), user));
-        return new ResponseEntity<>(tagConverter.TagToTagDto(tag.get()), HttpStatus.OK);
+                    schema = @Schema(implementation = TagDto.class)))
+    @ApiResponse(responseCode = "404", description = "тег с таким id не найден")
+    @ApiResponse(responseCode = "400", description = "тег уже был добавлен в игнорируемые ранее")
+    @PostMapping("/api/user/tag/{id}/ignored")
+    public ResponseEntity<TagDto> addTagToIgnoreTag(@PathVariable(name = "id") Long tagId,
+                                                    @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(tagConverter.TagToTagDto(ignoredTagService.add(tagId, user)));
     }
 
     @Operation(summary = "Возвращает игнорируемые теги пользователя")
