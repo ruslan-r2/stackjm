@@ -13,7 +13,6 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
 
-
 @Repository
 public class AnswerDtoDaoImpl implements AnswerDtoDao {
 
@@ -32,33 +31,35 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "a.dateAcceptTime as dateAccept, " +
                 "a.user.imageLink as image, " +
                 "a.user.nickname as nickname, " +
-                "(select COALESCE(SUM(vote), 0)  from VoteAnswer  where answer.id = a.id) as countValuable, " +
-                "(select COALESCE(SUM(r.count), 0)  from Reputation r  where author.id = a.user.id) as countUserReputation " +
+                "(select coalesce(sum(case when va.voteType = 'UP' then 1 when va.voteType = 'DOWN' then -1 end), 0) " +
+                "from VoteAnswer va where answer.id = a.id) as countValuable, " +
+                "(select coalesce(sum(r.count), 0) from Reputation r where author.id = a.user.id) as countUserReputation " +
                 "from Answer a " +
                 "where a.question.id = :id and a.isDeleted = false " +
-                "group by a.id, a.user.id, a.question.id,a.htmlBody, a.persistDateTime, a.isHelpful, a.dateAcceptTime, a.user.imageLink, a.user.nickname")
-                .setParameter("id",id)
+                "group by a.id, a.user.id, a.question.id, a.htmlBody, a.persistDateTime, a.isHelpful, " +
+                "a.dateAcceptTime, a.user.imageLink, a.user.nickname")
+                .setParameter("id", id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
-        List<AnswerDto> answerDtoList = query.getResultList();
-        return answerDtoList;
+        return query.getResultList();
     }
 
     @Override
     public Optional<AnswerDto> getAnswerDtoById(Long id) {
         Session session = entityManager.unwrap(Session.class);
         Query query = session.createQuery("SELECT a.id as id, " +
-                        "a.user.id as userId," +
-                        "a.question.id as questionId," +
-                        "a.htmlBody as body, " +
-                        "a.persistDateTime as persistDate, " +
-                        "a.isHelpful as isHelpful, " +
-                        "a.dateAcceptTime as dateAccept, " +
-                        "a.user.imageLink as image, " +
-                        "a.user.nickname as nickname, " +
-                        "(select COALESCE(SUM(vote), 0)  from VoteAnswer  where answer.id = a.id) as countValuable, " +
-                        "(select COALESCE(SUM(r.count), 0)  from Reputation r  where author.id = a.user.id) as countUserReputation " +
-                        "from Answer a " +
-                        "where a.id = :id and a.isDeleted = false ")
+                "a.user.id as userId," +
+                "a.question.id as questionId," +
+                "a.htmlBody as body, " +
+                "a.persistDateTime as persistDate, " +
+                "a.isHelpful as isHelpful, " +
+                "a.dateAcceptTime as dateAccept, " +
+                "a.user.imageLink as image, " +
+                "a.user.nickname as nickname, " +
+                "(select coalesce(sum(case when va.voteType = 'UP' then 1 when va.voteType = 'DOWN' then -1 end), 0) " +
+                "from VoteAnswer va where answer.id = a.id) as countValuable, " +
+                "(select coalesce(sum(r.count), 0) from Reputation r where author.id = a.user.id) as countUserReputation " +
+                "from Answer a " +
+                "where a.id = :id and a.isDeleted = false")
                 .setParameter("id", id)
                 .setResultTransformer(new AliasToBeanResultTransformer(AnswerDto.class));
         return SingleResultUtil.getSingleResultOrNull(query);

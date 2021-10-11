@@ -9,6 +9,7 @@ import com.javamentor.qa.platform.models.entity.question.answer.CommentAnswer;
 import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.models.entity.question.answer.VoteAnswer;
+import com.javamentor.qa.platform.models.entity.question.answer.VoteType;
 import com.javamentor.qa.platform.models.entity.user.reputation.Reputation;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
@@ -185,7 +186,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
         assertTrue(answerBefore.getId() == answerAfter.getId()); //проверка что ответ тот же
         assertTrue(voteAfter.size() == 1);//проверка что 1 оценка
-        assertTrue(voteAfter.get(0).getVote() == 1); //проверка что оценка положительная
+        assertTrue(voteAfter.get(0).getVoteType().equals(VoteType.UP)); //проверка что оценка положительная
         assertTrue(reputationAfter.get().getCount() == 10); //проверка что репутация у автора ответа увеличилась на 10
         //изменение своей оценки на минус
         mockMvc.perform(post(URL+"/"+answerIdCorrect+"/downVote",questionIdCorrect).header("Authorization", getToken(username, password)))
@@ -201,7 +202,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
         assertTrue(answerAfterChange.getId() == answerAfterChange.getId()); //проверка что ответ тот же
         assertTrue(voteAfterChange.size() == 1);//проверка что оценка также одна
-        assertTrue(voteAfterChange.get(0).getVote() == -1); //проверка что оценка отрицательная
+        assertTrue(voteAfterChange.get(0).getVoteType().equals(VoteType.DOWN)); //проверка что оценка отрицательная
         assertTrue(reputationAfterChange.get().getCount() == -5); //проверка что репутация у автора ответа уменьшилаь на 5
 
         //логин автора ответа

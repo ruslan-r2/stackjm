@@ -4,6 +4,8 @@ package com.javamentor.qa.platform.service.impl;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
+import com.javamentor.qa.platform.models.entity.question.answer.VoteAnswer;
+import com.javamentor.qa.platform.models.entity.question.answer.VoteType;
 import com.javamentor.qa.platform.models.entity.user.Role;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
@@ -144,6 +146,30 @@ public class    TestDataInitService {
             answer.setUser(user);
             answers.add(answer);
             answerService.persist(answer);
+        }
+    }
+
+    private List<VoteQuestion> votesQuestion = new ArrayList<>();
+    private List<VoteAnswer> votesAnswer = new ArrayList<>();
+
+    private void createVotes() {
+        for (int i = 0; i < 30; i++) {
+            VoteQuestion voteQuestion = new VoteQuestion();
+            voteQuestion.setQuestion(questions.get(i % questions.size()));
+            voteQuestion.setVote(new Random().nextBoolean() ? 1 : -1);
+            voteQuestion.setUser(user);
+            votesQuestion.add(voteQuestion);
+            voteQuestionService.persist(voteQuestion);
+        }
+
+        for (int i = 0; i < 30; i++) {
+            VoteAnswer voteAnswer = new VoteAnswer(
+                    user,
+                    answers.get(i % answers.size()),
+                    new Random().nextBoolean() ? VoteType.UP : VoteType.DOWN
+            );
+            votesAnswer.add(voteAnswer);
+            voteAnswerService.persist(voteAnswer);
         }
     }
 }
