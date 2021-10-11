@@ -1,0 +1,65 @@
+reputation:
+  - id: 100
+    count: 1
+    persist_date: 1990-10-10 00:00:00
+    type: 3
+    answer_id:
+    author_id: 101
+    question_id: 100
+    sender_id:
+  - id: 101
+    count: 1
+    persist_date: 1990-10-10 00:00:00
+    type: 3
+    answer_id:
+    author_id: 101
+    question_id: 101
+    sender_id:
+  - id: 102
+    count: 1
+    persist_date: 1990-10-10 00:00:00
+    type: 3
+    answer_id:
+    author_id: 101
+    question_id: 102
+    sender_id:
+  - id: 103
+    count: 1
+    persist_date: 1990-10-10 00:00:00
+    type: 3
+    answer_id:
+    author_id: 101
+    question_id: 103
+    sender_id:
+  - id: 104
+    count: 1
+    persist_date: 1990-10-10 00:00:00
+    type: 3
+    answer_id:
+    author_id: 101
+    question_id: 104
+    sender_id:
+  - id: 105
+    count: 1
+    persist_date: 1990-10-10 00:00:00
+    type: 3
+    answer_id:
+    author_id: 102
+    question_id: 100
+    sender_id:
+  - id: 106
+    count: 1
+    persist_date: 1990-10-10 00:00:00
+    type: 3
+    answer_id:
+    author_id: 102
+    question_id: 103
+    sender_id:
+  - id: 107
+    count: 1
+    persist_date: 1990-10-10 00:00:00
+    type: 3
+    answer_id:
+    author_id: 102
+    question_id: 104
+    sender_id:

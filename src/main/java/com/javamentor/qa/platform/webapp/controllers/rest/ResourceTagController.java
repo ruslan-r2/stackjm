@@ -73,6 +73,16 @@ public class ResourceTagController {
         return ResponseEntity.ok(tagDtoService.getIgnoredTagsByUserId(user.getId()));
     }
 
+    @Operation(summary = "Возвращает топ-3 тега пользователя")
+    @ApiResponse(responseCode = "200", description = "успешно",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = TagDto.class)))
+    @GetMapping("/api/user/tag/top-3tags")
+    public ResponseEntity<List<TagDto>> getTop3TagsUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(tagDtoService.getTop3TagsByUserId(user.getId()));
+    }
+
     @PostMapping("/api/user/tag/{id}/tracked")
     @Operation(summary = "Добавляет тег в отслеживаемые")
     @ApiResponses({@ApiResponse(responseCode = "200",

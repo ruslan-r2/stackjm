@@ -87,7 +87,7 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
         Long id = 101L;
 
         mockMvc.perform(post("/api/user/tag/{id}/ignored", id)
-                        .header("Authorization", getToken(username, password)))
+                .header("Authorization", getToken(username, password)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id", is(101)))
@@ -104,8 +104,8 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
     public void getIgnoreTags() throws Exception {
 
         mockMvc.perform(get("/api/user/tag/ignored")
-                        .header("Authorization", getToken("user@mail.ru", "user"))
-                )
+                .header("Authorization", getToken("user@mail.ru", "user"))
+        )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(2)))
@@ -113,8 +113,8 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$[1].name", is("Spring")));
 
         mockMvc.perform(get("/api/user/tag/ignored")
-                        .header("Authorization", getToken("ruslan@mail.ru", "user1"))
-                )
+                .header("Authorization", getToken("ruslan@mail.ru", "user1"))
+        )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(1)))
@@ -128,8 +128,8 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
         String username = "user@mail.ru";
         String password = "user";
         mockMvc.perform(get("/api/user/tag/tracked")
-                        .header("Authorization", getToken(username, password))
-                )
+                .header("Authorization", getToken(username, password))
+        )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.*", hasSize(3)))
@@ -140,7 +140,7 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
 
     @Test
     @DataSet(value = {"resource_tag_controller/addTagToTracked.yml"},
-             cleanBefore = true, cleanAfter = true)
+            cleanBefore = true, cleanAfter = true)
     public void addExistingTagToTracked() throws Exception {
         String username = "user@mail.ru";
         String password = "user";
@@ -174,4 +174,31 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
                 andDo(print()).
                 andExpect(status().isBadRequest());
     }
+
+    @Test
+    @DataSet(value = {"topTagController/tags.yml", "topTagController/users.yml", "topTagController/question_has_tag.yml",
+            "topTagController/roles.yml", "topTagController/reputation.yml","topTagController/questions.yml"}, cleanBefore = true, cleanAfter = true)
+    public void getTop3TagsUser() throws Exception {
+
+        mockMvc.perform(get("/api/user/tag/top-3tags")
+                .header("Authorization", getToken("user@mail.ru", "user"))
+        )
+                .andDo(print())
+//                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(3)))
+                .andExpect(jsonPath("$[0].name", is("Hibernate")))
+                .andExpect(jsonPath("$[1].name", is("Spring")))
+                .andExpect(jsonPath("$[2].name", is("ООП")));
+
+        mockMvc.perform(get("/api/user/tag/top-3tags")
+                .header("Authorization", getToken("ruslan@mail.ru", "user1"))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(3)))
+                .andExpect(jsonPath("$[0].name", is("Hibernate")))
+                .andExpect(jsonPath("$[1].name", is("Spring")))
+                .andExpect(jsonPath("$[2].name", is("ООП")));
+    }
+
 }
