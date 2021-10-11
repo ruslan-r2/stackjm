@@ -7,9 +7,8 @@ import com.javamentor.qa.platform.models.dto.QuestionDto;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.QuestionDtoService;
-import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
-import com.javamentor.qa.platform.service.abstracts.model.ReputationService;
-import com.javamentor.qa.platform.service.abstracts.model.VoteQuestionService;
+import com.javamentor.qa.platform.service.abstracts.dto.TagDtoService;
+import com.javamentor.qa.platform.service.abstracts.model.*;
 import com.javamentor.qa.platform.webapp.converters.QuestionConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -48,13 +47,15 @@ public class ResourceQuestionController {
     private QuestionConverter questionConverter;
     private VoteQuestionService voteQuestionService;
     private ReputationService reputationService;
+    private TagDtoService tagDtoService;
 
-    public ResourceQuestionController(QuestionDtoService questionDtoService, QuestionService questionService, VoteQuestionService voteQuestionService, ReputationService reputationService, QuestionConverter questionConverter) {
+    public ResourceQuestionController(QuestionDtoService questionDtoService, QuestionService questionService, VoteQuestionService voteQuestionService, ReputationService reputationService, QuestionConverter questionConverter, TagDtoService tagDtoService) {
         this.questionDtoService = questionDtoService;
         this.questionService = questionService;
         this.voteQuestionService = voteQuestionService;
         this.reputationService = reputationService;
         this.questionConverter = questionConverter;
+        this.tagDtoService = tagDtoService;
     }
 
     @GetMapping("/{id}")
@@ -147,21 +148,16 @@ public class ResourceQuestionController {
     public ResponseEntity<PageDto<QuestionDto>> getQuestionsWithoutAnswers (
             @Parameter(description = "номер страницы", required = true)
             @RequestParam(value = "currentPage") Integer currentPage,
-            @Parameter(description = "кол-во элементов на странице", required = false)
+            @Parameter(description = "кол-во элементов на странице")
             @RequestParam(value = "itemsOnPage", required = false, defaultValue = "10") Integer itemsOnPage,
-            @Parameter(description = "список отслеживаемых тегов", required = false)
-            @RequestParam(value = "trackedTag", required = false) List<Long> trackedTag,
-            @Parameter(description = "список игнорируемых тегов", required = false)
-            @RequestParam(value = "ignoredTag", required = false) List<Long> ignoredTag,
             @AuthenticationPrincipal User user) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("currentPage", currentPage);
         parameters.put("itemsOnPage", itemsOnPage);
         parameters.put("noAnswers", true);
-        parameters.put("trackedTag", trackedTag);
-        parameters.put("ignoredTag", ignoredTag);
+        parameters.put("trackedTag", tagDtoService.getTrackedIdsByUserId(user.getId()));
+        parameters.put("ignoredTag", tagDtoService.getIgnoredIdsByUserId(user.getId()));
         parameters.put("workPagination", "allQuestions");
-        PageDto<QuestionDto> pageDto = questionDtoService.getPageDto(parameters);
-        return ResponseEntity.ok(pageDto);
+        return ResponseEntity.ok(questionDtoService.getPageDto(parameters));
     }
 }

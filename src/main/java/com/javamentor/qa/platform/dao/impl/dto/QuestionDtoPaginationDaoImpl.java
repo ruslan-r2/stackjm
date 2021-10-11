@@ -49,8 +49,8 @@ public class QuestionDtoPaginationDaoImpl implements PaginationDao<QuestionDto> 
                 "q.lastUpdateDateTime as lastUpdateDateTime " +
                 "from Question q " +
                 "where q.isDeleted = false " +
-                "and ((:trackedTags) is null or (q.id in (select tq.id from Tag t join t.questions tq where t.id in (:trackedTags)))) " +
-                "and ((:ignoredTags) is null or (q.id not in (select tq.id from Tag t join t.questions tq where t.id in (:ignoredTags)))) " +
+                "and (coalesce(:trackedTags, null) is null or (q.id in (select tq.id from Tag t join t.questions tq where t.id in (:trackedTags)))) " +
+                "and (coalesce(:ignoredTags, null) is null or (q.id not in (select tq.id from Tag t join t.questions tq where t.id in (:ignoredTags)))) " +
                 noAnswers +
                 "order by q.id");
 
