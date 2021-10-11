@@ -7,16 +7,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Type;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.EnumType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Enumerated;
 import java.time.LocalDateTime;
-
 
 @Entity
 @Table(name = "votes_on_answers")
@@ -41,12 +41,12 @@ public class VoteAnswer {
     @Type(type = "org.hibernate.type.LocalDateTimeType")
     private LocalDateTime persistDateTime;
 
-    @Column
-    private Integer vote;
+    @Enumerated(EnumType.STRING)
+    private VoteType voteType;
 
-    public VoteAnswer(User user, Answer answer, int vote) {
+    public VoteAnswer(User user, Answer answer, VoteType voteType) {
         this.user = user;
         this.answer = answer;
-        this.vote = vote;
+        this.voteType = voteType;
     }
 }

@@ -6,6 +6,7 @@ import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.javamentor.qa.platform.models.entity.question.VoteQuestion;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.question.answer.VoteAnswer;
+import com.javamentor.qa.platform.models.entity.question.answer.VoteType;
 import com.javamentor.qa.platform.models.entity.user.Role;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.model.*;
@@ -169,7 +170,7 @@ public class    TestDataInitService {
             VoteAnswer voteAnswer = new VoteAnswer(
                     user,
                     answers.get(i % answers.size()),
-                    new Random().nextBoolean() ? 1 : -1
+                    new Random().nextBoolean() ? VoteType.UP : VoteType.DOWN
             );
             votesAnswer.add(voteAnswer);
             voteAnswerService.persist(voteAnswer);
