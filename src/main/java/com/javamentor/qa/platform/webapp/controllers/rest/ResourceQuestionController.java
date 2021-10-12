@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import java.util.Optional;
@@ -43,11 +42,11 @@ import java.util.Optional;
 public class ResourceQuestionController {
 
     private final QuestionDtoService questionDtoService;
-    private QuestionService questionService;
-    private QuestionConverter questionConverter;
-    private VoteQuestionService voteQuestionService;
-    private ReputationService reputationService;
-    private TagDtoService tagDtoService;
+    private final QuestionService questionService;
+    private final QuestionConverter questionConverter;
+    private final VoteQuestionService voteQuestionService;
+    private final ReputationService reputationService;
+    private final TagDtoService tagDtoService;
 
     public ResourceQuestionController(QuestionDtoService questionDtoService, QuestionService questionService, VoteQuestionService voteQuestionService, ReputationService reputationService, QuestionConverter questionConverter, TagDtoService tagDtoService) {
         this.questionDtoService = questionDtoService;

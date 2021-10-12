@@ -1,11 +1,6 @@
 package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.TagDtoDao;
-import com.javamentor.qa.platform.models.dto.RelatedTagDto;
-import com.javamentor.qa.platform.models.dto.TagDto;
-import org.hibernate.Session;
-import org.hibernate.query.Query;
-import org.hibernate.transform.AliasToBeanResultTransformer;
 import com.javamentor.qa.platform.models.dto.IgnoredTagDto;
 import com.javamentor.qa.platform.models.dto.RelatedTagDto;
 import com.javamentor.qa.platform.models.dto.TagDto;
@@ -13,12 +8,17 @@ import com.javamentor.qa.platform.models.dto.TrackedTagDto;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.transform.ResultTransformer;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collections;
 
 @Repository
 public class TagDtoDaoImpl implements TagDtoDao {
@@ -39,16 +39,18 @@ public class TagDtoDaoImpl implements TagDtoDao {
     }
 
     @SuppressWarnings("deprecation")
-    public List<TagDto> getTagsByQuestionIdList(List<Long> questionIdList) {
-        Query query = entityManager.createQuery("select distinct t.id as id, " +
-                        "t.name as name, " +
-                        "t.description as description " +
+    public Map<Long, List<TagDto>> getTagsByQuestionIdList(List<Long> questionIdList) {
+        Query query = entityManager.createQuery("select q.id as questionId, " +
+                        "t.id as tagIid, " +
+                        "t.name as tagName, " +
+                        "t.description as tagDescription " +
                         "from Tag t " +
                         "join t.questions q " +
                         "where q.id in :list").setParameter("list", questionIdList)
                 .unwrap(org.hibernate.query.Query.class)
-                .setResultTransformer(new AliasToBeanResultTransformer(TagDto.class));
-        return query.getResultList();
+                .setResultTransformer(new QuestionIdTagDtoMapResultTransformer());
+        Map resultMap = (Map<Long, List<TagDto>>) query.getResultList().get(0);
+        return resultMap;
     }
 
     @SuppressWarnings("unchecked")
@@ -86,4 +88,29 @@ public class TagDtoDaoImpl implements TagDtoDao {
                 .getResultList();
     }
 
+    private static class QuestionIdTagDtoMapResultTransformer implements ResultTransformer {
+
+        private final Map<Long, List<TagDto>> result = new HashMap<>();
+
+        @Override
+        public Object transformTuple(Object[] tuple, String[] aliaces) {
+            long questionId = (Long) tuple[0];
+            long tagId = (Long) tuple[1];
+            String tagName = (String) tuple[2];
+            String tagDescription = (String) tuple[3];
+
+            TagDto tagDto = new TagDto(tagId, tagName, tagDescription);
+
+            if (!result.containsKey(questionId)) {
+                result.put(questionId, new ArrayList<>());
+            }
+            result.get(questionId).add(tagDto);
+            return tuple;
+        }
+
+        @Override
+        public List transformList(List list) {
+            return Collections.singletonList(result);
+        }
+    }
 }

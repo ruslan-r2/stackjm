@@ -11,12 +11,13 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.Tuple;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
 
 @Repository
 public class QuestionDtoDaoImpl implements QuestionDtoDao {
@@ -46,35 +47,6 @@ public class QuestionDtoDaoImpl implements QuestionDtoDao {
                 .unwrap(org.hibernate.query.Query.class)
                 .setResultTransformer(new QuestionDtoWithListTagDtoTransformer());
         return SingleResultUtil.getSingleResultOrNull(query);
-    }
-
-    @Override
-    public Map<Long, List<Long>> getQuestionTagIdMap(List<Long> specificQuestionIds) {
-        StringBuilder queryBuilder = new StringBuilder();
-        if (specificQuestionIds != null) {
-            if (specificQuestionIds.isEmpty()) {
-                return new HashMap<>();
-            }
-            queryBuilder.append(" where qt.question_id in :list");
-        }
-        Query query = entityManager.createNativeQuery("select * from question_has_tag qt" + queryBuilder,
-                Tuple.class);
-        if (specificQuestionIds != null) {
-            query.setParameter("list", specificQuestionIds);
-        }
-        List<Tuple> list = query.getResultList();
-
-        Map<Long, List<Long>> collect = list.stream().collect(Collectors.toMap(tuple -> {
-            BigInteger temp = (BigInteger) tuple.get("question_id");
-            return temp.longValue();
-        }, tuple -> {
-            BigInteger temp = (BigInteger) tuple.get("tag_id");
-            return new ArrayList<>(Collections.singletonList(temp.longValue()));
-        }, (l1, l2) -> {
-            l1.addAll(l2);
-            return l1;
-        }));
-        return collect;
     }
 
     private static class QuestionDtoWithListTagDtoTransformer implements ResultTransformer {
