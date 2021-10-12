@@ -153,37 +153,40 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
     @Test
     @DataSet(value = "resource_question_controller/getPageByTagsIfNecessary.yml", cleanAfter = true, cleanBefore = true)
     public void getPageByTagsIfNecessaryTest() throws Exception {
-        username = "user@mail.ru";
-        password = "user";
-
-        //Запрос с пустым списком id тэгов
-        mockMvc.perform(get("/api/user/question?page=1&items=10")
-                .param("trackedTag", "")
-                .header("Authorization", getToken(username, password)))
-                .andExpect(status().isOk());
-
-        //Запрос с id тэга, которого нет в базе
-        mockMvc.perform(get("/api/user/question?page=1&items=10")
-                .param("trackedTag", "1")
-                .header("Authorization", getToken(username, password)))
-                .andExpect(status().isOk());
 
         //Некорретный запрос к серверу, отсутствует необходимый параметр "page"
         mockMvc.perform(get("/api/user/question?items=10")
                 .param("trackedTag", "")
-                .header("Authorization", getToken(username, password)))
+                .header("Authorization", getToken("user@mail.ru", "user")))
                 .andExpect(status().isInternalServerError());
 
-        //Запрос с взаимоисключающими ID тэгов
-        mockMvc.perform(get("/api/user/question?page=1&items=10")
-                .param("trackedTag", "1")
-                .param("ignoredTag", "1")
-                .header("Authorization", getToken(username, password)))
-                .andExpect(status().isOk());
-
-        //Запрос на получение всех вопросов, независимо от тэгов
-        mockMvc.perform(get("/api/user/question?page=1&items=10").header("Authorization", getToken(username, password)))
+        //Запрос на получение всех вопросов юзера, который трекает один тэг и игнорирует другой
+        mockMvc.perform(get("/api/user/question?page=1&items=10").header("Authorization", getToken("user@mail.ru", "user")))
                 .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentPageNumber", equalTo(1)))
+                .andExpect(jsonPath("$.totalPageCount", equalTo(1)))
+                .andExpect(jsonPath("$.totalResultCount", equalTo(2)))
+                .andExpect(jsonPath("$.itemsOnPage", equalTo(10)))
+                .andExpect(jsonPath("$.items.length()", equalTo(1)))
+                .andExpect(jsonPath("$.items[0].id", equalTo(101)))
+                .andExpect(jsonPath("$.items[0].title", equalTo("question2")))
+                .andExpect(jsonPath("$.items[0].authorId", equalTo(102)))
+                .andExpect(jsonPath("$.items[0].authorName", equalTo("just user3")))
+                .andExpect(jsonPath("$.items[0].authorImage", equalTo("user3.image.com")))
+                .andExpect(jsonPath("$.items[0].description", equalTo("description2")))
+                .andExpect(jsonPath("$.items[0].viewCount", equalTo(0)))
+                .andExpect(jsonPath("$.items[0].authorReputation", equalTo(0)))
+                .andExpect(jsonPath("$.items[0].countAnswer", equalTo(1)))
+                .andExpect(jsonPath("$.items[0].countValuable", equalTo(-1)))
+                .andExpect(jsonPath("$.items[0].persistDateTime", equalTo("1990-10-10T00:00:00")))
+                .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
+                .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
+                .andExpect(jsonPath("$.items[0].listTagDto[0].description", equalTo("tag_1")));
+
+        //Запрос на получение всех вопросов юзера, который трекает один тэг и не имеет игнорируемых
+        mockMvc.perform(get("/api/user/question?page=1&items=10")
+                .header("Authorization", getToken("user2@mail.ru", "user")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.currentPageNumber", equalTo(1)))
                 .andExpect(jsonPath("$.totalPageCount", equalTo(1)))
@@ -222,60 +225,6 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[1].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[1].listTagDto[0].name", equalTo("tag_name_1")))
                 .andExpect(jsonPath("$.items[1].listTagDto[0].description", equalTo("tag_1")));
-
-        //Запрос на получение вопросов по искомому тэгу
-        mockMvc.perform(get("/api/user/question?page=1&items=10")
-                .param("trackedTag", String.valueOf(101L))
-                .header("Authorization", getToken(username, password)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.currentPageNumber", equalTo(1)))
-                .andExpect(jsonPath("$.totalPageCount", equalTo(1)))
-                .andExpect(jsonPath("$.totalResultCount", equalTo(2)))
-                .andExpect(jsonPath("$.itemsOnPage", equalTo(10)))
-                .andExpect(jsonPath("$.items.length()", equalTo(1)))
-                .andExpect(jsonPath("$.items[0].id", equalTo(100)))
-                .andExpect(jsonPath("$.items[0].title", equalTo("question")))
-                .andExpect(jsonPath("$.items[0].authorId", equalTo(100)))
-                .andExpect(jsonPath("$.items[0].authorName", equalTo("just user")))
-                .andExpect(jsonPath("$.items[0].authorImage", equalTo("user.image.com")))
-                .andExpect(jsonPath("$.items[0].description", equalTo("description1")))
-                .andExpect(jsonPath("$.items[0].viewCount", equalTo(2)))
-                .andExpect(jsonPath("$.items[0].authorReputation", equalTo(1)))
-                .andExpect(jsonPath("$.items[0].countAnswer", equalTo(2)))
-                .andExpect(jsonPath("$.items[0].countValuable", equalTo(2)))
-                .andExpect(jsonPath("$.items[0].persistDateTime", equalTo("1990-10-10T00:00:00")))
-                .andExpect(jsonPath("$.items[0].lastUpdateDateTime", equalTo("1990-10-10T00:00:00")))
-                .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
-                .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
-                .andExpect(jsonPath("$.items[0].listTagDto[0].description", equalTo("tag_1")))
-                .andExpect(jsonPath("$.items[0].listTagDto[1].id", equalTo(101)))
-                .andExpect(jsonPath("$.items[0].listTagDto[1].name", equalTo("tag_name_2")))
-                .andExpect(jsonPath("$.items[0].listTagDto[1].description", equalTo("tag_2")));
-
-        //Запрос на получение всех вопрсов с исключающим тэгом
-        mockMvc.perform(get("/api/user/question?page=1&items=10")
-                .param("ignoredTag", "101")
-                .header("Authorization", getToken(username, password)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.currentPageNumber", equalTo(1)))
-                .andExpect(jsonPath("$.totalPageCount", equalTo(1)))
-                .andExpect(jsonPath("$.totalResultCount", equalTo(2)))
-                .andExpect(jsonPath("$.itemsOnPage", equalTo(10)))
-                .andExpect(jsonPath("$.items.length()", equalTo(1)))
-                .andExpect(jsonPath("$.items[0].id", equalTo(101)))
-                .andExpect(jsonPath("$.items[0].title", equalTo("question2")))
-                .andExpect(jsonPath("$.items[0].authorId", equalTo(102)))
-                .andExpect(jsonPath("$.items[0].authorName", equalTo("just user3")))
-                .andExpect(jsonPath("$.items[0].authorImage", equalTo("user3.image.com")))
-                .andExpect(jsonPath("$.items[0].description", equalTo("description2")))
-                .andExpect(jsonPath("$.items[0].viewCount", equalTo(0)))
-                .andExpect(jsonPath("$.items[0].authorReputation", equalTo(0)))
-                .andExpect(jsonPath("$.items[0].countAnswer", equalTo(1)))
-                .andExpect(jsonPath("$.items[0].countValuable", equalTo(-1)))
-                .andExpect(jsonPath("$.items[0].persistDateTime", equalTo("1990-10-10T00:00:00")))
-                .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
-                .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
-                .andExpect(jsonPath("$.items[0].listTagDto[0].description", equalTo("tag_1")));
     }
 
     @Test

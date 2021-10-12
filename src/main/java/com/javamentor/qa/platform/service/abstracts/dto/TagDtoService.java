@@ -10,4 +10,6 @@ public interface TagDtoService {
     List<RelatedTagDto> getTopTags();
     List<IgnoredTagDto> getIgnoredTagsByUserId(Long id);
     List<TrackedTagDto> getTrackedByUserId(Long id);
+    List<Long> getTrackedIdsByUserId(Long id);
+    List<Long> getIgnoredIdsByUserId(Long id);
 }
