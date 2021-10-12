@@ -35,18 +35,26 @@ public class QuestionServiceImpl extends ReadWriteServiceImpl<Question, Long> im
     @Transactional
     public void persist(Question question) {
         List<Tag> tags = question.getTags();
-        List<String> names = new ArrayList<>();
+        List<String> tagNames = new ArrayList<>();
+        tags.forEach(tag -> tagNames.add(tag.getName()));
+        List<Tag> existingTags = tagDao.getTagsByNames(tagNames);
+        List<Tag> newTags = new ArrayList<>();
+
         tags.forEach(tag -> {
-            names.add(tag.getName());
-        });
-        List<Tag> existingTags = tagDao.getTagsByNames(names);
-        List<Tag> notExistingTags = new ArrayList<>();
-        tags.forEach(tag -> {
-            if (!existingTags.contains(tag)) {
-                notExistingTags.add(tag);
+            for (Tag t : existingTags ) {
+                if (tag.getName().equals(t.getName())) {
+                    newTags.add(t);
+                    tag.setId(t.getId());
+                }
             }
         });
-        tagDao.persistAll(notExistingTags);
+        tags.forEach(tag -> {
+            if (tag.getId() == null ) {
+                newTags.add(tag);
+            }
+        });
+
+        question.setTags(newTags);
         questionDao.persist(question);
     }
 }
