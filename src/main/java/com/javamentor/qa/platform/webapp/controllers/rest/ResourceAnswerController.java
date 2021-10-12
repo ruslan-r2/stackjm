@@ -1,10 +1,8 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
-
 import com.javamentor.qa.platform.models.dto.AnswerDto;
 import com.javamentor.qa.platform.models.dto.CommentAnswerDto;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
-import com.javamentor.qa.platform.models.entity.question.answer.CommentAnswer;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
 import com.javamentor.qa.platform.service.abstracts.dto.CommentAnswerDtoService;
@@ -31,14 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;

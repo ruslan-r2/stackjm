@@ -1,13 +1,13 @@
 package com.javamentor.qa.platform.service.impl.model;
 
-import com.javamentor.qa.platform.dao.abstracts.model.IgnoredTagDao;
+import com.javamentor.qa.platform.dao.abstracts.model.TrackedTagDao;
 import com.javamentor.qa.platform.exception.TagAlreadyExistsException;
 import com.javamentor.qa.platform.exception.TagNotFoundException;
-import com.javamentor.qa.platform.models.entity.question.IgnoredTag;
 import com.javamentor.qa.platform.models.entity.question.Tag;
+import com.javamentor.qa.platform.models.entity.question.TrackedTag;
 import com.javamentor.qa.platform.models.entity.user.User;
-import com.javamentor.qa.platform.service.abstracts.model.IgnoredTagService;
 import com.javamentor.qa.platform.service.abstracts.model.TagService;
+import com.javamentor.qa.platform.service.abstracts.model.TrackedTagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,15 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-public class IgnoredTagServiceImpl extends ReadWriteServiceImpl<IgnoredTag, Long> implements IgnoredTagService {
+public class TrackedTagServiceImpl extends ReadWriteServiceImpl<TrackedTag, Long> implements TrackedTagService {
 
-    private final IgnoredTagDao ignoredTagDao;
+    private final TrackedTagDao trackedTagDao;
     private final TagService tagService;
 
     @Autowired
-    public IgnoredTagServiceImpl(IgnoredTagDao ignoredTagDao, TagService tagService) {
-        super(ignoredTagDao);
-        this.ignoredTagDao = ignoredTagDao;
+    public TrackedTagServiceImpl(TrackedTagDao trackedTagDao, TagService tagService) {
+        super(trackedTagDao);
+        this.trackedTagDao = trackedTagDao;
         this.tagService = tagService;
     }
 
@@ -33,10 +33,10 @@ public class IgnoredTagServiceImpl extends ReadWriteServiceImpl<IgnoredTag, Long
         if (!tag.isPresent()) {
             throw new TagNotFoundException("тег с таким id не найден");
         }
-        if (ignoredTagDao.getByUserAndTag(user, tag.get()).isPresent()) {
-            throw new TagAlreadyExistsException("тег уже был добавлен в игнорируемые ранее");
+        if (trackedTagDao.getByUserAndTag(user, tag.get()).isPresent()) {
+            throw new TagAlreadyExistsException("тег уже был добавлен в отслеживаемые ранее");
         }
-        super.persist(new IgnoredTag(tag.get(), user));
+        super.persist(new TrackedTag(tag.get(), user));
         return tag.get();
     }
 

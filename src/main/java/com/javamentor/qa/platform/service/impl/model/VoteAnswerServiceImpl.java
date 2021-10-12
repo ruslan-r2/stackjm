@@ -4,6 +4,7 @@ import com.javamentor.qa.platform.dao.abstracts.model.ReadWriteDao;
 import com.javamentor.qa.platform.dao.abstracts.model.VoteAnswerDao;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.question.answer.VoteAnswer;
+import com.javamentor.qa.platform.models.entity.question.answer.VoteType;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.models.entity.user.reputation.Reputation;
 import com.javamentor.qa.platform.models.entity.user.reputation.ReputationType;
@@ -29,17 +30,17 @@ public class VoteAnswerServiceImpl extends ReadWriteServiceImpl<VoteAnswer, Long
 
     @Override
     @Transactional
-    public Long voteUp( Answer answer, User user) {
-        return vote(answer, user, 10,1);
+    public Long voteUp(Answer answer, User user) {
+        return vote(answer, user, 10, VoteType.UP);
     }
 
     @Override
     @Transactional
-    public Long voteDown( Answer answer, User user) {
-        return vote(answer, user, -5,-1);
+    public Long voteDown(Answer answer, User user) {
+        return vote(answer, user, -5, VoteType.DOWN);
     }
 
-    private Long vote(Answer answer, User user, int repCount, int vote) {
+    private Long vote(Answer answer, User user, int repCount, VoteType voteType) {
         Optional<VoteAnswer> voteAnswerOptional = voteAnswerDao.getByAnswerIdAndUserId(answer.getId(),user.getId());
         Optional<Reputation> reputationOptional = reputationService.getByAnswerIdSenderId(answer.getId(),user.getId());
             VoteAnswer voteAnswer;
@@ -51,7 +52,7 @@ public class VoteAnswerServiceImpl extends ReadWriteServiceImpl<VoteAnswer, Long
                 voteAnswer = new VoteAnswer();
                 reputation = new Reputation();
             }
-            voteAnswer.setVote(vote);
+            voteAnswer.setVoteType(voteType);
             voteAnswer.setAnswer(answer);
             voteAnswer.setUser(user);
             voteAnswer.setPersistDateTime(LocalDateTime.now());

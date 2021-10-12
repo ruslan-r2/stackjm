@@ -2,22 +2,16 @@ package com.jm.qa.platform.jm.сontrollers;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.javamentor.qa.platform.models.entity.question.IgnoredTag;
-import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.javamentor.qa.platform.models.entity.question.TrackedTag;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
-import io.jsonwebtoken.lang.Collections;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -53,7 +47,7 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
         String password = "user";
         Long id = 101L;
 
-        mockMvc.perform(get("/api/user/tag/{id}/ignored", id)
+        mockMvc.perform(post("/api/user/tag/{id}/ignored", id)
                 .header("Authorization", getToken(username, password)))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -73,7 +67,27 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
     public void addNotExistTagToIgnoredTag() throws Exception {
         String username = "user@mail.ru";
         String password = "user";
-        mockMvc.perform(get("/api/user/tag/999/ignored")
+        mockMvc.perform(post("/api/user/tag/999/ignored")
+                .header("Authorization", getToken(username, password)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DataSet(value = {"topTagController/tags.yml", "topTagController/users.yml", "topTagController/roles.yml"},
+            cleanBefore = true, cleanAfter = true)
+    public void addAlreadyAddedTagToIgnoredTag() throws Exception {
+        String username = "user@mail.ru";
+        String password = "user";
+        Long id = 101L;
+
+        mockMvc.perform(post("/api/user/tag/{id}/ignored", id)
+                        .header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id", is(101)))
+                .andExpect(jsonPath("name", is("Spring")));
+
+        mockMvc.perform(post("/api/user/tag/{id}/ignored", id)
                 .header("Authorization", getToken(username, password)))
                 .andExpect(status().isBadRequest());
     }
@@ -119,39 +133,55 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = {"resource_tag_controller/addTagToTracked.yml"},
-             cleanBefore = true, cleanAfter = true)
-    public void addExistingTagToTracked() throws Exception {
+    @DataSet(value = {"topTagController/tags.yml", "topTagController/users.yml", "topTagController/roles.yml"},
+            cleanBefore = true, cleanAfter = true)
+    public void addExistTagToTrackedTag() throws Exception {
         String username = "user@mail.ru";
         String password = "user";
-        String addTagToTrackedUrl = "/api/user/tag/{id}/tracked";
+        Long id = 101L;
 
-        mockMvc.perform(post(addTagToTrackedUrl, 102).
-                header("Authorization", getToken(username, password))).
-                andDo(print()).
-                andExpect(status().isOk()).
-                andExpect(jsonPath("$.id", is(102)));
+        mockMvc.perform(post("/api/user/tag/{id}/tracked", id)
+                        .header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id", is(101)))
+                .andExpect(jsonPath("name", is("Spring")))
+                .andReturn();
 
-
-        List<TrackedTag> trackedTag = entityManager.createQuery("select t from TrackedTag t where t.trackedTag.id = :trackedTagId").
-                setParameter("trackedTagId", 102L).getResultList();
-        assertFalse(Collections.isEmpty(trackedTag));
+        TrackedTag trackedTag = (TrackedTag) entityManager.createQuery("SELECT tt FROM TrackedTag tt JOIN FETCH tt.trackedTag WHERE tt.id=1").getSingleResult();
+        assertThat(trackedTag).isNotNull();
+        assertThat(trackedTag.getTrackedTag().getName()).isEqualTo("Spring");
     }
 
     @Test
-    @DataSet(value = "resource_tag_controller/addTagToTracked.yml")
-    public void addNotExistingTagToTracked() throws Exception {
-        String addTagToTrackedUrl = "/api/user/tag/{id}/tracked";
-
-        List<TrackedTag> trackedTag = entityManager.createQuery("select t from TrackedTag t where t.trackedTag.id = :trackedTagId").
-                setParameter("trackedTagId", 999L).getResultList();
-        assertTrue(Collections.isEmpty(trackedTag));
-
+    @DataSet(value = {"topTagController/users.yml", "topTagController/roles.yml"},
+            cleanBefore = true, cleanAfter = true)
+    public void addNotExistTagToTrackedTag() throws Exception {
         String username = "user@mail.ru";
         String password = "user";
-        mockMvc.perform(post(addTagToTrackedUrl, 999).
-                header("Authorization", getToken(username, password))).
-                andDo(print()).
-                andExpect(status().isBadRequest());
+        mockMvc.perform(post("/api/user/tag/999/tracked")
+                        .header("Authorization", getToken(username, password)))
+                .andExpect(status().isNotFound());
     }
+
+    @Test
+    @DataSet(value = {"topTagController/tags.yml", "topTagController/users.yml", "topTagController/roles.yml"},
+            cleanBefore = true, cleanAfter = true)
+    public void addAlreadyAddedTagToTrackedTag() throws Exception {
+        String username = "user@mail.ru";
+        String password = "user";
+        Long id = 101L;
+
+        mockMvc.perform(post("/api/user/tag/{id}/tracked", id)
+                        .header("Authorization", getToken(username, password)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id", is(101)))
+                .andExpect(jsonPath("name", is("Spring")));
+
+        mockMvc.perform(post("/api/user/tag/{id}/tracked", id)
+                        .header("Authorization", getToken(username, password)))
+                .andExpect(status().isBadRequest());
+    }
+
 }

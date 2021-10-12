@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Question</title>
+    <script>
+        // после загрузки страницы
+        window.addEventListener('load', function () {
+
+            // элемент, содержащий контент модального окна (например, имеющий id="modal")
+            const elemModal = document.querySelector('#modal');
+            // активируем элемент в качестве модального окна с параметрами по умолчанию
+            const modal = new bootstrap.Modal(elemModal);
+            // откроем модальное окно
+            modal.show();
+
+        });
+    </script>
+</head>
+<body>
+
+<!-- Modal -->
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Информация</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Здесь ты можешь задать свой вопрос, связанный с проблемами кода, алгоритма или языка
+                    программирования</p>
+                <p>1) Кратко изложите свою проблему</p>
+                <p>Включите подробную информацию о цели вашего вопроса</p>
+                <p>Опишите ожидаемые и фактические результаты</p>
+                <p>Внесите описание вашей ошибки</p>
+                <p>2) Опишите что вы уже попробывали , чтобы решить эту проблему</p>
+                <p>Покажите как вы пробывали решить проблему и что вы ожидали получить при данной попытки. Как по вашему
+                    почему вы не получили ожидаемый результат?!</p>
+                <p>3) Покажите ваш код</p>
+                <p>При необходимости предоставьте минимальный объем кода, необходимый другим пользователям для
+                    воспроизведения вашей проблемы</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Все понятно!</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="p-1 text-black"
+     style="background-image: url('https://cutewallpaper.org/21/kate-spade-computer-background/40-Kate-Spade-Floral-Desktop-Wallpapers-Download-at-.jpg'); height: 925px;">
+    <form action="/api/user/question/add" method="post">
+        <input type="hidden"  />
+        <div class="container">
+            <div class="row">
+                <div class="col-12" style="height: 100px"></div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-9">
+                    <div class="form-group">
+                        <label for="title"><h5>Заголовок</h5></label>
+                        <small id="titleHelp" class="form-text text-primary">Будьте конкретны и представьте, что вы
+                            задаете вопрос
+                            другому человеку</small>
+                        <input type="text"   class="form-control" name="title" id="title" aria-describedby="titleHelp" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description"><h5>Описание проблемы</h5></label>
+                        <small id="textHelp" class="form-text text-primary">Включите всю информацию, которая может
+                            понадобится,
+                            чтобы ответить на ваш вопрос</small>
+                        <textarea  class="form-control" name="description" id="description"  rows="10" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="tags"><h5>ТЭГи</h5></label>
+                        <small id="tagsHelp" class="form-text text-primary">Добавьте несколько тэгов, чтобы описать, о
+                            чем ваш
+                            вопрос</small>
+                        <input type="text"  class="form-control" name="tags" id="tags" aria-describedby="tagsHelp" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Задать вопрос</button>
+                </div>
+                <div class="col-3">
+                    <h5>Здесь ты можешь задать свой вопрос, связанный с проблемами кода, алгоритма или языка
+                        программирования</h5>
+                    <div class="accordion" id="accordionExample">
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        1) Кратко изложите свою проблему
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <p>Включите подробную информацию о цели вашего вопроса</p>
+                                    <p>Опишите ожидаемые и фактические результаты</p>
+                                    <p>Внесите описание вашей ошибки</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        2) Опишите что вы уже попробывали , чтобы решить эту проблему
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <p>Покажите как вы пробывали решить проблему и что вы ожидали получить при данной
+                                        попытки. Как по вашему
+                                        почему вы не получили ожидаемый результат?!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingThree">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        3) Покажите ваш код
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                                <div class="card-body">
+                                    <p>При необходимости предоставьте минимальный объем кода, необходимый другим
+                                        пользователям для
+                                        воспроизведения вашей проблемы</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript" src="/js/header.js"></script>
+<script type="text/javascript" src="/js/footer.js"></script>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

@@ -6,6 +6,7 @@ import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.javamentor.qa.platform.models.entity.question.VoteQuestion;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.question.answer.VoteAnswer;
+import com.javamentor.qa.platform.models.entity.question.answer.VoteType;
 import com.javamentor.qa.platform.models.entity.user.Role;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.model.*;
@@ -27,20 +28,20 @@ public class    TestDataInitService {
     private RoleService roleService;
     private QuestionService questionService;
     private AnswerService answerService;
-    private TagService tagService;
-    private VoteQuestionService voteQuestionService;
     private VoteAnswerService voteAnswerService;
+    private VoteQuestionService voteQuestionService;
     private final Flyway flyway;
 
     @Autowired
-    public TestDataInitService(UserService userService, RoleService roleService, QuestionService questionService, AnswerService answerService, TagService tagService, VoteQuestionService voteQuestionService, VoteAnswerService voteAnswerService,Flyway flyway) {
+    public TestDataInitService(UserService userService, RoleService roleService, QuestionService questionService,
+                               AnswerService answerService, VoteAnswerService voteAnswerService,
+                               VoteQuestionService voteQuestionService, Flyway flyway) {
         this.userService = userService;
         this.roleService = roleService;
         this.questionService = questionService;
         this.answerService = answerService;
-        this.tagService = tagService;
-        this.voteQuestionService = voteQuestionService;
         this.voteAnswerService = voteAnswerService;
+        this.voteQuestionService = voteQuestionService;
         this.flyway = flyway;
     }
 
@@ -53,10 +54,10 @@ public class    TestDataInitService {
         flyway.clean();
         flyway.migrate();
         createUsers();
-        createTags();
         createQuestions();
         createAnswers();
         createVotes();
+
     }
 
     private User admin;
@@ -110,13 +111,13 @@ public class    TestDataInitService {
     private List<Tag> tags = new ArrayList<>();
 
     private void createTags() {
+        tags = new ArrayList<>();
         int tagCount = new Random().nextInt(4) + 1;
         for (int i = 0; i < tagCount; i++) {
             Tag tag = new Tag();
             tag.setName("tagName" + i);
             tag.setDescription("tagDescription" + i);
             tags.add(tag);
-            tagService.persist(tag);
         }
     }
 
@@ -124,6 +125,7 @@ public class    TestDataInitService {
 
     private void createQuestions() {
         for (int i = 0; i < 40; i++) {
+            createTags();
             Question question = new Question();
             question.setUser(user);
             question.setTags(tags);
@@ -169,7 +171,7 @@ public class    TestDataInitService {
             VoteAnswer voteAnswer = new VoteAnswer(
                     user,
                     answers.get(i % answers.size()),
-                    new Random().nextBoolean() ? 1 : -1
+                    new Random().nextBoolean() ? VoteType.UP : VoteType.DOWN
             );
             votesAnswer.add(voteAnswer);
             voteAnswerService.persist(voteAnswer);
