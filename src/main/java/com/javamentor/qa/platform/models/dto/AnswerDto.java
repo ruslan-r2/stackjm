@@ -44,4 +44,6 @@ public class AnswerDto {
     private String image;
     @Schema(description = "никнейм пользователя")
     private String nickname;
+    countVote
+            voteType
 }
