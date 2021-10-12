@@ -64,7 +64,6 @@ public class ResourceQuestionController {
     @ApiResponse(responseCode = "200", description = "успешно",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = PageDto.class)))
-    @ApiResponse(responseCode = "400", description = "Нет вопросов, удовлетворяюших запросу")
     @ApiResponse(responseCode = "500", description = "Ошибка при обработке запроса")
     public ResponseEntity<PageDto<QuestionDto>> getPageByTagsIfNecessary(@Parameter(description = "номер страницы",
             required = true) @RequestParam(value = "page") Integer page, @Parameter
@@ -79,9 +78,6 @@ public class ResourceQuestionController {
         parameters.put("trackedTag", trackedTag);
         parameters.put("ignoredTag", ignoredTag);
         PageDto<QuestionDto> pageDto = questionDtoService.getPageDto(parameters);
-        if (pageDto.getItems().isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         return new ResponseEntity<>(pageDto, HttpStatus.OK);
     }
 

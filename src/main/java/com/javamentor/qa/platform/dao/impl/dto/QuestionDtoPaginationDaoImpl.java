@@ -2,13 +2,13 @@ package com.javamentor.qa.platform.dao.impl.dto;
 
 import com.javamentor.qa.platform.dao.abstracts.dto.PaginationDao;
 import com.javamentor.qa.platform.models.dto.QuestionDto;
+import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -28,31 +28,8 @@ public class QuestionDtoPaginationDaoImpl implements PaginationDao<QuestionDto> 
     @Override
     @SuppressWarnings("deprecation")
     public List<QuestionDto> getItems(Map<String, Object> parameters) {
-        List<Long> tagIdList = null;
-        List<Long> trackedTagList = (List<Long>) parameters.get("trackedTag");
-        List<Long> ignoredTagList = (List<Long>) parameters.get("ignoredTag");
-        StringBuilder queryBuilder = new StringBuilder();
-
-        if (trackedTagList != null) {
-            if (trackedTagList.isEmpty()) {
-                return Collections.emptyList();
-            }
-            tagIdList = trackedTagList;
-            queryBuilder.append("and q.id in (select tq.id from Tag t join t.questions tq where t.id in :list) ");
-            if (ignoredTagList != null) {
-                if (!ignoredTagList.isEmpty()) {
-                    tagIdList.removeAll(ignoredTagList);
-                }
-                if (tagIdList.isEmpty()) {
-                    return Collections.emptyList();
-                }
-            }
-        } else if (ignoredTagList != null && !ignoredTagList.isEmpty()) {
-            tagIdList = ignoredTagList;
-            queryBuilder.append("and q.id in (select tq.id from Tag t join t.questions tq where t.id not in :list) ");
-        }
-
-        Query query = entityManager.createQuery("select q.id as id," +
+        Session session = entityManager.unwrap(Session.class);
+        Query query = session.createQuery("select q.id as id," +
                 " q.title as title," +
                 " q.user.id as authorId," +
                 " q.user.fullName as authorName," +
@@ -65,17 +42,19 @@ public class QuestionDtoPaginationDaoImpl implements PaginationDao<QuestionDto> 
                 "q.persistDateTime as persistDateTime," +
                 "q.lastUpdateDateTime as lastUpdateDateTime " +
                 "from Question q " +
-                "where q.isDeleted = false " + queryBuilder +
+                "where q.isDeleted = false " +
+                "and (coalesce(:trackedTags, null) is null or (q.id in (select tq.id from Tag t join t.questions tq where t.id in (:trackedTags)))) " +
+                "and (coalesce(:ignoredTags, null) is null or (q.id not in (select tq.id from Tag t join t.questions tq where t.id in (:ignoredTags)))) " +
                 "order by q.id");
-        if (tagIdList != null && !tagIdList.isEmpty()) {
-            query.setParameter("list", tagIdList);
-        }
+
+        query.setParameter("trackedTags", parameters.get("trackedTag"));
+        query.setParameter("ignoredTags", parameters.get("ignoredTag"));
+
         query.unwrap(org.hibernate.query.Query.class)
                 .setResultTransformer(new AliasToBeanResultTransformer(QuestionDto.class))
                 .setFirstResult((Integer) parameters.get("itemsOnPage") * ((Integer) parameters.get("currentPage") - 1))
                 .setMaxResults((Integer) parameters.get("itemsOnPage"));
-        List<QuestionDto> result = query.getResultList();
-        return result;
+        return query.getResultList();
     }
 }
 

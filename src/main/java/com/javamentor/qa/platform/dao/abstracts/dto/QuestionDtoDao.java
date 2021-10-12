@@ -9,6 +9,4 @@ import java.util.Optional;
 
 public interface QuestionDtoDao {
     Optional<QuestionDto> getById(Long id);
-
-    Map<Long, List<Long>> getQuestionTagIdMap(@Nullable List<Long> specificTagIds);
 }
