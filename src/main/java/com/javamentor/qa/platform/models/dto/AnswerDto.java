@@ -1,5 +1,6 @@
 package com.javamentor.qa.platform.models.dto;
 
+import com.javamentor.qa.platform.models.entity.question.answer.VoteType;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -44,6 +45,8 @@ public class AnswerDto {
     private String image;
     @Schema(description = "никнейм пользователя")
     private String nickname;
-    countVote
-            voteType
+    @Schema(description = "Количество голосов")
+    private Long countVote;
+    @Schema(description = "тип голоса")
+    private VoteType voteType;
 }
