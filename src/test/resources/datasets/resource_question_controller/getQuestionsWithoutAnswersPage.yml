@@ -134,48 +134,6 @@ answer:
     update_date: "1990-10-10 00:00:00"
     question_id: 101
     user_id: 100
-votes_on_questions:
-  - id: 100
-    persist_date: "1990-10-10 00:00:00"
-    vote: 1
-    question_id: 102
-    user_id: 101
-  - id: 101
-    persist_date: "1990-10-10 00:00:00"
-    vote: 1
-    question_id: 102
-    user_id: 102
-  - id: 102
-    persist_date: "1990-10-10 00:00:00"
-    vote: -1
-    question_id: 103
-    user_id: 100
-question_viewed:
-  - id: 100
-    persist_date: 1990-01-01 00:00:00
-    question_id: 102
-    user_id: 101
-  - id: 101
-    persist_date: 1990-01-03 00:00:00
-    question_id: 103
-    user_id: 102
-reputation:
-  - id: 100
-    count: 1
-    persist_date: 1990-01-01 00:00:00
-    type: 1
-    answer_id: null
-    author_id: 100
-    question_id: 102
-    sender_id: null
-  - id: 101
-    count: -1
-    persist_date: 1990-01-01 00:00:00
-    type: 1
-    answer_id: null
-    author_id: 101
-    question_id: 102
-    sender_id: null
 tag_tracked:
   - id: 100
     persist_date: 1990-01-01 00:00:00
