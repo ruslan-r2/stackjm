@@ -33,6 +33,9 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "a.user.nickname as nickname, " +
                 "(select coalesce(sum(case when va.voteType = 'UP' then 1 when va.voteType = 'DOWN' then -1 end), 0) " +
                 "from VoteAnswer va where answer.id = a.id) as countValuable, " +
+                "(select count(va.id) from VoteAnswer va where answer.id = a.id) as countVote, " +
+                "(select coalesce(va.voteType, null) " +
+                "from VoteAnswer va where answer.id = a.id and user.id = a.user.id ) as voteType, " +
                 "(select coalesce(sum(r.count), 0) from Reputation r where author.id = a.user.id) as countUserReputation " +
                 "from Answer a " +
                 "where a.question.id = :id and a.isDeleted = false " +
@@ -57,6 +60,9 @@ public class AnswerDtoDaoImpl implements AnswerDtoDao {
                 "a.user.nickname as nickname, " +
                 "(select coalesce(sum(case when va.voteType = 'UP' then 1 when va.voteType = 'DOWN' then -1 end), 0) " +
                 "from VoteAnswer va where answer.id = a.id) as countValuable, " +
+                "(select count(va.id) from VoteAnswer va where answer.id = a.id) as countVote, " +
+                "(select coalesce(va.voteType, null) " +
+                "from VoteAnswer va where answer.id = a.id and user.id = a.user.id ) as voteType, " +
                 "(select coalesce(sum(r.count), 0) from Reputation r where author.id = a.user.id) as countUserReputation " +
                 "from Answer a " +
                 "where a.id = :id and a.isDeleted = false")
