@@ -146,13 +146,13 @@ public class ResourceQuestionController {
     @GetMapping("/noAnswer")
     public ResponseEntity<PageDto<QuestionDto>> getQuestionsWithoutAnswers (
             @Parameter(description = "номер страницы", required = true)
-            @RequestParam(value = "currentPage") Integer currentPage,
+            @RequestParam(value = "page") Integer page,
             @Parameter(description = "кол-во элементов на странице")
-            @RequestParam(value = "itemsOnPage", required = false, defaultValue = "10") Integer itemsOnPage,
+            @RequestParam(value = "items", required = false, defaultValue = "10") Integer items,
             @AuthenticationPrincipal User user) {
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("currentPage", currentPage);
-        parameters.put("itemsOnPage", itemsOnPage);
+        parameters.put("currentPage", page);
+        parameters.put("itemsOnPage", items);
         parameters.put("noAnswers", true);
         parameters.put("trackedTag", tagDtoService.getTrackedIdsByUserId(user.getId()));
         parameters.put("ignoredTag", tagDtoService.getIgnoredIdsByUserId(user.getId()));
