@@ -144,6 +144,12 @@ public class ResourceQuestionController {
     }
 
     @GetMapping("/noAnswer")
+    @Operation(summary = "Возвращает страницу вопросов у которых отсутствуют ответы. " +
+            "Учитываются отслеживаемые и игнорируемые теги пользователя ")
+    @ApiResponse(responseCode = "200", description = "успешно",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PageDto.class)))
+    @ApiResponse(responseCode = "500", description = "Ошибка при обработке запроса")
     public ResponseEntity<PageDto<QuestionDto>> getQuestionsWithoutAnswers (
             @Parameter(description = "номер страницы", required = true)
             @RequestParam(value = "page") Integer page,
