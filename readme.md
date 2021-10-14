@@ -527,39 +527,22 @@ User при регистрации получает все знаки лишь �
    nameVar2 - это имя переменной в url. Из примера выше это itemsOnPage.
    ```
    JSON массив data приходит с бэка в виде
-   ```
-   { "currentPageNumber":1,
-     "totalPageCount":12,
-     "totalResultCount":59,
-     "items":[
-               ...
-               {"id": 1,"email": "admin@admin.com","fullName": "John Smith","linkImage": "image.link.com","city": "CitiName","reputation": 0,"registrationDate": "2021-10-04T20:29:27.40844"},
-               {"id": 2,"email": "user1@user.com","fullName": " User user1","linkImage": "user1.image.link.com","city": "CitiName1","reputation": 0,"registrationDate": "2021-10-04T20:29:27.417437"},
-               {"id": 3,"email": "user2@user.com","fullName": " User user2","linkImage": "user2.image.link.com","city": "CitiName2","reputation": 0,"registrationDate": "2021-10-04T20:29:27.418437"}],
-               ...
-     "itemsOnPage": 5
-   }
-   ``` 
+   
+   ![](src/main/resources/static/images/JSON-array.png)
+    
 
-3. После того как передали в метод pager.setData() все необходимые данные, вызываем метод pager.getPagerView() .
+3. После того как передали в метод pager.setData() все необходимые данные, вызываем метод pager.getPagerView().
+
    Пример:
-   ```
-   <div class="Page navigation example" id="example1"></div>
-   <script>
-      var Data = {}; // сюда передаем то, что нам пришло с бэка, т.е. JSON массив
-      pager.setData(Data, "api/user", "page", "items");
-      document.getElementById("example1").insertAdjacentHTML("afterend", pager.getPagerView());
-   </script>
-   ```
+
+   ![](src/main/resources/static/images/example-pagination-js.png)
+
    Если страниц не больше десяти, то рисуется пэйджер без точек ... , т.е. пэйджер будет не большой.
-   ```
-   Пример - Пред 1 2 3 4 5 6 7 8 9 10 След
-   ```
+
+   ![](src/main/resources/static/images/pager-short.png)
 
    Если страниц больше десяти, то рисуется пэйджер с точками ...
-   ```
-   Пример - Пред 1 ... 22 23 24 25 26 ... 101 След
-   ```
-![](src/main/resources/static/images/pager.png)
+
+   ![](src/main/resources/static/images/pager-long.png)
 
    Файлы users.js и users.html временные, сделаны для примера. Эти файлы, если не нужны, можно удалить.
