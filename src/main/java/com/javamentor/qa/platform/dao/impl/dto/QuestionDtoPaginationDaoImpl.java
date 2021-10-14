@@ -43,7 +43,7 @@ public class QuestionDtoPaginationDaoImpl implements PaginationDao<QuestionDto> 
                 " q.description as description, " +
                 "(select coalesce(count(*), 0)  from QuestionViewed  where question.id = q.id) as viewCount, " +
                 "(select coalesce(sum(r.count),0) from Reputation r where r.author.id = q.user.id) as authorReputation, " +
-                "(select count(*) from Answer a where a.question.id = q.id) as countAnswer, " +
+                "(select count(*) from Answer a where a.question.id = q.id and a.isDeleted = false) as countAnswer, " +
                 "(select coalesce(sum(v.vote),0) from VoteQuestion v where v.question.id = q.id) as countValuable, " +
                 "q.persistDateTime as persistDateTime," +
                 "q.lastUpdateDateTime as lastUpdateDateTime " +

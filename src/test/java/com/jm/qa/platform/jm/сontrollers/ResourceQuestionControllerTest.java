@@ -437,7 +437,7 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[0].id", equalTo(103)))
                 .andExpect(jsonPath("$.items[0].title", equalTo("question4")))
                 .andExpect(jsonPath("$.items[0].description", equalTo("description4")))
-                .andExpect(jsonPath("$.items[0].countAnswer", equalTo(1)))
+                .andExpect(jsonPath("$.items[0].countAnswer", equalTo(0)))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].description", equalTo("tag_1")));
@@ -464,7 +464,7 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[1].id", equalTo(103)))
                 .andExpect(jsonPath("$.items[1].title", equalTo("question4")))
                 .andExpect(jsonPath("$.items[1].description", equalTo("description4")))
-                .andExpect(jsonPath("$.items[1].countAnswer", equalTo(1)))
+                .andExpect(jsonPath("$.items[1].countAnswer", equalTo(0)))
                 .andExpect(jsonPath("$.items[1].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[1].listTagDto[0].name", equalTo("tag_name_1")))
                 .andExpect(jsonPath("$.items[1].listTagDto[0].description", equalTo("tag_1")));
