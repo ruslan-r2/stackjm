@@ -10,7 +10,14 @@ function CSSLoad(file) {
     link1.setAttribute("href", "https://cdn.sstatic.net/Sites/ru/primary.css?v=624cbd0eddf4");
     document.getElementsByTagName("head")[0].appendChild(link1)
 }
+function ScriptLoad() {
+    var script = document.createElement("script");
+    script.setAttribute("type", "text/javascript");
+    script.setAttribute("src", "/js/logout.js");
+    document.getElementsByTagName("head")[0].appendChild(script);
+}
 CSSLoad('/addStyles.css');
+ScriptLoad();
 
 document.body.insertAdjacentHTML("afterbegin", "<header class=\"top-bar js-top-bar top-bar__network\">\n" +
     "  <div class=\"wmx12 mx-auto d-flex ai-center h100\" role=\"menubar\">\n" +
@@ -50,6 +57,9 @@ document.body.insertAdjacentHTML("afterbegin", "<header class=\"top-bar js-top-b
     "      <li class=\"-ctas\">\n" +
     "        <a href=\"/profile\" class=\"login-link s-btn s-btn__filled py8 js-gps-track\" rel=\"nofollow\" data-gps-track=\"login.click\" data-ga=\"[&quot;top navigation&quot;,&quot;login button click&quot;,null,null,null]\">Мой профиль</a>\n" +
     "\n" +
+    "      </li>\n" +
+    "      <li>\n" +
+    "        <button class=\'btn btn-outline-primary ml-1 mr-1\' onclick=\'performLogout()\'>Выход</button>\n" +
     "      </li>\n" +
     "\n" +
     "    </ol>\n" +

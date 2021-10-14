@@ -11,3 +11,18 @@ tag:
     description: "раздел java"
     name: "ООП"
     persist_date: 1990-10-10 00:00:00
+
+  - id: 103
+    description: "раздел java"
+    name: "ФП"
+    persist_date: 1990-10-10 00:00:00
+
+  - id: 104
+    description: "раздел java"
+    name: "Core"
+    persist_date: 1990-10-10 00:00:00
+
+  - id: 105
+    description: "раздел java"
+    name: "Collections"
+    persist_date: 1990-10-10 00:00:00

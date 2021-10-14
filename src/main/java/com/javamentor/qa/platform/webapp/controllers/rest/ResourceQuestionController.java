@@ -8,7 +8,9 @@ import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.service.abstracts.dto.QuestionDtoService;
 import com.javamentor.qa.platform.service.abstracts.dto.TagDtoService;
-import com.javamentor.qa.platform.service.abstracts.model.*;
+import com.javamentor.qa.platform.service.abstracts.model.QuestionService;
+import com.javamentor.qa.platform.service.abstracts.model.ReputationService;
+import com.javamentor.qa.platform.service.abstracts.model.VoteQuestionService;
 import com.javamentor.qa.platform.webapp.converters.QuestionConverter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -55,6 +57,26 @@ public class ResourceQuestionController {
         this.reputationService = reputationService;
         this.questionConverter = questionConverter;
         this.tagDtoService = tagDtoService;
+    }
+
+    @GetMapping
+    @Operation(summary = "Возвращает страницу вопросов, возможна выборка по тэгам")
+    @ApiResponse(responseCode = "200", description = "успешно",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PageDto.class)))
+    @ApiResponse(responseCode = "500", description = "Ошибка при обработке запроса")
+    public ResponseEntity<PageDto<QuestionDto>> getPageByTagsIfNecessary(@Parameter(description = "номер страницы",
+            required = true) @RequestParam(value = "page") Integer page, @Parameter
+            (description = "кол-во вопросов на странице", required = true) @RequestParam(value = "items",
+            defaultValue = "10") Integer items, @Parameter(description = "Авторизованный пользователь") @AuthenticationPrincipal User user) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("workPagination", "allQuestions");
+        parameters.put("currentPage", page);
+        parameters.put("itemsOnPage", items);
+        parameters.put("trackedTag", tagDtoService.getTrackedIdsByUserId(user.getId()));
+        parameters.put("ignoredTag", tagDtoService.getIgnoredIdsByUserId(user.getId()));
+        PageDto<QuestionDto> pageDto = questionDtoService.getPageDto(parameters);
+        return new ResponseEntity<>(pageDto, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

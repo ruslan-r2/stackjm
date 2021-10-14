@@ -2,16 +2,22 @@ package com.jm.qa.platform.jm.сontrollers;
 
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.javamentor.qa.platform.models.entity.question.IgnoredTag;
+import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.javamentor.qa.platform.models.entity.question.TrackedTag;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
+import io.jsonwebtoken.lang.Collections;
 import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -182,6 +188,33 @@ public class ResourceTagControllerTest extends AbstractIntegrationTest {
         mockMvc.perform(post("/api/user/tag/{id}/tracked", id)
                         .header("Authorization", getToken(username, password)))
                 .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    @DataSet(value = {"topTagController/tags.yml", "topTagController/users.yml", "topTagController/question_has_tag.yml",
+            "topTagController/roles.yml", "topTagController/reputation.yml","topTagController/questions.yml"}, cleanBefore = true, cleanAfter = true)
+    public void getTop3TagsUser() throws Exception {
+
+        mockMvc.perform(get("/api/user/tag/top-3tags")
+                .header("Authorization", getToken("user@mail.ru", "user"))
+        )
+                .andDo(print())
+//                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(3)))
+                .andExpect(jsonPath("$[0].name", is("Hibernate")))
+                .andExpect(jsonPath("$[1].name", is("Spring")))
+                .andExpect(jsonPath("$[2].name", is("ООП")));
+
+        mockMvc.perform(get("/api/user/tag/top-3tags")
+                .header("Authorization", getToken("ruslan@mail.ru", "user1"))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.*", hasSize(3)))
+                .andExpect(jsonPath("$[0].name", is("Hibernate")))
+                .andExpect(jsonPath("$[1].name", is("Spring")))
+                .andExpect(jsonPath("$[2].name", is("ООП")));
     }
 
 }

@@ -29,21 +29,21 @@ public class QuestionDtoDaoImpl implements QuestionDtoDao {
     @SuppressWarnings("deprecation")
     public Optional<QuestionDto> getById(Long id) {
         Query query = entityManager.createQuery("select q.id as id," +
-                        " q.title as title," +
-                        " q.user.id as authorId," +
-                        " q.user.fullName as authorName," +
-                        " q.user.imageLink as authorImage," +
-                        " q.description as description, " +
-                        "(select COALESCE(count(*), 0)  from QuestionViewed  where question.id = q.id) as viewCount, " +
-                        "(select coalesce(sum(r.count),0) from Reputation r where r.author.id = q.user.id) as authorReputation, " +
-                        "(select count(*) from Answer a where a.question.id = q.id) as countAnswer, " +
-                        "(select coalesce(sum(v.vote),0) from VoteQuestion v where v.question.id = q.id) as countValuable, " +
-                        "q.persistDateTime as persistDateTime," +
-                        "q.lastUpdateDateTime as lastUpdateDateTime, " +
-                        "qt as tags " +
-                        "from Question q " +
-                        "join q.tags qt " +
-                        "where q.id = :id").setParameter("id", id)
+                " q.title as title," +
+                " q.user.id as authorId," +
+                " q.user.fullName as authorName," +
+                " q.user.imageLink as authorImage," +
+                " q.description as description, " +
+                "(select COALESCE(count(*), 0)  from QuestionViewed  where question.id = q.id) as viewCount, " +
+                "(select coalesce(sum(r.count),0) from Reputation r where r.author.id = q.user.id) as authorReputation, " +
+                "(select count(*) from Answer a where a.question.id = q.id) as countAnswer, " +
+                "(select coalesce(sum(v.vote),0) from VoteQuestion v where v.question.id = q.id) as countValuable, " +
+                "q.persistDateTime as persistDateTime," +
+                "q.lastUpdateDateTime as lastUpdateDateTime, " +
+                "qt as tags " +
+                "from Question q " +
+                "join q.tags qt " +
+                "where q.id = :id").setParameter("id", id)
                 .unwrap(org.hibernate.query.Query.class)
                 .setResultTransformer(new QuestionDtoWithListTagDtoTransformer());
         return SingleResultUtil.getSingleResultOrNull(query);

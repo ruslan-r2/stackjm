@@ -109,6 +109,7 @@ public class    TestDataInitService {
     }
 
     private List<Tag> tags = new ArrayList<>();
+    private List<Tag> tags2 = new ArrayList<>();
 
     private void createTags() {
         tags = new ArrayList<>();
