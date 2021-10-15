@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tags page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container">
+    <div id="content" class="snippet-hidden">
+        <div id="mainBarTags" role="main" aria-labelledby="all-tags">
+            <h1 class="d-flex mb24">Метки</h1>
+            <p class="d-flex">
+                Метка — это ключевое слово, позволяющее отнести ваш вопрос в одну категорию с другими
+                похожими вопросами. Благодаря подбору правильных меток другие участники смогут проще найти ваш вопрос и
+                быстрее дать на него ответ.
+            </p>
+            <div class="d-flex flex-wrap align-items-center text-left">
+                <a href="#" class="tags-tab-hyperlink ml-3" id="tags-tab-hyperlink">Показать все синонимы меток</a>
+            </div>
+            <div class="d-flex align-items-center justify-content-between mb12 flex-column align-items-stretch">
+                <div class="navbar d-flex justify-content-between">
+                    <div class="d-flex relative">
+                        <input type="text" id="tagfilter" name="tagfilter" size="35" maxlength="35"
+                               placeholder="Фильтрация по имени" autofocus="">
+                    </div>
+                    <div class="tab-pane fade show active" role="tabpanel">
+                        <div class="table-responsive">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="tablePrimary" data-toggle="tab" href="#popularTags"
+                                       role="tab" aria-controls="home">Популярные</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#nameTags" role="tab"
+                                       aria-controls="new">Имя</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#newTags" role="tab"
+                                       aria-controls="new">Новые</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Лист меток-->
+<!--            Популярные-->
+            <div class="container-fluid">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="popularTags" role="tabpanel">
+                        <h5>ПОПУЛЯРНЫЕ</h5>
+                        <div class="row d-inline-flex">
+                            <div class="col-12 col-sm-6 col-md-4 p-2">
+                                <div class="d-flex flex-column text-left border height100">
+                                    <div class="card-body">
+                                        <button class="btn btn-light" data-toggle="popover" data-html="true"
+                                                title="Подробное описание метки">
+                                            <a href="#">Метка</a>
+                                        </button>
+                                        <br>
+                                        <br>
+                                        <p class="card-text truncate-m">Вывод краткого описания метки</p>
+                                        <div class="mt-auto d-flex justify-content-between figure-caption">
+                                            <div class="d-flex" id="numberQuestionTag">***** вопроса</div>
+                                            <div class="d-flex" id="numberQuestionTag_inTime">
+                                                <a href="#" title="*** вопросов с меткой [****] за последние 24 часа ">
+                                                    *** задано сегодня
+                                                </a>,
+                                                <a href="#" title="*** вопрос с меткой [***] за последние 7 дней">
+                                                    *** за неделю
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-4 p-2">
+                                <div class="d-flex flex-column text-left border height100">
+                                    <div class="card-body">
+                                        <button class="btn btn-light" data-toggle="popover" data-html="true"
+                                                title="Подробное описание метки">
+                                            <a href="#">Метка</a>
+                                        </button>
+                                        <br>
+                                        <br>
+                                        <p class="card-text truncate-m">Вывод краткого описания метки</p>
+                                        <div class="mt-auto d-flex justify-content-between figure-caption">
+                                            <div class="d-flex" id="numberQuestionTag">***** вопроса</div>
+                                            <div class="d-flex" id="numberQuestionTag_inTime">
+                                                <a href="#" title="*** вопросов с меткой [****] за последние 24 часа">
+                                                    *** задано сегодня
+                                                </a>,
+                                                <a href="#" title="*** вопрос с меткой [***] за последние 7 дней">
+                                                    *** за неделю
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--                    Имя-->
+                    <div class="tab-pane" id="nameTags" role="tabpanel">
+                        <h5>ИМЯ</h5>
+                        <div class="tab-content">
+                            <div class="container">
+                                <div class="row justify-content-start align-items-center">
+                                    <div class="row d-inline-flex">
+                                        <div class="col-12 col-sm-6 col-md-4 p-2">
+                                            <div class="d-flex flex-column text-left border height100">
+                                                <div class="card-body">
+                                                    <button class="btn btn-light" data-toggle="popover" data-html="true"
+                                                            title="Подробное описание метки">
+                                                        <a href="#">Метка</a>
+                                                    </button>
+                                                    <br>
+                                                    <br>
+                                                    <p class="card-text truncate-m">Вывод краткого описания метки</p>
+                                                    <div class="mt-auto d-flex justify-content-between figure-caption">
+                                                        <div class="d-flex" id="numberQuestionTag">***** вопроса</div>
+                                                        <div class="d-flex" id="numberQuestionTag_inTime">
+                                                            <a href="#"
+                                                               title="*** вопросов с меткой [****] за последние 24 часа ">
+                                                                *** задано сегодня
+                                                            </a>,
+                                                            <a href="#"
+                                                               title="*** вопрос с меткой [***] за последние 7 дней">
+                                                                *** за неделю
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6 col-md-4 p-2">
+                                            <div class="d-flex flex-column text-left border height100">
+                                                <div class="card-body">
+                                                    <button class="btn btn-light" data-toggle="popover" data-html="true"
+                                                            title="Подробное описание метки">
+                                                        <a href="#">Метка</a>
+                                                    </button>
+                                                    <br>
+                                                    <br>
+                                                    <p class="card-text truncate-m">Вывод краткого описания метки</p>
+                                                    <div class="mt-auto d-flex justify-content-between figure-caption">
+                                                        <div class="d-flex" id="numberQuestionTag">***** вопроса</div>
+                                                        <div class="d-flex" id="numberQuestionTag_inTime">
+                                                            <a href="#"
+                                                               title="*** вопросов с меткой [****] за последние 24 часа">
+                                                                *** задано сегодня
+                                                            </a>,
+                                                            <a href="#"
+                                                               title="*** вопрос с меткой [***] за последние 7 дней">
+                                                                *** за неделю
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--                    Новые-->
+                    <div class="tab-pane" id="newTags" role="tabpanel">
+                        <h5>НОВЫЕ</h5>
+                        <div class="tab-content">
+                            <div class="container">
+                                <div class="row justify-content-start align-items-center">
+                                    <div class="row d-inline-flex">
+                                        <div class="col-12 col-sm-6 col-md-4 p-2">
+                                            <div class="d-flex flex-column text-left border height100">
+                                                <div class="card-body">
+                                                    <button class="btn btn-light" data-toggle="popover" data-html="true"
+                                                            title="Подробное описание метки">
+                                                        <a href="#">Метка</a>
+                                                    </button>
+                                                    <br>
+                                                    <br>
+                                                    <p class="card-text truncate-m">Вывод краткого описания метки</p>
+                                                    <div class="mt-auto d-flex justify-content-between figure-caption">
+                                                        <div class="d-flex" id="numberQuestionTag">***** вопроса</div>
+                                                        <div class="d-flex" id="numberQuestionTag_inTime">
+                                                            <a href="#"
+                                                               title="*** вопросов с меткой [****] за последние 24 часа ">
+                                                                *** задано сегодня
+                                                            </a>,
+                                                            <a href="#"
+                                                               title="*** вопрос с меткой [***] за последние 7 дней">
+                                                                *** за неделю
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-6 col-md-4 p-2">
+                                            <div class="d-flex flex-column text-left border height100">
+                                                <div class="card-body">
+                                                    <button class="btn btn-light" data-toggle="popover" data-html="true"
+                                                            title="Подробное описание метки">
+                                                        <a href="#">Метка</a>
+                                                    </button>
+                                                    <br>
+                                                    <br>
+                                                    <p class="card-text truncate-m">Вывод краткого описания метки</p>
+                                                    <div class="mt-auto d-flex justify-content-between figure-caption">
+                                                        <div class="d-flex" id="numberQuestionTag">***** вопроса</div>
+                                                        <div class="d-flex" id="numberQuestionTag_inTime">
+                                                            <a href="#"
+                                                               title="*** вопросов с меткой [****] за последние 24 часа">
+                                                                *** задано сегодня
+                                                            </a>,
+                                                            <a href="#"
+                                                               title="*** вопрос с меткой [***] за последние 7 дней">
+                                                                *** за неделю
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="/js/sidebar.js"></script>
+<script type="text/javascript" src="/js/header.js"></script>
+<script type="text/javascript" src="/js/footer.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
