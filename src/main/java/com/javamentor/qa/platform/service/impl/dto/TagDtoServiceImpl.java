@@ -27,6 +27,7 @@ public class TagDtoServiceImpl implements TagDtoService {
         return tagDtoDao.getIgnoredTagsByUserId(id);
     }
 
+    @Override
     public List<TrackedTagDto> getTrackedByUserId(Long id) {
         return tagDtoDao.getTrackedByUserId(id);
     }

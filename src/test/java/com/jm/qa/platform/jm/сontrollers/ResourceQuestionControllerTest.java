@@ -416,4 +416,58 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
         ;
     }
 
+    @Test
+    @DataSet(value = "resource_question_controller/getQuestionsWithoutAnswersPage.yml", cleanAfter = true, cleanBefore = true)
+    public void getQuestionsWithoutAnswersPage() throws Exception {
+
+        //Некорректный запрос к серверу, отсутствует необходимый параметр "page"
+        mockMvc.perform(get("/api/user/question/noAnswer")
+                        .header("Authorization", getToken("user@mail.ru", "user")))
+                .andExpect(status().isInternalServerError());
+
+        //Запрос на получение всех вопросов без ответов для юзера, который отслеживает один тэг и игнорирует другой
+        mockMvc.perform(get("/api/user/question/noAnswer?page=1&items=10").header("Authorization", getToken("user@mail.ru", "user")))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentPageNumber", equalTo(1)))
+                .andExpect(jsonPath("$.totalPageCount", equalTo(1)))
+                .andExpect(jsonPath("$.totalResultCount", equalTo(4)))
+                .andExpect(jsonPath("$.itemsOnPage", equalTo(10)))
+                .andExpect(jsonPath("$.items.length()", equalTo(1)))
+                .andExpect(jsonPath("$.items[0].id", equalTo(103)))
+                .andExpect(jsonPath("$.items[0].title", equalTo("question4")))
+                .andExpect(jsonPath("$.items[0].description", equalTo("description4")))
+                .andExpect(jsonPath("$.items[0].countAnswer", equalTo(0)))
+                .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
+                .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
+                .andExpect(jsonPath("$.items[0].listTagDto[0].description", equalTo("tag_1")));
+
+        //Запрос на получение всех вопросов без ответов для юзера, который отслеживает один тэг и не имеет игнорируемых
+        mockMvc.perform(get("/api/user/question/noAnswer?page=1&items=10")
+                        .header("Authorization", getToken("user2@mail.ru", "user")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.currentPageNumber", equalTo(1)))
+                .andExpect(jsonPath("$.totalPageCount", equalTo(1)))
+                .andExpect(jsonPath("$.totalResultCount", equalTo(4)))
+                .andExpect(jsonPath("$.itemsOnPage", equalTo(10)))
+                .andExpect(jsonPath("$.items.length()", equalTo(2)))
+                .andExpect(jsonPath("$.items[0].id", equalTo(102)))
+                .andExpect(jsonPath("$.items[0].title", equalTo("question3")))
+                .andExpect(jsonPath("$.items[0].description", equalTo("description3")))
+                .andExpect(jsonPath("$.items[0].countAnswer", equalTo(0)))
+                .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
+                .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
+                .andExpect(jsonPath("$.items[0].listTagDto[0].description", equalTo("tag_1")))
+                .andExpect(jsonPath("$.items[0].listTagDto[1].id", equalTo(101)))
+                .andExpect(jsonPath("$.items[0].listTagDto[1].name", equalTo("tag_name_2")))
+                .andExpect(jsonPath("$.items[0].listTagDto[1].description", equalTo("tag_2")))
+                .andExpect(jsonPath("$.items[1].id", equalTo(103)))
+                .andExpect(jsonPath("$.items[1].title", equalTo("question4")))
+                .andExpect(jsonPath("$.items[1].description", equalTo("description4")))
+                .andExpect(jsonPath("$.items[1].countAnswer", equalTo(0)))
+                .andExpect(jsonPath("$.items[1].listTagDto[0].id", equalTo(100)))
+                .andExpect(jsonPath("$.items[1].listTagDto[0].name", equalTo("tag_name_1")))
+                .andExpect(jsonPath("$.items[1].listTagDto[0].description", equalTo("tag_1")));
+    }
+
 }

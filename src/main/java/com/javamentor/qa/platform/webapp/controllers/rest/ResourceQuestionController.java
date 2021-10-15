@@ -1,8 +1,8 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.exception.VoteException;
-import com.javamentor.qa.platform.models.dto.PageDto;
 import com.javamentor.qa.platform.models.dto.QuestionCreateDto;
+import com.javamentor.qa.platform.models.dto.PageDto;
 import com.javamentor.qa.platform.models.dto.QuestionDto;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.user.User;
@@ -19,17 +19,22 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.Valid;
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
+import javax.validation.Valid;
 import java.util.Optional;
 
 
@@ -39,19 +44,19 @@ import java.util.Optional;
 public class ResourceQuestionController {
 
     private final QuestionDtoService questionDtoService;
-    private final TagDtoService tagDtoService;
     private final QuestionService questionService;
     private final QuestionConverter questionConverter;
     private final VoteQuestionService voteQuestionService;
     private final ReputationService reputationService;
+    private final TagDtoService tagDtoService;
 
-    public ResourceQuestionController(QuestionDtoService questionDtoService, TagDtoService tagDtoService, QuestionService questionService, VoteQuestionService voteQuestionService, ReputationService reputationService, QuestionConverter questionConverter) {
+    public ResourceQuestionController(QuestionDtoService questionDtoService, QuestionService questionService, VoteQuestionService voteQuestionService, ReputationService reputationService, QuestionConverter questionConverter, TagDtoService tagDtoService) {
         this.questionDtoService = questionDtoService;
-        this.tagDtoService = tagDtoService;
         this.questionService = questionService;
         this.voteQuestionService = voteQuestionService;
         this.reputationService = reputationService;
         this.questionConverter = questionConverter;
+        this.tagDtoService = tagDtoService;
     }
 
     @GetMapping
@@ -158,5 +163,28 @@ public class ResourceQuestionController {
 
         QuestionDto questionDto = questionConverter.entityToQuestionDto(question);
         return ResponseEntity.ok(questionDto);
+    }
+
+    @GetMapping("/noAnswer")
+    @Operation(summary = "Возвращает страницу вопросов у которых отсутствуют ответы. " +
+            "Учитываются отслеживаемые и игнорируемые теги пользователя ")
+    @ApiResponse(responseCode = "200", description = "успешно",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = PageDto.class)))
+    @ApiResponse(responseCode = "500", description = "Ошибка при обработке запроса")
+    public ResponseEntity<PageDto<QuestionDto>> getQuestionsWithoutAnswers (
+            @Parameter(description = "номер страницы", required = true)
+            @RequestParam(value = "page") Integer page,
+            @Parameter(description = "кол-во элементов на странице")
+            @RequestParam(value = "items", required = false, defaultValue = "10") Integer items,
+            @AuthenticationPrincipal User user) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("currentPage", page);
+        parameters.put("itemsOnPage", items);
+        parameters.put("noAnswers", true);
+        parameters.put("trackedTag", tagDtoService.getTrackedIdsByUserId(user.getId()));
+        parameters.put("ignoredTag", tagDtoService.getIgnoredIdsByUserId(user.getId()));
+        parameters.put("workPagination", "allQuestions");
+        return ResponseEntity.ok(questionDtoService.getPageDto(parameters));
     }
 }
