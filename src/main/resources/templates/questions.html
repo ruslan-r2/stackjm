@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Question page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container">
+    <div id="content" class="snippet-hidden">
+        <div id="mainBar" role="main" aria-labelledby="all-questions">
+            <div class="d-flex justify-content-between my-1">
+                <h1 class="d-flex mb24">Все вопросы</h1>
+                <div class="ml12">
+                    <a href="/questions/ask" class="btn btn-lg btn-primary">
+                        Задать вопрос
+                    </a>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between mb12 flex-column align-items-stretch">
+                <div class="d-flex justify-content-between">
+                    <div class="fs-body3 align-items-center" id="quantityQuestions">
+                        < 0 >
+                        вопросов
+                    </div>
+                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="pills-newQuestion" data-toggle="pill" href="#newQuestion"
+                               role="tab" aria-controls="newQuestion" aria-selected="true">Новые</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-currentQuestion" data-toggle="pill" href="#currentQuestion"
+                               role="tab" aria-controls="currentQuestion" aria-selected="true">Текущие</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-contestQuestion" data-toggle="pill" href="#contestQuestion"
+                               role="tab" aria-controls="contestQuestion" aria-selected="true">Конкурсные</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pills-unansweredQuestion" data-toggle="pill"
+                               href="#unansweredQuestion"
+                               role="tab" aria-controls="unansweredQuestion" aria-selected="true">Не отвеченные</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                               aria-haspopup="true" aria-expanded="false">Ещё</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" id="pills-quoteQuestion" data-toggle="pill"
+                                   href="#quoteQuestion"
+                                   role="tab" aria-controls="quoteQuestion" aria-selected="true">Цитируемые</a>
+                                <a class="dropdown-item" id="pills-voteQuestion" data-toggle="pill" href="#voteQuestion"
+                                   role="tab" aria-controls="voteQuestion" aria-selected="true">Голоса</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item disabled" id="pills-myUnansweredQuestion" data-toggle="pill"
+                                   href="#myUnansweredQuestion"
+                                   role="tab" aria-controls="myUnansweredQuestion" aria-selected="true">Не отвеченные
+                                    (мои метки)</a>
+                            </div>
+                        </li>
+                        <nav class="nav-item navbar-light">
+                            <button class="navbar-toggler align-items-center" type="button" data-toggle="collapse"
+                                    data-target="#navbarFilter" aria-controls="navbarFilter" aria-expanded="false"
+                                    aria-label="Toggle navigation" id="Filter">
+                                Фильтр
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                        </nav>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--        Фильтр-->
+        <div class="container">
+            <div class="collapse" id="navbarFilter">
+                <div class="mb2" style="background-color: lightgray">
+                    <div class="px-lg-3 py-lg-3 ">
+                        <div class="d-flex justify-content-between font-weight-normal">
+                            <div class="d-flex">
+                                <fieldset class="flex-column">
+                                    <legend class="d-flex s-label px0">Фильтрация</legend>
+                                    <div class="d-flex">
+                                        <div class="d-flex ml3 align-items-center">
+                                            <div class="d-flex">
+                                                <input class="s-checkbox d-block" type="checkbox" value="NoAnswers"
+                                                       name="FilterId" id="1001">
+                                            </div>
+                                            <label class="d-flex mx-1 my-1 s-label font-weight-normal" for="1001">Без
+                                                ответов</label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="d-flex gs4 align-items-center">
+                                            <div class="d-flex">
+                                                <input class="s-checkbox d-block" type="checkbox"
+                                                       value="NoAcceptedAnswer" name="FilterId" id="1002">
+                                            </div>
+                                            <label class="d-flex mx-1 my-1 s-label font-weight-normal" for="1002">Без
+                                                принятого
+                                                ответа</label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="d-flex gs4 align-items-center">
+                                            <div class="d-flex">
+                                                <input class="s-checkbox d-block" type="checkbox" value="Contest"
+                                                       name="FilterId" id="1003">
+                                            </div>
+                                            <label class="d-flex mx-1 my-1 s-label font-weight-normal" for="1003">Объявлен
+                                                конкурс</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="d-flex">
+                                <fieldset class="d-flex gs8 flex-column">
+                                    <legend class="d-flex s-label px0">Сортировка</legend>
+                                    <div class="d-flex">
+                                        <div class="d-flex gs4 align-items-center">
+                                            <div class="d-flex">
+                                                <input class="s-radio d-block" type="radio" value="Newest"
+                                                       checked="checked" name="SortId" id="2001">
+                                            </div>
+                                            <label class="d-flex mx-1 my-1 s-label font-weight-normal"
+                                                   for="2001">Новые</label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="d-flex gs4 align-items-center">
+                                            <div class="d-flex">
+                                                <input class="s-radio d-block" type="radio" value="RecentActivity"
+                                                       name="SortId" id="2002">
+                                            </div>
+                                            <label class="d-flex mx-1 my-1 s-label font-weight-normal"
+                                                   for="2002">Обновлённые</label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="d-flex gs4 align-items-center">
+                                            <div class="d-flex">
+                                                <input class="s-radio d-block" type="radio" value="MostVotes"
+                                                       name="SortId" id="2003">
+                                            </div>
+                                            <label class="d-flex mx-1 my-1 s-label font-weight-normal" for="2003">Наиболее
+                                                оценённые</label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="d-flex gs4 align-items-center">
+                                            <div class="d-flex">
+                                                <input class="s-radio d-block" type="radio" value="MostFrequent"
+                                                       name="SortId" id="2004">
+                                            </div>
+                                            <label class="d-flex mx-1 my-1 s-label font-weight-normal" for="2004">Наиболее
+                                                частые</label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="d-flex gs4 align-items-center">
+                                            <div class="d-flex">
+                                                <input class="s-radio d-block" type="radio"
+                                                       value="ContestEndingSoon" name="SortId" id="2005">
+                                            </div>
+                                            <label class="d-flex mx-1 my-1 s-label font-weight-normal" for="2005">Конкурс
+                                                скоро
+                                                заканчивается</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="d-flex">
+                                <fieldset class="gs8">
+                                    <legend class="d-flex s-label px0">Метки</legend>
+                                    <div class="d-flex">
+                                        <div class="d-flex gs4 align-items-center">
+                                            <div class="d-flex">
+                                                <input class="s-radio d-block" type="radio" name="tagModeId"
+                                                       value="Watched" id="3001">
+                                            </div>
+                                            <label class="d-flex mx-1 my-1 s-label font-weight-normal" for="3001">Отслеживаемые
+                                                метки</label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="d-flex gs4 align-items-center">
+                                            <div class="d-flex">
+                                                <input class="s-radio d-block" type="radio" name="tagModeId"
+                                                       value="Specified" checked="checked" id="3002">
+                                            </div>
+                                            <label class="d-flex mx-1 my-1 s-label font-weight-normal" for="3002">Указанные
+                                                ниже
+                                                метки:</label>
+                                        </div>
+                                    </div>
+                                    <form>
+                                        <div class="input-group">
+                                            <textarea type="text" class="form-control"
+                                                      placeholder="Например, java or javascript"></textarea>
+                                        </div>
+                                    </form>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-lg-3 bt border-top">
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-sm btn-primary flex-nowrap" type="submit"
+                                    id="applyButton">Применить фильтр
+                            </button>
+                            <button aria-hidden="true" type="reset" class="btn btn-default pull-right">Отмена
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+        </div>
+
+        <!--Листы вопросов-->
+        <div class="tab-content" id="pills-tabContent">
+            <!--            Новые-->
+            <div class="tab-pane fade show active" id="newQuestion" role="tabpanel" aria-labelledby="pills-newQuestion">
+                <table class="table table-striped" id="newQuestionTable">
+                    <tr>
+                        <div class="container-fluid justify-content-start border-top">
+                            <div class="row">
+                                <div class="col-1 d-flex">
+                                    <div class="stats" id="newQuestionStats">
+                                        <div class="votes" id="newQuestionStatsVotes">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>голосов</span>
+                                        </div>
+                                        <div class="status" id="newQuestionStatsAnswer">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>ответов</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-11">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-6 border-left">
+                                                <h3>
+                                                    <a href="#" class="question-hyperlink ml-3"
+                                                       id="newQuestionHyperlink">Вопрос</a>
+                                                </h3>
+                                                <div class="col-md-auto text-truncate" style="min-width: 590px;">
+                                                    Краткое цитирование вопроса
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row border-left">
+                                            <div class="col-md-2 col-sm-6">
+                                                <div class="col" id="newQuestionUser-tags">
+                                                    <button class="btn btn-light">
+                                                        <a href="#">Метка</a>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10 col-sm-6 text-right">
+                                                <div class="user-action-time d" id="newQuestionUser-action-time">
+                                                    <span>Вопрос задан *** минут назад</span>
+                                                </div>
+                                                <div class="row d-flex justify-content-end">
+                                                    <a href="#userpage">
+                                                        <div class="avatar-wrapper-32"><img src="#image" alt=""
+                                                                                            width="32" height="32">
+                                                        </div>
+                                                        <div class="user-details my-1" id="newQuestionUser-details">
+                                                            <a href="#">Никнэйм</a>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <div class="user-details" id="newQuestionUser-votes">
+                                                    <a href="#">Уровень репутации</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                </table>
+            </div>
+            <!--            Текущие-->
+            <div class="tab-pane fade" id="currentQuestion" role="tabpanel" aria-labelledby="pills-currentQuestion">
+                <table class="table table-striped" id="currentQuestionTable">
+                    <tr>
+                        <div class="container-fluid justify-content-start border-top">
+                            <div class="row">
+                                <div class="col-1 d-flex">
+                                    <div class="stats" id="currentQuestionStats">
+                                        <div class="votes" id="currentQuestionStatsVotes">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>голосов</span>
+                                        </div>
+                                        <div class="status" id="currentQuestionStatsAnswer">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>ответов</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-11">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-6 border-left">
+                                                <h3>
+                                                    <a href="#" class="question-hyperlink ml-3"
+                                                       id="currentQuestionHyperlink">Вопрос</a>
+                                                </h3>
+                                                <div class="col-md-auto text-truncate" style="min-width: 590px;">
+                                                    Краткое цитирование вопроса
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row border-left">
+                                            <div class="col-md-2 col-sm-6">
+                                                <div class="col" id="currentQuestionUser-tags">
+                                                    <button class="btn btn-light">
+                                                        <a href="#">Метка</a>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10 col-sm-6 text-right">
+                                                <div class="user-action-time d" id="currentQuestionUser-action-time">
+                                                    <span>Вопрос задан *** минут назад</span>
+                                                </div>
+                                                <div class="row d-flex justify-content-end">
+                                                    <a href="#userpage">
+                                                        <div class="avatar-wrapper-32"><img src="#image" alt=""
+                                                                                            width="32" height="32">
+                                                        </div>
+                                                        <div class="user-details my-1" id="currentQuestionUser-details">
+                                                            <a href="#">Никнэйм</a>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <div class="user-details" id="currentQuestionUser-votes">
+                                                    <a href="#">Уровень репутации</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                </table>
+            </div>
+            <!--            Конкурсные-->
+            <div class="tab-pane fade" id="contestQuestion" role="tabpanel" aria-labelledby="pills-contestQuestion">
+                <table class="table table-striped" id="contestQuestionTable">
+                    <tr>
+                        <div class="container-fluid justify-content-start border-top">
+                            <div class="row">
+                                <div class="col-1 d-flex">
+                                    <div class="stats" id="contestQuestionStats">
+                                        <div class="votes" id="contestQuestionStatsVotes">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>голосов</span>
+                                        </div>
+                                        <div class="status" id="contestQuestionStatsAnswer">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>ответов</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-11">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-6 border-left">
+                                                <h3>
+                                                    <a href="#" class="question-hyperlink ml-3"
+                                                       id="contestQuestionHyperlink">Вопрос</a>
+                                                </h3>
+                                                <div class="col-md-auto text-truncate" style="min-width: 590px;">
+                                                    Краткое цитирование вопроса
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row border-left">
+                                            <div class="col-md-2 col-sm-6">
+                                                <div class="col" id="contestQuestionUser-tags">
+                                                    <button class="btn btn-light">
+                                                        <a href="#">Метка</a>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10 col-sm-6 text-right">
+                                                <div class="user-action-time d" id="contestQuestionUser-action-time">
+                                                    <span>Вопрос задан *** минут назад</span>
+                                                </div>
+                                                <div class="row d-flex justify-content-end">
+                                                    <a href="#userpage">
+                                                        <div class="avatar-wrapper-32"><img src="#image" alt=""
+                                                                                            width="32" height="32">
+                                                        </div>
+                                                        <div class="user-details my-1" id="contestQuestionUser-details">
+                                                            <a href="#">Никнэйм</a>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <div class="user-details" id="contestQuestionUser-votes">
+                                                    <a href="#">Уровень репутации</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                </table>
+            </div>
+            <!--            Не отвеченные-->
+            <div class="tab-pane fade" id="unansweredQuestion" role="tabpanel"
+                 aria-labelledby="pills-unansweredQuestion">
+                <table class="table table-striped" id="unansweredQuestionTable">
+                    <tr>
+                        <div class="container-fluid justify-content-start border-top">
+                            <div class="row">
+                                <div class="col-1 d-flex">
+                                    <div class="stats" id="stats">
+                                        <div class="votes" id="unansweredQuestionStatsVotes">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>голосов</span>
+                                        </div>
+                                        <div class="status" id="unansweredQuestionStatsAnswer">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>ответов</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-11">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-6 border-left">
+                                                <h3>
+                                                    <a href="#" class="question-hyperlink ml-3"
+                                                       id="unansweredQuestionHyperlink">Вопрос</a>
+                                                </h3>
+                                                <div class="col-md-auto text-truncate" style="min-width: 590px;">
+                                                    Краткое цитирование вопроса
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row border-left">
+                                            <div class="col-md-2 col-sm-6">
+                                                <div class="col" id="unansweredQuestionUser-tags">
+                                                    <button class="btn btn-light">
+                                                        <a href="#">Метка</a>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10 col-sm-6 text-right">
+                                                <div class="user-action-time d" id="unansweredQuestionUser-action-time">
+                                                    <span>Вопрос задан *** минут назад</span>
+                                                </div>
+                                                <div class="row d-flex justify-content-end">
+                                                    <a href="#userpage">
+                                                        <div class="avatar-wrapper-32"><img src="#image" alt=""
+                                                                                            width="32" height="32">
+                                                        </div>
+                                                        <div class="user-details my-1"
+                                                             id="unansweredQuestionUser-details">
+                                                            <a href="#">Никнэйм</a>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <div class="user-details" id="user-votes">
+                                                    <a href="#">Уровень репутации</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                </table>
+            </div>
+            <!--            Цитируемые-->
+            <div class="tab-pane fade" id="quoteQuestion" role="tabpanel" aria-labelledby="pills-quoteQuestion">
+                <table class="table table-striped" id="quoteQuestionTable">
+                    <tr>
+                        <div class="container-fluid justify-content-start border-top">
+                            <div class="row">
+                                <div class="col-1 d-flex">
+                                    <div class="stats" id="quoteQuestionStats">
+                                        <div class="votes" id="quoteQuestionStatsVotes">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>голосов</span>
+                                        </div>
+                                        <div class="status" id="quoteQuestionStatsAnswer">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>ответов</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-11">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-6 border-left">
+                                                <h3>
+                                                    <a href="#" class="question-hyperlink ml-3"
+                                                       id="quoteQuestionHyperlink">Вопрос</a>
+                                                </h3>
+                                                <div class="col-md-auto text-truncate" style="min-width: 590px;">
+                                                    Краткое цитирование вопроса
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row border-left">
+                                            <div class="col-md-2 col-sm-6">
+                                                <div class="col" id="quoteQuestionUser-tags">
+                                                    <button class="btn btn-light">
+                                                        <a href="#">Метка</a>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10 col-sm-6 text-right">
+                                                <div class="user-action-time d" id="quoteQuestionUser-action-time">
+                                                    <span>Вопрос задан *** минут назад</span>
+                                                </div>
+                                                <div class="row d-flex justify-content-end">
+                                                    <a href="#userpage">
+                                                        <div class="avatar-wrapper-32"><img src="#image" alt=""
+                                                                                            width="32" height="32">
+                                                        </div>
+                                                        <div class="user-details my-1" id="quoteQuestionUser-details">
+                                                            <a href="#">Никнэйм</a>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <div class="user-details" id="quoteQuestionUser-votes">
+                                                    <a href="#">Уровень репутации</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                </table>
+            </div>
+<!--            Голоса-->
+            <div class="tab-pane fade" id="voteQuestion" role="tabpanel" aria-labelledby="pills-voteQuestion">
+                <table class="table table-striped" id="voteQuestionTable">
+                    <tr>
+                        <div class="container-fluid justify-content-start border-top">
+                            <div class="row">
+                                <div class="col-1 d-flex">
+                                    <div class="stats" id="voteQuestionStats">
+                                        <div class="votes" id="voteQuestionStatsVotes">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>голосов</span>
+                                        </div>
+                                        <div class="status" id="voteQuestionStatsAnswer">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>ответов</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-11">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-6 border-left">
+                                                <h3>
+                                                    <a href="#" class="question-hyperlink ml-3"
+                                                       id="voteQuestionHyperlink">Вопрос</a>
+                                                </h3>
+                                                <div class="col-md-auto text-truncate" style="min-width: 590px;">
+                                                    Краткое цитирование вопроса
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row border-left">
+                                            <div class="col-md-2 col-sm-6">
+                                                <div class="col" id="voteQuestionUser-tags">
+                                                    <button class="btn btn-light">
+                                                        <a href="#">Метка</a>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10 col-sm-6 text-right">
+                                                <div class="user-action-time d" id="voteQuestionUser-action-time">
+                                                    <span>Вопрос задан *** минут назад</span>
+                                                </div>
+                                                <div class="row d-flex justify-content-end">
+                                                    <a href="#userpage">
+                                                        <div class="avatar-wrapper-32"><img src="#image" alt=""
+                                                                                            width="32" height="32">
+                                                        </div>
+                                                        <div class="user-details my-1" id="voteQuestionUser-details">
+                                                            <a href="#">Никнэйм</a>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <div class="user-details" id="voteQuestionUser-votes">
+                                                    <a href="#">Уровень репутации</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                </table>
+            </div>
+<!--            Не отвеченные (мои метки)-->
+            <div class="tab-pane fade" id="myUnansweredQuestion" role="tabpanel"
+                 aria-labelledby="pills-myUnansweredQuestion">
+                <table class="table table-striped" id="myUnansweredQuestionTable">
+                    <tr>
+                        <div class="container-fluid justify-content-start border-top">
+                            <div class="row">
+                                <div class="col-1 d-flex">
+                                    <div class="stats" id="myUnansweredQuestionStats">
+                                        <div class="votes" id="myUnansweredQuestionVotes">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>голосов</span>
+                                        </div>
+                                        <div class="status" id="myUnansweredQuestionAnswer">
+                                            <strong><span th:text="${}">0</span></strong>
+                                            <span>ответов</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-11">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-md-2 col-sm-6 border-left">
+                                                <h3>
+                                                    <a href="#" class="question-hyperlink ml-3"
+                                                       id="myUnansweredQuestionHyperlink">Вопрос</a>
+                                                </h3>
+                                                <div class="col-md-auto text-truncate" style="min-width: 590px;">
+                                                    Краткое цитирование вопроса
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row border-left">
+                                            <div class="col-md-2 col-sm-6">
+                                                <div class="col" id="myUnansweredQuestionUser-tags">
+                                                    <button class="btn btn-light">
+                                                        <a href="#">Метка</a>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-10 col-sm-6 text-right">
+                                                <div class="user-action-time d"
+                                                     id="myUnansweredQuestionUser-action-time">
+                                                    <span>Вопрос задан *** минут назад</span>
+                                                </div>
+                                                <div class="row d-flex justify-content-end">
+                                                    <a href="#userpage">
+                                                        <div class="avatar-wrapper-32"><img src="#image" alt=""
+                                                                                            width="32" height="32">
+                                                        </div>
+                                                        <div class="user-details my-1"
+                                                             id="myUnansweredQuestionUser-details">
+                                                            <a href="#">Никнэйм</a>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                                <div class="user-details" id="myUnansweredQuestionUser-votes">
+                                                    <a href="#">Уровень репутации</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script type="text/javascript" src="/js/sidebar.js"></script>
+<script type="text/javascript" src="/js/header.js"></script>
+<script type="text/javascript" src="/js/footer.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
