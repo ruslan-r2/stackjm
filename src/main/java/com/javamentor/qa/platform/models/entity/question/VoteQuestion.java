@@ -8,14 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -43,21 +36,23 @@ public class VoteQuestion implements Serializable {
     @Type(type = "org.hibernate.type.LocalDateTimeType")
     private LocalDateTime localDateTime = LocalDateTime.now();
 
-    private int vote;
+    @Enumerated(EnumType.STRING)
+    private VoteTypeQ voteTypeQ;
 
-    public VoteQuestion(User user, Question question, int vote) {
+    public VoteQuestion(User user, Question question, VoteTypeQ voteTypeQ) {
         this.user = user;
         this.question = question;
-        this.vote = vote;
+        this.voteTypeQ = voteTypeQ;
     }
+
     @PrePersist
     private void prePersistFunction() {
         checkConstraints();
     }
 
     private void checkConstraints() {
-        if (vote != 1 && vote != -1) {
-            throw new ConstrainException("В сущности VoteQuestion допускается передача значения в поле vote только 1 или -1");
+        if (!voteTypeQ.equals(VoteTypeQ.UP) && !voteTypeQ.equals(VoteTypeQ.DOWN)) {
+            throw new ConstrainException("В сущности VoteQuestion допускается передача значения в поле voteTypeQ только UP или DOWN");
         }
     }
 }
