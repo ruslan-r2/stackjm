@@ -3,7 +3,7 @@ document.querySelector("div").insertAdjacentHTML("afterbegin","<div id=\"left-si
     "        <nav role=\"navigation\">\n" +
     "            <ol class=\"nav-links\">\n" +
     "        <li id=\"li-home\" class=\"\">\n" +
-    "            <a href=\"/\" class=\"pl8 js-gps-track nav-links--link\" data-gps-track=\"top_nav.click({is_current:true, location:1, destination:8})\" aria-controls=\"\" data-controller=\"\" data-s-popover-placement=\"right\" data-s-popover-auto-show=\"true\" data-s-popover-hide-on-outside-click=\"never\">\n" +
+    "            <a href=\"/main\" class=\"pl8 js-gps-track nav-links--link\" data-gps-track=\"top_nav.click({is_current:true, location:1, destination:8})\" aria-controls=\"\" data-controller=\"\" data-s-popover-placement=\"right\" data-s-popover-auto-show=\"true\" data-s-popover-hide-on-outside-click=\"never\">\n" +
     "                    <div class=\"d-flex ai-center\">\n" +
     "                        <div class=\"flex--item truncate\">\n" +
     "                            Главная\n" +

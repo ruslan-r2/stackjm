@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Users</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+  <div id="content" class="snippet-hidden">
+    <h1>Пользователи</h1>
+    <div class="d-flex align-items-center justify-content-between mb12 flex-column align-items-stretch">
+      <div class="navbar d-flex justify-content-between">
+        <div class="d-flex relative">
+          <input type="text" id="usersFilter" name="usersFilter" size="35" maxlength="35"
+                 placeholder="Фильтрация по имени" autofocus="">
+        </div>
+        <div class="tab-pane fade show active" role="tabpanel">
+          <div class="table-responsive">
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item btn-outline-light border border-secondary rounded-0">
+                <a class="nav-link active btn-outline-secondary" id="tablePrimary" data-toggle="tab"
+                   href="#reputationUsers"
+                   role="tab" aria-controls="home">Репутация</a>
+              </li>
+              <li class="nav-item btn-outline-light border border-secondary rounded-0">
+                <a class="nav-link btn-outline-secondary" data-toggle="tab" href="#newUsers" role="tab"
+                   aria-controls="new">Новые</a>
+              </li>
+              <li class="nav-item btn-outline-light border border-secondary rounded-0">
+                <a class="nav-link btn-outline-secondary" data-toggle="tab" href="#votersUsers"
+                   role="tab"
+                   aria-controls="new">Голосующие</a>
+              </li>
+              <li class="nav-item btn-outline-light border border-secondary rounded-0">
+                <a class="nav-link btn-outline-secondary" data-toggle="tab" href="editUsers" role="tab"
+                   aria-controls="new">Отредактированные</a>
+              </li>
+              <li class="nav-item btn-outline-light border border-secondary rounded-0">
+                <a class="nav-link btn-outline-secondary" data-toggle="tab" href="#moderators"
+                   role="tab"
+                   aria-controls="new">Модераторы</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex align-items-center justify-content-end mb12 flex-column align-items-stretch">
+      <div class="navbar d-flex justify-content-end">
+        <div class="tab-pane fade show active" role="tabpanel">
+          <div class="table-responsive">
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="tableTime" data-toggle="tab" href="#week"
+                   role="tab" aria-controls="home">Неделя</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#month" role="tab"
+                   aria-controls="new">Месяц</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#quarter" role="tab"
+                   aria-controls="new">Сезон</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#all" role="tab"
+                   aria-controls="new">Все</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-4 no-gutters">
+          <div class="row">
+            <div class="col-6">
+              <img src="https://startupreviews.ru/wp-content/uploads/2017/10/bill-gates-vr-education.jpg"
+                   class="img-fluid">
+            </div>
+            <div class="col-6 m-0 p-0">
+              <a id="username1" href="/users/{id}">Билл Гейтц</a>
+              <p id="cityLive1">Сиэтл США</p>
+              <p id="reputation1">2800</p>
+              <p><a id="tagC++" href="/tags/{id}">C++</a> <a id="tagDelphi" href="/tags/{id}">Delphi</a>
+                <a id="tagBasic" href="/tags/{id}">Basic</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-4 no-gutters">
+          <div class="row">
+            <div class="col-6">
+              <img src="https://inventure.com.ua/upload/pic2020-1q/15-sergey-brin.jpg__1585991126__47353.jpg"
+                   class="img-fluid">
+            </div>
+            <div class="col-6 m-0 p-0">
+              <a id="username2" href="/users/{id}">Сергей Брин</a>
+              <p id="cityLive2">Москва РСФСР</p>
+              <p id="reputation2">2000</p>
+              <p><a id="tagJava" href="/tags/{id}">Java</a> <a id="tagC#" href="/tags/{id}">C#</a>
+                <a id="tagHTML" href="/tags/{id}">HTML</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="col-4 no-gutters">
+          <div class="row">
+            <div class="col-6">
+              <img src="https://i1.wp.com/7sisters.ru/wp-content/uploads/2017/02/Mark-Zuckerberg.jpg?fit=2048%2C1491&ssl=1"
+                   class="img-fluid">
+            </div>
+            <div class="col-6 m-0 p-0">
+              <a id="username3" href="/users/{id}">Марк Цукерберг</a>
+              <p id="cityLive3">Нью Йорк США</p>
+              <p id="reputation3">2500</p>
+              <p><a id="tagSQL" href="/tags/{id}">SQL</a> <a id="tagC" href="/tags/{id}">C</a>
+                <a id="tagJavaScript" href="/tags/{id}">JavaScript</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-4 no-gutters">
+          <div class="row">
+            <div class="col-6">
+              <img src="https://i3vestno.ru/media/uploads/2021/5/uploads-2021-5-uploads-2021-5-uploads-2021-5-uploads-2021-5-uploads-2021-_OJkqhxq.jpg"
+                   class="img-fluid">
+            </div>
+            <div class="col-6 m-0 p-0">
+              <a id="username4" href="/users/{id}">Илон Маск</a>
+              <p id="cityLive4"> Претория, ЮАР</p>
+              <p id="reputation4">3200</p>
+              <p><a id="tagPython" href="/tags/{id}">C++</a> <a id="tagRuby" href="/tags/{id}">Ruby</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript" src="/js/sidebar.js"></script>
+<script type="text/javascript" src="/js/header.js"></script>
+
+<script type="text/javascript" src="/js/footer.js"></script>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
