@@ -4,6 +4,7 @@ import com.javamentor.qa.platform.dao.abstracts.model.VoteQuestionDao;
 import com.javamentor.qa.platform.exception.VoteException;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.VoteQuestion;
+import com.javamentor.qa.platform.models.entity.question.VoteTypeQ;
 import com.javamentor.qa.platform.models.entity.user.User;
 import com.javamentor.qa.platform.models.entity.user.reputation.Reputation;
 import com.javamentor.qa.platform.models.entity.user.reputation.ReputationType;
@@ -48,14 +49,14 @@ public class  VoteQuestionServiceImpl extends ReadWriteServiceImpl<VoteQuestion,
 
         Optional<VoteQuestion> optionalVoteQuestion = getByUserAndQuestion(user, question);
         if (optionalVoteQuestion.isPresent()) {
-            if(optionalVoteQuestion.get().getVote() == 1) {
+            if(optionalVoteQuestion.get().getVoteTypeQ().equals(VoteTypeQ.UP)) {
                 throw new VoteException("пользователь проголосовал 'за' ранее");
             } else {
-                optionalVoteQuestion.get().setVote(1);
+                optionalVoteQuestion.get().setVoteTypeQ(VoteTypeQ.UP);
                 update(optionalVoteQuestion.get());
             }
         } else {
-            persist(new VoteQuestion(user, question, 1));
+            persist(new VoteQuestion(user, question, VoteTypeQ.UP));
         }
 
         Optional<Reputation> optionalReputation = reputationService.getByAuthorAndSenderAndQuestionAndType(question.getUser(), user, question, ReputationType.VoteQuestion);
@@ -83,14 +84,14 @@ public class  VoteQuestionServiceImpl extends ReadWriteServiceImpl<VoteQuestion,
 
         Optional<VoteQuestion> optionalVoteQuestion = getByUserAndQuestion(user, question);
         if (optionalVoteQuestion.isPresent()) {
-            if(optionalVoteQuestion.get().getVote() == -1) {
+            if(optionalVoteQuestion.get().getVoteTypeQ().equals(VoteTypeQ.DOWN)) {
                 throw new VoteException("пользователь проголосовал 'против' ранее");
             } else {
-                optionalVoteQuestion.get().setVote(-1);
+                optionalVoteQuestion.get().setVoteTypeQ(VoteTypeQ.DOWN);
                 update(optionalVoteQuestion.get());
             }
         } else {
-            persist(new VoteQuestion(user, question, 1));
+            persist(new VoteQuestion(user, question, VoteTypeQ.DOWN));
         }
 
         Optional<Reputation> optionalReputation = reputationService.getByAuthorAndSenderAndQuestionAndType(question.getUser(), user, question, ReputationType.VoteQuestion);

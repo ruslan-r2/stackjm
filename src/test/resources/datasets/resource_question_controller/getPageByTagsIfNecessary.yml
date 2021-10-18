@@ -117,17 +117,17 @@ answer:
 votes_on_questions:
   - id: 100
     persist_date: "1990-10-10 00:00:00"
-    vote: 1
+    vote_typeq: "UP"
     question_id: 100
     user_id: 101
   - id: 101
     persist_date: "1990-10-10 00:00:00"
-    vote: 1
+    vote_typeq: "UP"
     question_id: 100
     user_id: 102
   - id: 102
     persist_date: "1990-10-10 00:00:00"
-    vote: -1
+    vote_typeq: "DOWN"
     question_id: 101
     user_id: 100
 question_viewed:
