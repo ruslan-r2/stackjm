@@ -1,0 +1,5 @@
+tag_ignore:
+  - id: 101
+    persist_date: 1990-01-01 00:00:00
+    ignored_tag_id: 101
+    user_id: 100

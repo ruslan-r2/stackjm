@@ -1,0 +1,9 @@
+question_viewed:
+  - id: 100
+    persist_date: 1990-01-01 00:00:00
+    question_id: 100
+    user_id: 101
+  - id: 101
+    persist_date: 1990-01-03 00:00:00
+    question_id: 100
+    user_id: 102

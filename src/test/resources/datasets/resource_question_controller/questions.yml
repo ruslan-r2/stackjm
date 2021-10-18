@@ -1,0 +1,29 @@
+question:
+  - id: 100
+    description: "description0"
+    is_deleted: false
+    last_redaction_date: "1990-10-10 00:00:00"
+    persist_date: "1990-10-10 00:00:00"
+    title: "title0"
+    user_id: 100
+  - id: 101
+    description: "description1"
+    is_deleted: false
+    last_redaction_date: "1990-10-10 00:00:00"
+    persist_date: "1990-10-10 00:00:00"
+    title: "title1"
+    user_id: 101
+  - id: 102
+    description: "description2"
+    is_deleted: false
+    last_redaction_date: "1990-10-10 00:00:00"
+    persist_date: "1990-10-10 00:00:00"
+    title: "title2"
+    user_id: 102
+  - id: 103
+    description: "description3"
+    is_deleted: false
+    last_redaction_date: "1990-10-10 00:00:00"
+    persist_date: "1990-10-10 00:00:00"
+    title: "title3"
+    user_id: 100

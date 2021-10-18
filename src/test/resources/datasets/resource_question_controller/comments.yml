@@ -1,0 +1,37 @@
+comment:
+  - id: 100
+    user_id: 100
+    text: "Question comment good"
+    persist_date: 1990-10-10 00:00:00
+    last_redaction_date: 1990-10-10 00:00:00
+    comment_type: 1
+  - id: 101
+    user_id: 101
+    text: "Question comment bad"
+    persist_date: 1990-10-10 00:00:00
+    last_redaction_date: 1990-10-10 00:00:00
+    comment_type: 1
+  - id: 102
+    user_id: 101
+    text: "Question comment perfect"
+    persist_date: 1990-10-10 00:00:00
+    last_redaction_date: 1990-10-10 00:00:00
+    comment_type: 1
+  - id: 103
+    user_id: 100
+    text: "Answer comment good"
+    persist_date: 1990-10-10 00:00:00
+    last_redaction_date: 1990-10-10 00:00:00
+    comment_type: 0
+  - id: 104
+    user_id: 101
+    text: "Answer comment bad"
+    persist_date: 1990-10-10 00:00:00
+    last_redaction_date: 1990-10-10 00:00:00
+    comment_type: 0
+  - id: 105
+    user_id: 102
+    text: "Answer comment perfect"
+    persist_date: 1990-10-10 00:00:00
+    last_redaction_date: 1990-10-10 00:00:00
+    comment_type: 0
