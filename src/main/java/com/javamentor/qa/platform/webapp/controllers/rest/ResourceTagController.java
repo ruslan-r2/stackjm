@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @io.swagger.v3.oas.annotations.tags.Tag(name = "Контроллер тегов", description = "Api для тегов")
@@ -90,5 +91,13 @@ public class ResourceTagController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(tagDtoService.getTrackedByUserId(user.getId()));
     }
-
+    @Operation(summary = "Возвращает топ-3 тега пользователя")
+    @ApiResponse(responseCode = "200", description = "успешно",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = TagDto.class)))
+    @GetMapping("/api/user/tag/top-3tags")
+    public ResponseEntity<List<TagDto>> getTop3TagsUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(tagDtoService.getTop3TagsByUserId(user.getId()));
+    }
 }

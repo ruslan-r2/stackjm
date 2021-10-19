@@ -4,6 +4,7 @@ package com.javamentor.qa.platform.service.impl;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.javamentor.qa.platform.models.entity.question.VoteQuestion;
+import com.javamentor.qa.platform.models.entity.question.VoteTypeQ;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.question.answer.VoteAnswer;
 import com.javamentor.qa.platform.models.entity.question.answer.VoteType;
@@ -109,6 +110,7 @@ public class    TestDataInitService {
     }
 
     private List<Tag> tags = new ArrayList<>();
+    private List<Tag> tags2 = new ArrayList<>();
 
     private void createTags() {
         tags = new ArrayList<>();
@@ -161,7 +163,7 @@ public class    TestDataInitService {
         for (int i = 0; i < 30; i++) {
             VoteQuestion voteQuestion = new VoteQuestion();
             voteQuestion.setQuestion(questions.get(i % questions.size()));
-            voteQuestion.setVote(new Random().nextBoolean() ? 1 : -1);
+            voteQuestion.setVoteTypeQ(new Random().nextBoolean() ? VoteTypeQ.UP : VoteTypeQ.DOWN);
             voteQuestion.setUser(user);
             votesQuestion.add(voteQuestion);
             voteQuestionService.persist(voteQuestion);

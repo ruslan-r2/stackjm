@@ -75,13 +75,33 @@ question:
     last_redaction_date: "1990-10-10 00:00:00"
     persist_date: "1990-10-10 00:00:00"
     title: "question2"
-    user_id: 100
+    user_id: 102
+  - id: 102
+    description: "description3"
+    is_deleted: "false"
+    last_redaction_date: "1990-10-10 00:00:00"
+    persist_date: "1990-10-10 00:00:00"
+    title: "question3"
+    user_id: 101
+  - id: 103
+    description: "description4"
+    is_deleted: "false"
+    last_redaction_date: "1990-10-10 00:00:00"
+    persist_date: "1990-10-10 00:00:00"
+    title: "question4"
+    user_id: 102
 question_has_tag:
   - question_id: 100
     tag_id: 100
   - question_id: 100
     tag_id: 101
   - question_id: 101
+    tag_id: 100
+  - question_id: 102
+    tag_id: 100
+  - question_id: 102
+    tag_id: 101
+  - question_id: 103
     tag_id: 100
 answer:
   - id: 100
@@ -94,37 +114,37 @@ answer:
     update_date: "1990-10-10 00:00:00"
     question_id: 100
     user_id: 101
-votes_on_questions:
-  - id: 100
-    persist_date: "1990-10-10 00:00:00"
-    vote: 1
-    question_id: 100
-    user_id: 101
   - id: 101
+    date_accept_time: "1990-10-10 00:00:00"
+    html_body: "text"
+    is_deleted: "true"
+    is_deleted_by_moderator: "false"
+    is_helpful: "true"
     persist_date: "1990-10-10 00:00:00"
-    vote_typeq: "UP"
-    question_id: 100
+    update_date: "1990-10-10 00:00:00"
+    question_id: 103
     user_id: 102
   - id: 102
+    date_accept_time: "1990-10-10 00:00:00"
+    html_body: "text"
+    is_deleted: "false"
+    is_deleted_by_moderator: "false"
+    is_helpful: "true"
     persist_date: "1990-10-10 00:00:00"
-    vote_typeq: "DOWN"
+    update_date: "1990-10-10 00:00:00"
     question_id: 101
     user_id: 100
-question_viewed:
+tag_tracked:
   - id: 100
     persist_date: 1990-01-01 00:00:00
-    question_id: 100
-    user_id: 101
+    tracked_tag_id: 100
+    user_id: 100
   - id: 101
-    persist_date: 1990-01-03 00:00:00
-    question_id: 100
-    user_id: 102
-reputation:
-  - id: 100
-    count: 1
     persist_date: 1990-01-01 00:00:00
-    type: 1
-    answer_id: null
-    author_id: 100
-    question_id: 100
-    sender_id: null
+    tracked_tag_id: 100
+    user_id: 101
+tag_ignore:
+  - id: 101
+    persist_date: 1990-01-01 00:00:00
+    ignored_tag_id: 101
+    user_id: 100

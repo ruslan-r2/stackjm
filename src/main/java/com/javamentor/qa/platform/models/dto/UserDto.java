@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,4 +32,6 @@ public class UserDto {
     private LocalDateTime registrationDate;
     @Schema(description = "количество голосов пользователя")
     private Long votes;
+    @Schema(description = "список топ-3 тэгов пользователя")
+    private List<TagDto> listTop3TagDto;
 }

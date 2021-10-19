@@ -20,7 +20,7 @@ public class VoteQuestionDaoImpl extends ReadWriteDaoImpl<VoteQuestion, Long> im
 
     @Override
     public Optional<VoteQuestion> getByUserAndQuestion(User user, Question question) {
-        TypedQuery<VoteQuestion> typedQuery = entityManager.createQuery("from VoteQuestion vq WHERE vq.question.id = :questionId AND vq.user.id = :userId", VoteQuestion.class);
+        TypedQuery<VoteQuestion> typedQuery = entityManager.createQuery("select vq from VoteQuestion vq WHERE vq.question.id = :questionId AND vq.user.id = :userId", VoteQuestion.class);
         typedQuery.setParameter("userId", user.getId());
         typedQuery.setParameter("questionId", question.getId());
         return SingleResultUtil.getSingleResultOrNull(typedQuery);
@@ -28,7 +28,7 @@ public class VoteQuestionDaoImpl extends ReadWriteDaoImpl<VoteQuestion, Long> im
 
     @Override
     public Long getSumVoteForQuestion(Question question) {
-        TypedQuery<Long> typedQuery =  entityManager.createQuery("SELECT COALESCE(SUM(vq.vote), 0) FROM VoteQuestion vq WHERE vq.question.id = :questionId", Long.class);
+        TypedQuery<Long> typedQuery =  entityManager.createQuery( "SELECT COALESCE(SUM(CASE WHEN vq.voteTypeQ = 'UP' THEN 1 WHEN vq.voteTypeQ = 'DOWN' THEN -1 END), 0) FROM VoteQuestion vq WHERE vq.question.id = :questionId", Long.class);
         typedQuery.setParameter("questionId", question.getId());
         return typedQuery.getSingleResult();
     }
