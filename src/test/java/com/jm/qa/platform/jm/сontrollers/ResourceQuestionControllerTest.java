@@ -59,7 +59,8 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
             "resource_question_controller/tags.yml",
             "resource_question_controller/tags_on_question.yml",
             "resource_question_controller/tags_tracked.yml",
-            "resource_question_controller/tags_ignored.yml"
+            "resource_question_controller/tags_ignored.yml",
+            "resource_question_controller/votes_on_questions.yml"
     }, cleanBefore = true, cleanAfter = true)
     public void getById() throws Exception {
         int correctId = 100;
@@ -81,11 +82,11 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.viewCount", is(2)))
                 .andExpect(jsonPath("$.authorReputation", is(5)))
                 .andExpect(jsonPath("$.countAnswer", is(0)))
-                .andExpect(jsonPath("$.countValuable", is(0)))
+                .andExpect(jsonPath("$.countValuable", is(1)))
                 .andExpect(jsonPath("$.persistDateTime", is("1990-10-10T00:00:00")))
                 .andExpect(jsonPath("$.lastUpdateDateTime", is("1990-10-10T00:00:00")))
                 .andExpect(jsonPath("$.voteType", is("DOWN")))
-                .andExpect(jsonPath("$.countVote", is(2)))
+                .andExpect(jsonPath("$.countVote", is(3)))
         ;
 
         //Не существующий ID вопроса
@@ -213,6 +214,7 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
             "resource_question_controller/tags_on_question.yml",
             "resource_question_controller/tags_tracked.yml",
             "resource_question_controller/tags_ignored.yml",
+            "resource_question_controller/votes_on_questions.yml"
     }, cleanBefore = true, cleanAfter = true)
     public void getPageByTagsIfNecessaryTest() throws Exception {
         //Некорретный запрос к серверу, отсутствует необходимый параметр "page"
@@ -239,9 +241,9 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[0].viewCount", equalTo(0)))
                 .andExpect(jsonPath("$.items[0].authorReputation", equalTo(5)))
                 .andExpect(jsonPath("$.items[0].countAnswer", equalTo(0)))
-                .andExpect(jsonPath("$.items[0].countValuable", equalTo(0)))
+                .andExpect(jsonPath("$.items[0].countValuable", equalTo(1)))
                 .andExpect(jsonPath("$.items[0].persistDateTime", equalTo("1990-10-10T00:00:00")))
-                .andExpect(jsonPath("$.items[0].countVote", equalTo(1)))
+                .andExpect(jsonPath("$.items[0].countVote", equalTo(3)))
                 .andExpect(jsonPath("$.items[0].voteType", equalTo("DOWN")))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
@@ -266,10 +268,10 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[0].viewCount", equalTo(0)))
                 .andExpect(jsonPath("$.items[0].authorReputation", equalTo(5)))
                 .andExpect(jsonPath("$.items[0].countAnswer", equalTo(0)))
-                .andExpect(jsonPath("$.items[0].countValuable", equalTo(0)))
+                .andExpect(jsonPath("$.items[0].countValuable", equalTo(1)))
                 .andExpect(jsonPath("$.items[0].persistDateTime", equalTo("1990-10-10T00:00:00")))
                 .andExpect(jsonPath("$.items[0].lastUpdateDateTime", equalTo("1990-10-10T00:00:00")))
-                .andExpect(jsonPath("$.items[0].countVote", equalTo(2)))
+                .andExpect(jsonPath("$.items[0].countVote", equalTo(3)))
                 .andExpect(jsonPath("$.items[0].voteType", equalTo("UP")))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
@@ -284,7 +286,7 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[1].viewCount", equalTo(0)))
                 .andExpect(jsonPath("$.items[1].authorReputation", equalTo(10)))
                 .andExpect(jsonPath("$.items[1].countAnswer", equalTo(0)))
-                .andExpect(jsonPath("$.items[1].countValuable", equalTo(0)))
+                .andExpect(jsonPath("$.items[1].countValuable", equalTo(-1)))
                 .andExpect(jsonPath("$.items[1].countVote", equalTo(1)))
                 .andExpect(jsonPath("$.items[1].voteType").value(IsNull.nullValue()))
                 .andExpect(jsonPath("$.items[1].persistDateTime", equalTo("1990-10-10T00:00:00")))
