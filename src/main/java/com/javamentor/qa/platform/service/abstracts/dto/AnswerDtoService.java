@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface AnswerDtoService {
 
-    List<AnswerDto> getAllAnswerDtoByQuestionId(Long id);
+    List<AnswerDto> getAllAnswerDtoByQuestionId(Long id, Long userId);
 
-    Optional<AnswerDto> getAnswerDtoById(Long answerId);
+    Optional<AnswerDto> getAnswerDtoById(Long answerId, Long userId);
 
     void updateAnswer (Long answerId, AnswerDto answerDto);
 }

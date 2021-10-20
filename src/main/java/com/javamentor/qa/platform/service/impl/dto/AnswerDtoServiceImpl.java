@@ -27,12 +27,12 @@ public class AnswerDtoServiceImpl implements AnswerDtoService {
     }
 
     @Override
-    public List<AnswerDto> getAllAnswerDtoByQuestionId(Long id) {
-        return answerDtoDao.getAllAnswersByQuestionId(id);
+    public List<AnswerDto> getAllAnswerDtoByQuestionId(Long id, Long userId) {
+        return answerDtoDao.getAllAnswersByQuestionId(id, userId);
     }
 
     @Override
-    public Optional<AnswerDto> getAnswerDtoById(Long answerId) { return answerDtoDao.getAnswerDtoById(answerId);
+    public Optional<AnswerDto> getAnswerDtoById(Long answerId, Long userId) { return answerDtoDao.getAnswerDtoById(answerId, userId);
     }
 
     @Override
