@@ -33,7 +33,7 @@ public class QuestionDtoServiceImpl extends PaginationServiceAbstract<QuestionDt
         PageDto<QuestionDto> pageDto = super.getPageDto(parameters);
         List<QuestionDto> questionDtoList = pageDto.getItems();
         List<Long> questionsIdList = questionDtoList.stream().map(QuestionDto::getId).collect(Collectors.toList());
-        Map<Long,List<TagDto>> questionTagMap = tagDtoDao.getTagsByQuestionIdList(questionsIdList);
+        Map<Long, List<TagDto>> questionTagMap = tagDtoDao.getTagsByQuestionIdList(questionsIdList);
         questionDtoList.forEach(questionDto -> questionDto
                 .setListTagDto(new ArrayList<>(questionTagMap.get(questionDto.getId()))));
         pageDto.setItems(questionDtoList);
@@ -41,7 +41,7 @@ public class QuestionDtoServiceImpl extends PaginationServiceAbstract<QuestionDt
     }
 
     @Override
-    public Optional<QuestionDto> getById(Long id) {
-        return questionDtoDao.getById(id);
+    public Optional<QuestionDto> getById(Long questionId, Long authorizedUserId) {
+        return questionDtoDao.getById(questionId, authorizedUserId);
     }
 }

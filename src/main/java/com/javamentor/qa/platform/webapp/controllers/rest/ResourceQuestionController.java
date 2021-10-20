@@ -1,8 +1,8 @@
 package com.javamentor.qa.platform.webapp.controllers.rest;
 
 import com.javamentor.qa.platform.exception.VoteException;
-import com.javamentor.qa.platform.models.dto.QuestionCreateDto;
 import com.javamentor.qa.platform.models.dto.PageDto;
+import com.javamentor.qa.platform.models.dto.QuestionCreateDto;
 import com.javamentor.qa.platform.models.dto.QuestionDto;
 import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.user.User;
@@ -32,9 +32,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
-import javax.validation.Valid;
 import java.util.Optional;
 
 
@@ -67,12 +67,13 @@ public class ResourceQuestionController {
     @ApiResponse(responseCode = "500", description = "Ошибка при обработке запроса")
     public ResponseEntity<PageDto<QuestionDto>> getPageByTagsIfNecessary(@Parameter(description = "номер страницы",
             required = true) @RequestParam(value = "page") Integer page, @Parameter
-            (description = "кол-во вопросов на странице", required = true) @RequestParam(value = "items",
+                                                                                 (description = "кол-во вопросов на странице", required = true) @RequestParam(value = "items",
             defaultValue = "10") Integer items, @Parameter(description = "Авторизованный пользователь") @AuthenticationPrincipal User user) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("workPagination", "allQuestions");
         parameters.put("currentPage", page);
         parameters.put("itemsOnPage", items);
+        parameters.put("authorizedUserId", user.getId());
         parameters.put("trackedTag", tagDtoService.getTrackedIdsByUserId(user.getId()));
         parameters.put("ignoredTag", tagDtoService.getIgnoredIdsByUserId(user.getId()));
         PageDto<QuestionDto> pageDto = questionDtoService.getPageDto(parameters);
@@ -85,8 +86,9 @@ public class ResourceQuestionController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = QuestionDto.class)))
     @ApiResponse(responseCode = "400", description = "Вопроса по ID не существует")
-    public ResponseEntity<QuestionDto> getById(@Parameter(description = "id вопроса ") @PathVariable(value = "id") Long id) {
-        Optional<QuestionDto> questionDto = questionDtoService.getById(id);
+    public ResponseEntity<QuestionDto> getById(@Parameter(description = "id вопроса ") @PathVariable(value = "id") Long questionId,
+                                               @AuthenticationPrincipal User user) {
+        Optional<QuestionDto> questionDto = questionDtoService.getById(questionId, user.getId());
         return questionDto.map(dto -> new ResponseEntity<>(dto, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
@@ -172,7 +174,7 @@ public class ResourceQuestionController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = PageDto.class)))
     @ApiResponse(responseCode = "500", description = "Ошибка при обработке запроса")
-    public ResponseEntity<PageDto<QuestionDto>> getQuestionsWithoutAnswers (
+    public ResponseEntity<PageDto<QuestionDto>> getQuestionsWithoutAnswers(
             @Parameter(description = "номер страницы", required = true)
             @RequestParam(value = "page") Integer page,
             @Parameter(description = "кол-во элементов на странице")
@@ -184,6 +186,7 @@ public class ResourceQuestionController {
         parameters.put("noAnswers", true);
         parameters.put("trackedTag", tagDtoService.getTrackedIdsByUserId(user.getId()));
         parameters.put("ignoredTag", tagDtoService.getIgnoredIdsByUserId(user.getId()));
+        parameters.put("authorizedUserId", user.getId());
         parameters.put("workPagination", "allQuestions");
         return ResponseEntity.ok(questionDtoService.getPageDto(parameters));
     }

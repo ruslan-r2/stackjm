@@ -5,6 +5,7 @@ import com.javamentor.qa.platform.dao.util.SingleResultUtil;
 import com.javamentor.qa.platform.models.dto.QuestionDto;
 import com.javamentor.qa.platform.models.dto.TagDto;
 import com.javamentor.qa.platform.models.entity.question.Tag;
+import com.javamentor.qa.platform.models.entity.question.VoteTypeQ;
 import org.hibernate.transform.ResultTransformer;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +28,7 @@ public class QuestionDtoDaoImpl implements QuestionDtoDao {
 
     @Override
     @SuppressWarnings("deprecation")
-    public Optional<QuestionDto> getById(Long id) {
+    public Optional<QuestionDto> getById(Long questionId, Long authorizedUserId) {
         Query query = entityManager.createQuery("select q.id as id," +
                 " q.title as title," +
                 " q.user.id as authorId," +
@@ -40,10 +41,13 @@ public class QuestionDtoDaoImpl implements QuestionDtoDao {
                 "(select coalesce(sum(case when v.voteTypeQ = 'UP' then 1 when v.voteTypeQ = 'DOWN' then -1 end), 0) from VoteQuestion v where v.question.id = q.id) as countValuable, " +
                 "q.persistDateTime as persistDateTime," +
                 "q.lastUpdateDateTime as lastUpdateDateTime, " +
+                "(select count(*) from VoteQuestion vq where vq.question.id = q.id) as countVote," +
+                "(select vq.voteTypeQ from VoteQuestion vq where vq.user.id = :authorizedUserId and vq.question.id = q.id) as voteType, " +
                 "qt as tags " +
                 "from Question q " +
                 "join q.tags qt " +
-                "where q.id = :id").setParameter("id", id)
+                "where q.id = :id").setParameter("id", questionId)
+                .setParameter("authorizedUserId", authorizedUserId)
                 .unwrap(org.hibernate.query.Query.class)
                 .setResultTransformer(new QuestionDtoWithListTagDtoTransformer());
         return SingleResultUtil.getSingleResultOrNull(query);
@@ -69,10 +73,12 @@ public class QuestionDtoDaoImpl implements QuestionDtoDao {
             long countVariable = (Long) tuple[9];
             LocalDateTime persistDateTime = LocalDateTime.parse(tuple[10].toString(), DateTimeFormatter.ISO_DATE_TIME);
             LocalDateTime lastUpdateDateTime = LocalDateTime.parse(tuple[11].toString(), DateTimeFormatter.ISO_DATE_TIME);
-            Tag tag = (Tag) tuple[12];
+            long countVote = (Long) tuple[12];
+            VoteTypeQ voteType = (VoteTypeQ) tuple[13];
+            Tag tag = (Tag) tuple[14];
 
             QuestionDto questionDto = new QuestionDto(id, title, authorId, authorName, authorImage, description, viewCount,
-                    authorReputation, countAnswer, countVariable, persistDateTime, lastUpdateDateTime, new ArrayList<>());
+                    authorReputation, countAnswer, countVariable, persistDateTime, lastUpdateDateTime, countVote, voteType, new ArrayList<>());
 
             if (!tagMap.containsKey(id)) {
                 roots.add(questionDto);

@@ -68,7 +68,7 @@ question:
     last_redaction_date: "1990-10-10 00:00:00"
     persist_date: "1990-10-10 00:00:00"
     title: "question"
-    user_id: 100
+    user_id: 101
   - id: 101
     description: "description2"
     is_deleted: "false"
@@ -95,11 +95,6 @@ answer:
     question_id: 100
     user_id: 101
 votes_on_questions:
-  - id: 100
-    persist_date: "1990-10-10 00:00:00"
-    vote: 1
-    question_id: 100
-    user_id: 101
   - id: 101
     persist_date: "1990-10-10 00:00:00"
     vote_typeq: "UP"
@@ -109,6 +104,11 @@ votes_on_questions:
     persist_date: "1990-10-10 00:00:00"
     vote_typeq: "DOWN"
     question_id: 101
+    user_id: 100
+  - id: 103
+    persist_date: "1990-10-10 00:00:00"
+    vote_typeq: "DOWN"
+    question_id: 100
     user_id: 100
 question_viewed:
   - id: 100
