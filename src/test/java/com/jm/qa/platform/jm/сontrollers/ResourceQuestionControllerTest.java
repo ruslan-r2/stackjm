@@ -7,6 +7,7 @@ import com.javamentor.qa.platform.models.entity.question.Question;
 import com.javamentor.qa.platform.models.entity.question.Tag;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import io.jsonwebtoken.lang.Collections;
+import org.hamcrest.core.IsNull;
 import org.junit.Assert;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -83,6 +84,8 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.countValuable", is(0)))
                 .andExpect(jsonPath("$.persistDateTime", is("1990-10-10T00:00:00")))
                 .andExpect(jsonPath("$.lastUpdateDateTime", is("1990-10-10T00:00:00")))
+                .andExpect(jsonPath("$.voteType", is("DOWN")))
+                .andExpect(jsonPath("$.countVote", is(2)))
         ;
 
         //Не существующий ID вопроса
@@ -238,6 +241,8 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[0].countAnswer", equalTo(0)))
                 .andExpect(jsonPath("$.items[0].countValuable", equalTo(0)))
                 .andExpect(jsonPath("$.items[0].persistDateTime", equalTo("1990-10-10T00:00:00")))
+                .andExpect(jsonPath("$.items[0].countVote", equalTo(1)))
+                .andExpect(jsonPath("$.items[0].voteType", equalTo("DOWN")))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].description", equalTo("tag_1")));
@@ -263,6 +268,9 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[0].countAnswer", equalTo(0)))
                 .andExpect(jsonPath("$.items[0].countValuable", equalTo(0)))
                 .andExpect(jsonPath("$.items[0].persistDateTime", equalTo("1990-10-10T00:00:00")))
+                .andExpect(jsonPath("$.items[0].lastUpdateDateTime", equalTo("1990-10-10T00:00:00")))
+                .andExpect(jsonPath("$.items[0].countVote", equalTo(2)))
+                .andExpect(jsonPath("$.items[0].voteType", equalTo("UP")))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].description", equalTo("tag_1")))
@@ -277,6 +285,8 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[1].authorReputation", equalTo(10)))
                 .andExpect(jsonPath("$.items[1].countAnswer", equalTo(0)))
                 .andExpect(jsonPath("$.items[1].countValuable", equalTo(0)))
+                .andExpect(jsonPath("$.items[1].countVote", equalTo(1)))
+                .andExpect(jsonPath("$.items[1].voteType").value(IsNull.nullValue()))
                 .andExpect(jsonPath("$.items[1].persistDateTime", equalTo("1990-10-10T00:00:00")))
                 .andExpect(jsonPath("$.items[1].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[1].listTagDto[0].name", equalTo("tag_name_1")))

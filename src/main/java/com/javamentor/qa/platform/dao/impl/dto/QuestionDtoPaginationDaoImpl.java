@@ -44,9 +44,11 @@ public class QuestionDtoPaginationDaoImpl implements PaginationDao<QuestionDto> 
                 "(select coalesce(count(*), 0)  from QuestionViewed  where question.id = q.id) as viewCount, " +
                 "(select coalesce(sum(r.count),0) from Reputation r where r.author.id = q.user.id) as authorReputation, " +
                 "(select count(*) from Answer a where a.question.id = q.id and a.isDeleted = false) as countAnswer, " +
-                "(select coalesce(sum(v.vote),0) from VoteQuestion v where v.question.id = q.id) as countValuable, " +
+                "(select coalesce(sum(case when v.voteTypeQ = 'UP' then 1 when v.voteTypeQ = 'DOWN' then -1 end), 0) from VoteQuestion v where v.question.id = q.id) as countValuable, " +
                 "q.persistDateTime as persistDateTime," +
-                "q.lastUpdateDateTime as lastUpdateDateTime " +
+                "q.lastUpdateDateTime as lastUpdateDateTime," +
+                "(select count(*) from VoteQuestion vq where vq.question.id = q.id) as countVote," +
+                "(select vq.voteTypeQ from VoteQuestion vq where vq.user.id = :authorizedUserId and vq.question.id = q.id) as voteType " +
                 "from Question q " +
                 "where q.isDeleted = false " +
                 "and (coalesce(:trackedTags, null) is null or (q.id in (select tq.id from Tag t join t.questions tq where t.id in (:trackedTags)))) " +
@@ -54,6 +56,7 @@ public class QuestionDtoPaginationDaoImpl implements PaginationDao<QuestionDto> 
                 noAnswers +
                 "order by q.id");
 
+        query.setParameter("authorizedUserId", parameters.get("authorizedUserId"));
         query.setParameter("trackedTags", parameters.get("trackedTag"));
         query.setParameter("ignoredTags", parameters.get("ignoredTag"));
 

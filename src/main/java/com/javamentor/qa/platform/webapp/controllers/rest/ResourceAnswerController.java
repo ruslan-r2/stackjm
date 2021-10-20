@@ -71,13 +71,14 @@ public class ResourceAnswerController {
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = AnswerDto.class)))
     @ApiResponse(responseCode = "400", description = "Вопроса по ID не существует")
-    public ResponseEntity<List<AnswerDto>> getAllAnswers(@Parameter(description = "id вопроса по которому получим ответы") @PathVariable("questionId") Long id) {
+    public ResponseEntity<List<AnswerDto>> getAllAnswers(@Parameter(description = "id вопроса по которому получим ответы") @PathVariable("questionId") Long id,
+                                                         @AuthenticationPrincipal User user) {
 
         if (!questionService.getById(id).isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        List<AnswerDto> list = answerDtoService.getAllAnswerDtoByQuestionId(id);
+        List<AnswerDto> list = answerDtoService.getAllAnswerDtoByQuestionId(id, user.getId());
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -132,21 +133,21 @@ public class ResourceAnswerController {
 
         Answer answerMakeFromDto = answerConverter.answerDtoToAnswer(answerDto);
         Answer answerOnQuestion = answerService.addAnswerOnQuestion(user, questionId, answerMakeFromDto);
-        return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerOnQuestion.getId()).get(), HttpStatus.OK);
+        return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerOnQuestion.getId(),user.getId()).get(), HttpStatus.OK);
     }
 
     @Operation(summary = "Обновляет тело комментария")
     @ApiResponse(responseCode = "200", description = "Тело комментария успешно обновлено")
     @ApiResponse(responseCode = "500", description = "Комментарий не найден")
     @PutMapping("/{answerId}/body")
-    public ResponseEntity<AnswerDto> updateAnswerBody(@RequestBody @Valid AnswerDto answerDto,
+    public ResponseEntity<AnswerDto> updateAnswerBody(@AuthenticationPrincipal User user, @RequestBody @Valid AnswerDto answerDto,
                                                       @PathVariable("answerId") Long answerId) {
         if ((answerId != answerDto.getId()) ||
         !answerService.getById(answerId).isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         answerDtoService.updateAnswer(answerId, answerDto);
-        return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerId).get(), HttpStatus.OK);
+        return new ResponseEntity<>(answerDtoService.getAnswerDtoById(answerId, user.getId()).get(), HttpStatus.OK);
     }
 
     @Operation(summary = "Комментарий к ответу", description = "Позволяет добавить комментарий к ответу на вопрос")

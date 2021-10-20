@@ -6,27 +6,22 @@ import com.javamentor.qa.platform.dao.util.SingleResultUtil;
 import com.javamentor.qa.platform.models.dto.AnswerDto;
 import com.javamentor.qa.platform.models.entity.question.answer.Answer;
 import com.javamentor.qa.platform.models.entity.question.answer.CommentAnswer;
-import com.javamentor.qa.platform.service.abstracts.dto.AnswerDtoService;
-import com.javamentor.qa.platform.service.abstracts.model.AnswerService;
 import com.javamentor.qa.platform.models.entity.question.answer.VoteAnswer;
 import com.javamentor.qa.platform.models.entity.question.answer.VoteType;
 import com.javamentor.qa.platform.models.entity.user.reputation.Reputation;
 import com.jm.qa.platform.jm.AbstractIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -262,6 +257,10 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
         assertTrue(commentAfter.isPresent());
     }
 
+
+//    private String  updateAnswerBodyUrl = "/api/user/question/{questionId}/answer/{answerId}/body";
+//
+
     @Test
     @DataSet(value = "resource_answer_controller/updateAnswerBody.yml", cleanBefore = true, cleanAfter = true)
     public void updateAnswerBodyTest () throws Exception {
@@ -295,6 +294,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("body", is(updatedBody)));
+
         //Тест, проверка обновился ли body
         mockMvc.perform(put(updateAnswerBodyUrl, questionId , answerIdCorrect)
                         .contentType(MediaType.APPLICATION_JSON).content(incomingJson)
@@ -305,6 +305,7 @@ public class ResourceAnswerControllerTest extends AbstractIntegrationTest {
 
         updateAnswerDto.setBody("");
         String incomingJsonEmptyBody = objectMapper.writeValueAsString(updateAnswerDto);
+
         //Тест, пустая строка в anwerbody
         mockMvc.perform(put(updateAnswerBodyUrl, questionId , answerIdCorrect)
                         .contentType(MediaType.APPLICATION_JSON).content(incomingJsonEmptyBody)
