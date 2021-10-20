@@ -34,4 +34,15 @@ public class UserDto {
     private Long votes;
     @Schema(description = "список топ-3 тэгов пользователя")
     private List<TagDto> listTop3TagDto;
+
+    public UserDto(Long id, String email, String fullName, String linkImage, String city, Long reputation, LocalDateTime registrationDate, Long votes) {
+        this.id = id;
+        this.email = email;
+        this.fullName = fullName;
+        this.linkImage = linkImage;
+        this.city = city;
+        this.reputation = reputation;
+        this.registrationDate = registrationDate;
+        this.votes = votes;
+    }
 }
