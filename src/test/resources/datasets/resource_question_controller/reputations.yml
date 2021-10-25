@@ -5,13 +5,13 @@ reputation:
     type: 1
     answer_id: 100
     author_id: 100
-    question_id: 103
+    question_id: 100
     sender_id: 101
   - id: 101
     count: 10
     persist_date: 1990-01-01 00:00:01
     type: 1
     answer_id: 102
-    author_id: 100
+    author_id: 101
     question_id: 101
-    sender_id: 103
+    sender_id: 102

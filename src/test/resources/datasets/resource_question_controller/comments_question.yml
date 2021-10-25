@@ -1,0 +1,7 @@
+comment_question:
+  - comment_id: 100
+    question_id: 101
+  - comment_id: 101
+    question_id: 101
+  - comment_id: 102
+    question_id: 102

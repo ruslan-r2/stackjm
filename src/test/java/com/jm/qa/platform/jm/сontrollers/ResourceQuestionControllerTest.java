@@ -13,12 +13,16 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.core.IsEqual.equalTo;
@@ -27,8 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
@@ -41,13 +44,24 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
     private EntityManager entityManager;
 
     private long getReputationByIdUser(Long idUser) {
-        return entityManager.createQuery("SELECT SUM(r.count) FROM Reputation r WHERE r.author.id = :id", Long.class)
+        return entityManager.createQuery("SELECT COALESCE(SUM(r.count), 0) FROM Reputation r WHERE r.author.id = :id", Long.class)
                 .setParameter("id", idUser)
                 .getSingleResult();
     }
 
     @Test
-    @DataSet(value = "resource_question_controller/getById.yml", cleanBefore = true, cleanAfter = true)
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/question_views.yml",
+            "resource_question_controller/reputations.yml",
+            "resource_question_controller/tags.yml",
+            "resource_question_controller/tags_on_question.yml",
+            "resource_question_controller/tags_tracked.yml",
+            "resource_question_controller/tags_ignored.yml",
+            "resource_question_controller/votes_on_questions.yml"
+    }, cleanBefore = true, cleanAfter = true)
     public void getById() throws Exception {
         int correctId = 100;
         int incorrectId = -100;
@@ -60,19 +74,19 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(100)))
-                .andExpect(jsonPath("$.title", is("question")))
-                .andExpect(jsonPath("$.authorId", is(101)))
-                .andExpect(jsonPath("$.authorName", is("just user2")))
-                .andExpect(jsonPath("$.authorImage", is("user2.image.com")))
-                .andExpect(jsonPath("$.description", is("description1")))
+                .andExpect(jsonPath("$.title", is("title0")))
+                .andExpect(jsonPath("$.authorId", is(100)))
+                .andExpect(jsonPath("$.authorName", is("just user")))
+                .andExpect(jsonPath("$.authorImage", is("user.image.com")))
+                .andExpect(jsonPath("$.description", is("description0")))
                 .andExpect(jsonPath("$.viewCount", is(2)))
-                .andExpect(jsonPath("$.authorReputation", is(0)))
-                .andExpect(jsonPath("$.countAnswer", is(1)))
-                .andExpect(jsonPath("$.countValuable", is(0)))
+                .andExpect(jsonPath("$.authorReputation", is(5)))
+                .andExpect(jsonPath("$.countAnswer", is(0)))
+                .andExpect(jsonPath("$.countValuable", is(1)))
                 .andExpect(jsonPath("$.persistDateTime", is("1990-10-10T00:00:00")))
                 .andExpect(jsonPath("$.lastUpdateDateTime", is("1990-10-10T00:00:00")))
                 .andExpect(jsonPath("$.voteType", is("DOWN")))
-                .andExpect(jsonPath("$.countVote", is(2)))
+                .andExpect(jsonPath("$.countVote", is(3)))
         ;
 
         //Не существующий ID вопроса
@@ -82,81 +96,127 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = {"resource_question_controller/vote_question/questions.yml", "resource_question_controller/vote_question/roles.yml", "resource_question_controller/vote_question/users.yml"}, cleanAfter = true, cleanBefore = true)
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml",
+            "resource_question_controller/tags.yml",
+            "resource_question_controller/tags_on_question.yml",
+            "resource_question_controller/tags_tracked.yml",
+            "resource_question_controller/tags_ignored.yml",
+    }, cleanBefore = true, cleanAfter = true)
     public void should_return_status_not_found() throws Exception {
-        username = "user101@mail.ru";
-        password = "user101";
+        username = "user@mail.ru";
+        password = "user";
 
         mockMvc.perform(post("/api/user/question/99/upVote").header("Authorization", getToken(username, password)))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @DataSet(value = {"resource_question_controller/vote_question/questions.yml", "resource_question_controller/vote_question/roles.yml", "resource_question_controller/vote_question/users.yml"}, cleanAfter = true, cleanBefore = true)
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml",
+            "resource_question_controller/tags.yml",
+            "resource_question_controller/tags_on_question.yml",
+            "resource_question_controller/tags_tracked.yml",
+            "resource_question_controller/tags_ignored.yml",
+    }, cleanBefore = true, cleanAfter = true)
     public void testing_upVote_and_downVote() throws Exception {
-        username = "user101@mail.ru";
-        password = "user101";
+        username = "user@mail.ru";
+        password = "user";
         token = getToken(username, password);
 
-        // положительный голос 101-ого
-        mockMvc.perform(post("/api/user/question/100/upVote").header("Authorization", token))
+        Assert.assertEquals(0L, getReputationByIdUser(102L));
+
+        // положительный голос 100-ого
+        mockMvc.perform(post("/api/user/question/102/upVote").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", equalTo(1)));
 
-        Assert.assertEquals(getReputationByIdUser(100L), 10L);
+        Assert.assertEquals(10L, getReputationByIdUser(102L));
 
-        // повторный положительный голос 101-ого
-        mockMvc.perform(post("/api/user/question/100/upVote").header("Authorization", token))
+        // повторный положительный голос 100-ого
+        mockMvc.perform(post("/api/user/question/102/upVote").header("Authorization", token))
                 .andExpect(status().isBadRequest());
 
-        Assert.assertEquals(getReputationByIdUser(100L), 10L);
+        Assert.assertEquals(10L, getReputationByIdUser(102L));
 
-        // положительный голос 101-ого за другой вопрос
+        // положительный голос 100-ого за другой вопрос
         mockMvc.perform(post("/api/user/question/101/upVote").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", equalTo(1)));
 
-        Assert.assertEquals(getReputationByIdUser(100L), 20L);
+        Assert.assertEquals(10L, getReputationByIdUser(102L));
 
-        username = "user102@mail.ru";
-        password = "user102";
+        username = "user2@mail.ru";
+        password = "user";
         token = getToken(username, password);
 
-        // положительный голос 102-ого
-        mockMvc.perform(post("/api/user/question/100/upVote").header("Authorization", token))
+        // положительный голос 101-ого
+        mockMvc.perform(post("/api/user/question/102/upVote").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", equalTo(2)));
 
-        Assert.assertEquals(getReputationByIdUser(100L), 30L);
+        Assert.assertEquals(20L, getReputationByIdUser(102L));
 
-        // отрицательный голос 102-ого
-        mockMvc.perform(post("/api/user/question/100/downVote").header("Authorization", token))
+        // отрицательный голос 101-ого
+        mockMvc.perform(post("/api/user/question/102/downVote").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", equalTo(0)));
 
-        Assert.assertEquals(getReputationByIdUser(100L), 15L);
+        Assert.assertEquals(5L, getReputationByIdUser(102L));
 
-        // повторный отрицательный голос 102-ого
-        mockMvc.perform(post("/api/user/question/100/downVote").header("Authorization", token))
+        // повторный отрицательный голос 101-ого
+        mockMvc.perform(post("/api/user/question/102/downVote").header("Authorization", token))
                 .andExpect(status().isBadRequest());
 
-        Assert.assertEquals(getReputationByIdUser(100L), 15L);
+        Assert.assertEquals(5L, getReputationByIdUser(102L));
     }
 
     @Test
-    @DataSet(value = {"resource_question_controller/vote_question/questions.yml", "resource_question_controller/vote_question/roles.yml", "resource_question_controller/vote_question/users.yml"}, cleanAfter = true, cleanBefore = true)
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml",
+            "resource_question_controller/tags.yml",
+            "resource_question_controller/tags_on_question.yml",
+            "resource_question_controller/tags_tracked.yml",
+            "resource_question_controller/tags_ignored.yml",
+    }, cleanBefore = true, cleanAfter = true)
     public void user_votes_himself_method_should_return_status_bad_request() throws Exception {
-        username = "user100@mail.ru";
-        password = "user100";
+        username = "user@mail.ru";
+        password = "user";
 
         mockMvc.perform(post("/api/user/question/100/upVote").header("Authorization", getToken(username, password)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @DataSet(value = "resource_question_controller/getPageByTagsIfNecessary.yml", cleanAfter = true, cleanBefore = true)
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml",
+            "resource_question_controller/tags.yml",
+            "resource_question_controller/tags_on_question.yml",
+            "resource_question_controller/tags_tracked.yml",
+            "resource_question_controller/tags_ignored.yml",
+            "resource_question_controller/votes_on_questions.yml"
+    }, cleanBefore = true, cleanAfter = true)
     public void getPageByTagsIfNecessaryTest() throws Exception {
-
         //Некорретный запрос к серверу, отсутствует необходимый параметр "page"
         mockMvc.perform(get("/api/user/question?items=10")
                 .param("trackedTag", "")
@@ -169,21 +229,21 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.currentPageNumber", equalTo(1)))
                 .andExpect(jsonPath("$.totalPageCount", equalTo(1)))
-                .andExpect(jsonPath("$.totalResultCount", equalTo(2)))
+                .andExpect(jsonPath("$.totalResultCount", equalTo(4)))
                 .andExpect(jsonPath("$.itemsOnPage", equalTo(10)))
                 .andExpect(jsonPath("$.items.length()", equalTo(1)))
-                .andExpect(jsonPath("$.items[0].id", equalTo(101)))
-                .andExpect(jsonPath("$.items[0].title", equalTo("question2")))
-                .andExpect(jsonPath("$.items[0].authorId", equalTo(102)))
-                .andExpect(jsonPath("$.items[0].authorName", equalTo("just user3")))
-                .andExpect(jsonPath("$.items[0].authorImage", equalTo("user3.image.com")))
-                .andExpect(jsonPath("$.items[0].description", equalTo("description2")))
+                .andExpect(jsonPath("$.items[0].id", equalTo(100)))
+                .andExpect(jsonPath("$.items[0].title", equalTo("title0")))
+                .andExpect(jsonPath("$.items[0].authorId", equalTo(100)))
+                .andExpect(jsonPath("$.items[0].authorName", equalTo("just user")))
+                .andExpect(jsonPath("$.items[0].authorImage", equalTo("user.image.com")))
+                .andExpect(jsonPath("$.items[0].description", equalTo("description0")))
                 .andExpect(jsonPath("$.items[0].viewCount", equalTo(0)))
-                .andExpect(jsonPath("$.items[0].authorReputation", equalTo(0)))
-                .andExpect(jsonPath("$.items[0].countAnswer", equalTo(1)))
-                .andExpect(jsonPath("$.items[0].countValuable", equalTo(-1)))
+                .andExpect(jsonPath("$.items[0].authorReputation", equalTo(5)))
+                .andExpect(jsonPath("$.items[0].countAnswer", equalTo(0)))
+                .andExpect(jsonPath("$.items[0].countValuable", equalTo(1)))
                 .andExpect(jsonPath("$.items[0].persistDateTime", equalTo("1990-10-10T00:00:00")))
-                .andExpect(jsonPath("$.items[0].countVote", equalTo(1)))
+                .andExpect(jsonPath("$.items[0].countVote", equalTo(3)))
                 .andExpect(jsonPath("$.items[0].voteType", equalTo("DOWN")))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
@@ -195,50 +255,77 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.currentPageNumber", equalTo(1)))
                 .andExpect(jsonPath("$.totalPageCount", equalTo(1)))
-                .andExpect(jsonPath("$.totalResultCount", equalTo(2)))
+                .andExpect(jsonPath("$.totalResultCount", equalTo(4)))
                 .andExpect(jsonPath("$.itemsOnPage", equalTo(10)))
-                .andExpect(jsonPath("$.items.length()", equalTo(2)))
+                .andExpect(jsonPath("$.items.length()", equalTo(3)))
+
                 .andExpect(jsonPath("$.items[0].id", equalTo(100)))
-                .andExpect(jsonPath("$.items[0].title", equalTo("question")))
+                .andExpect(jsonPath("$.items[0].title", equalTo("title0")))
                 .andExpect(jsonPath("$.items[0].authorId", equalTo(100)))
                 .andExpect(jsonPath("$.items[0].authorName", equalTo("just user")))
                 .andExpect(jsonPath("$.items[0].authorImage", equalTo("user.image.com")))
-                .andExpect(jsonPath("$.items[0].description", equalTo("description1")))
-                .andExpect(jsonPath("$.items[0].viewCount", equalTo(2)))
-                .andExpect(jsonPath("$.items[0].authorReputation", equalTo(1)))
-                .andExpect(jsonPath("$.items[0].countAnswer", equalTo(2)))
-                .andExpect(jsonPath("$.items[0].countValuable", equalTo(2)))
+                .andExpect(jsonPath("$.items[0].description", equalTo("description0")))
+                .andExpect(jsonPath("$.items[0].viewCount", equalTo(0)))
+                .andExpect(jsonPath("$.items[0].authorReputation", equalTo(5)))
+                .andExpect(jsonPath("$.items[0].countAnswer", equalTo(0)))
+                .andExpect(jsonPath("$.items[0].countValuable", equalTo(1)))
                 .andExpect(jsonPath("$.items[0].persistDateTime", equalTo("1990-10-10T00:00:00")))
                 .andExpect(jsonPath("$.items[0].lastUpdateDateTime", equalTo("1990-10-10T00:00:00")))
-                .andExpect(jsonPath("$.items[0].countVote", equalTo(2)))
+                .andExpect(jsonPath("$.items[0].countVote", equalTo(3)))
                 .andExpect(jsonPath("$.items[0].voteType", equalTo("UP")))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].description", equalTo("tag_1")))
-                .andExpect(jsonPath("$.items[0].listTagDto[1].id", equalTo(101)))
-                .andExpect(jsonPath("$.items[0].listTagDto[1].name", equalTo("tag_name_2")))
-                .andExpect(jsonPath("$.items[0].listTagDto[1].description", equalTo("tag_2")))
+
                 .andExpect(jsonPath("$.items[1].id", equalTo(101)))
-                .andExpect(jsonPath("$.items[1].title", equalTo("question2")))
-                .andExpect(jsonPath("$.items[1].authorId", equalTo(102)))
-                .andExpect(jsonPath("$.items[1].authorName", equalTo("just user3")))
-                .andExpect(jsonPath("$.items[1].authorImage", equalTo("user3.image.com")))
-                .andExpect(jsonPath("$.items[1].description", equalTo("description2")))
+                .andExpect(jsonPath("$.items[1].title", equalTo("title1")))
+                .andExpect(jsonPath("$.items[1].authorId", equalTo(101)))
+                .andExpect(jsonPath("$.items[1].authorName", equalTo("just user2")))
+                .andExpect(jsonPath("$.items[1].authorImage", equalTo("user2.image.com")))
+                .andExpect(jsonPath("$.items[1].description", equalTo("description1")))
                 .andExpect(jsonPath("$.items[1].viewCount", equalTo(0)))
-                .andExpect(jsonPath("$.items[1].authorReputation", equalTo(0)))
-                .andExpect(jsonPath("$.items[1].countAnswer", equalTo(1)))
+                .andExpect(jsonPath("$.items[1].authorReputation", equalTo(10)))
+                .andExpect(jsonPath("$.items[1].countAnswer", equalTo(0)))
                 .andExpect(jsonPath("$.items[1].countValuable", equalTo(-1)))
                 .andExpect(jsonPath("$.items[1].countVote", equalTo(1)))
                 .andExpect(jsonPath("$.items[1].voteType").value(IsNull.nullValue()))
                 .andExpect(jsonPath("$.items[1].persistDateTime", equalTo("1990-10-10T00:00:00")))
                 .andExpect(jsonPath("$.items[1].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[1].listTagDto[0].name", equalTo("tag_name_1")))
-                .andExpect(jsonPath("$.items[1].listTagDto[0].description", equalTo("tag_1")));
+                .andExpect(jsonPath("$.items[1].listTagDto[0].description", equalTo("tag_1")))
+                .andExpect(jsonPath("$.items[1].listTagDto[1].id", equalTo(101)))
+                .andExpect(jsonPath("$.items[1].listTagDto[1].name", equalTo("tag_name_2")))
+                .andExpect(jsonPath("$.items[1].listTagDto[1].description", equalTo("tag_2")))
+
+                .andExpect(jsonPath("$.items[2].id", equalTo(103)))
+                .andExpect(jsonPath("$.items[2].title", equalTo("title3")))
+                .andExpect(jsonPath("$.items[2].authorId", equalTo(100)))
+                .andExpect(jsonPath("$.items[2].authorName", equalTo("just user")))
+                .andExpect(jsonPath("$.items[2].authorImage", equalTo("user.image.com")))
+                .andExpect(jsonPath("$.items[2].description", equalTo("description3")))
+                .andExpect(jsonPath("$.items[2].viewCount", equalTo(0)))
+                .andExpect(jsonPath("$.items[2].authorReputation", equalTo(5)))
+                .andExpect(jsonPath("$.items[2].countAnswer", equalTo(1)))
+                .andExpect(jsonPath("$.items[2].countValuable", equalTo(0)))
+                .andExpect(jsonPath("$.items[2].persistDateTime", equalTo("1990-10-10T00:00:00")))
+                .andExpect(jsonPath("$.items[2].listTagDto[0].id", equalTo(101)))
+                .andExpect(jsonPath("$.items[2].listTagDto[0].name", equalTo("tag_name_2")))
+                .andExpect(jsonPath("$.items[2].listTagDto[0].description", equalTo("tag_2")));
     }
 
     @Test
-    @DataSet(value = {"resource_question_controller/addNewQuestion.yml"},
-            cleanBefore = true, cleanAfter = true)
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml",
+            "resource_question_controller/tags.yml",
+            "resource_question_controller/tags_on_question.yml",
+            "resource_question_controller/tags_tracked.yml",
+            "resource_question_controller/tags_ignored.yml",
+    }, cleanBefore = true, cleanAfter = true)
     void addNewQuestion_title_empty_or_null() throws Exception {
 
         username = "user@mail.ru";
@@ -263,8 +350,18 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = {"resource_question_controller/addNewQuestion.yml"},
-            cleanBefore = true, cleanAfter = true)
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml",
+            "resource_question_controller/tags.yml",
+            "resource_question_controller/tags_on_question.yml",
+            "resource_question_controller/tags_tracked.yml",
+            "resource_question_controller/tags_ignored.yml",
+    }, cleanBefore = true, cleanAfter = true)
     void addNewQuestion_description_empty_or_null() throws Exception {
 
         username = "user@mail.ru";
@@ -289,8 +386,18 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = {"resource_question_controller/addNewQuestion.yml"},
-            cleanBefore = true, cleanAfter = true)
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml",
+            "resource_question_controller/tags.yml",
+            "resource_question_controller/tags_on_question.yml",
+            "resource_question_controller/tags_tracked.yml",
+            "resource_question_controller/tags_ignored.yml",
+    }, cleanBefore = true, cleanAfter = true)
     void addNewQuestion_without_tags() throws Exception {
 
         username = "user@mail.ru";
@@ -310,8 +417,18 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = {"resource_question_controller/addNewQuestion.yml"},
-            cleanBefore = true, cleanAfter = true)
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml",
+            "resource_question_controller/tags.yml",
+            "resource_question_controller/tags_on_question.yml",
+            "resource_question_controller/tags_tracked.yml",
+            "resource_question_controller/tags_ignored.yml",
+    }, cleanBefore = true, cleanAfter = true)
     void addNewQuestion_with_new_tags() throws Exception {
 
         username = "user@mail.ru";
@@ -369,24 +486,35 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DataSet(value = {"resource_question_controller/addNewQuestion.yml"},
-            cleanBefore = true, cleanAfter = true)
-    void addNewQuestion_wit_existing_tags() throws Exception {
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml",
+            "resource_question_controller/tags.yml",
+            "resource_question_controller/tags_on_question.yml",
+            "resource_question_controller/tags_tracked.yml",
+            "resource_question_controller/tags_ignored.yml",
+    }, cleanBefore = true, cleanAfter = true)
+    void addNewQuestion_with_existing_tags() throws Exception {
 
         username = "user@mail.ru";
         password = "user";
 
         List<Tag> existingTagList = (List<Tag>) entityManager.
                 createQuery("select t from Tag t where t.name = :name and t.description = :description").
-                setParameter("name", "tag_name").
-                setParameter("description", "tag_description").getResultList();
+                setParameter("name", "tag_name_1").
+                setParameter("description", "tag_1").getResultList();
         assertFalse(Collections.isEmpty(existingTagList));
+
 
         QuestionCreateDto questionCreateDto = new QuestionCreateDto();
         List<TagDto> tags = new ArrayList<>();
         TagDto tag = new TagDto();
-        tag.setName("tag_name");
-        tag.setDescription("tag_description");
+        tag.setName("tag_name_1");
+        tag.setDescription("tag_1");
         tags.add(tag);
         questionCreateDto.setTitle("question_title");
         questionCreateDto.setDescription("question_description");
@@ -402,8 +530,8 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 andExpect(jsonPath("$.title", is("question_title"))).
                 andExpect(jsonPath("$.description", is("question_description"))).
                 andExpect(jsonPath("$.listTagDto.*", hasSize(1))).
-                andExpect(jsonPath("$.listTagDto[0].name", is("tag_name"))).
-                andExpect(jsonPath("$.listTagDto[0].description", is("tag_description")));
+                andExpect(jsonPath("$.listTagDto[0].name", is("tag_name_1"))).
+                andExpect(jsonPath("$.listTagDto[0].description", is("tag_1")));
 
         //проверяем наличие вопроса в бд, после сохранения
         List<Question> questionAfterPersist = (List<Question>) entityManager.
@@ -415,8 +543,8 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
         //проверяем наличие тега в бд после сохранения
         List<Tag> existingTagListAfterPersist = (List<Tag>) entityManager.
                 createQuery("select t from Tag t where t.name = :name and t.description = :description").
-                setParameter("name", "tag_name").
-                setParameter("description", "tag_description").getResultList();
+                setParameter("name", "tag_name_1").
+                setParameter("description", "tag_1").getResultList();
         Long tagId = existingTagListAfterPersist.get(0).getId();
 
         //проверяем привязку тега к вопросу после сохранеия
@@ -425,8 +553,20 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
         ;
     }
 
+    //Получение вопросов без ответов с пагинацией
     @Test
-    @DataSet(value = "resource_question_controller/getQuestionsWithoutAnswersPage.yml", cleanAfter = true, cleanBefore = true)
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml",
+            "resource_question_controller/tags.yml",
+            "resource_question_controller/tags_on_question.yml",
+            "resource_question_controller/tags_tracked.yml",
+            "resource_question_controller/tags_ignored.yml",
+    }, cleanBefore = true, cleanAfter = true)
     public void getQuestionsWithoutAnswersPage() throws Exception {
 
         //Некорректный запрос к серверу, отсутствует необходимый параметр "page"
@@ -435,7 +575,8 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(status().isInternalServerError());
 
         //Запрос на получение всех вопросов без ответов для юзера, который отслеживает один тэг и игнорирует другой
-        mockMvc.perform(get("/api/user/question/noAnswer?page=1&items=10").header("Authorization", getToken("user@mail.ru", "user")))
+        mockMvc.perform(get("/api/user/question/noAnswer?page=1&items=10")
+                        .header("Authorization", getToken("user@mail.ru", "user")))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.currentPageNumber", equalTo(1)))
@@ -443,9 +584,10 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.totalResultCount", equalTo(4)))
                 .andExpect(jsonPath("$.itemsOnPage", equalTo(10)))
                 .andExpect(jsonPath("$.items.length()", equalTo(1)))
-                .andExpect(jsonPath("$.items[0].id", equalTo(103)))
-                .andExpect(jsonPath("$.items[0].title", equalTo("question4")))
-                .andExpect(jsonPath("$.items[0].description", equalTo("description4")))
+
+                .andExpect(jsonPath("$.items[0].id", equalTo(100)))
+                .andExpect(jsonPath("$.items[0].title", equalTo("title0")))
+                .andExpect(jsonPath("$.items[0].description", equalTo("description0")))
                 .andExpect(jsonPath("$.items[0].countAnswer", equalTo(0)))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
@@ -460,23 +602,135 @@ public class ResourceQuestionControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.totalResultCount", equalTo(4)))
                 .andExpect(jsonPath("$.itemsOnPage", equalTo(10)))
                 .andExpect(jsonPath("$.items.length()", equalTo(2)))
-                .andExpect(jsonPath("$.items[0].id", equalTo(102)))
-                .andExpect(jsonPath("$.items[0].title", equalTo("question3")))
-                .andExpect(jsonPath("$.items[0].description", equalTo("description3")))
+
+                .andExpect(jsonPath("$.items[0].id", equalTo(100)))
+                .andExpect(jsonPath("$.items[0].title", equalTo("title0")))
+                .andExpect(jsonPath("$.items[0].description", equalTo("description0")))
                 .andExpect(jsonPath("$.items[0].countAnswer", equalTo(0)))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].name", equalTo("tag_name_1")))
                 .andExpect(jsonPath("$.items[0].listTagDto[0].description", equalTo("tag_1")))
-                .andExpect(jsonPath("$.items[0].listTagDto[1].id", equalTo(101)))
-                .andExpect(jsonPath("$.items[0].listTagDto[1].name", equalTo("tag_name_2")))
-                .andExpect(jsonPath("$.items[0].listTagDto[1].description", equalTo("tag_2")))
-                .andExpect(jsonPath("$.items[1].id", equalTo(103)))
-                .andExpect(jsonPath("$.items[1].title", equalTo("question4")))
-                .andExpect(jsonPath("$.items[1].description", equalTo("description4")))
+
+                .andExpect(jsonPath("$.items[1].id", equalTo(101)))
+                .andExpect(jsonPath("$.items[1].title", equalTo("title1")))
+                .andExpect(jsonPath("$.items[1].description", equalTo("description1")))
                 .andExpect(jsonPath("$.items[1].countAnswer", equalTo(0)))
                 .andExpect(jsonPath("$.items[1].listTagDto[0].id", equalTo(100)))
                 .andExpect(jsonPath("$.items[1].listTagDto[0].name", equalTo("tag_name_1")))
-                .andExpect(jsonPath("$.items[1].listTagDto[0].description", equalTo("tag_1")));
+                .andExpect(jsonPath("$.items[1].listTagDto[0].description", equalTo("tag_1")))
+                .andExpect(jsonPath("$.items[1].listTagDto[1].id", equalTo(101)))
+                .andExpect(jsonPath("$.items[1].listTagDto[1].name", equalTo("tag_name_2")))
+                .andExpect(jsonPath("$.items[1].listTagDto[1].description", equalTo("tag_2")));
     }
 
+    //Получение комментариев у существующего вопроса
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml"
+    }, cleanBefore = true, cleanAfter = true)
+    @Test
+    public void getAllCommentQuestion() throws Exception {
+        mockMvc.perform(get("/api/user/question/101/comment")
+                        .header("Authorization", getToken("user@mail.ru", "user")))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(100))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].questionId").value(101))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].userId").value(100))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].imageLink").value("user.image.com"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].reputation").value(5))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].text").value("Question comment good"))
+
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(101))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].questionId").value(101))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].userId").value(101))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].imageLink").value("user2.image.com"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].reputation").value(10))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].text").value("Question comment bad"));
+    }
+
+    //Получение комментариев у несуществующего вопроса
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml"
+    }, cleanBefore = true, cleanAfter = true)
+    @Test
+    public void getAllCommentQuestionNotFound() throws Exception {
+        mockMvc.perform(get("/api/user/question/901/comment")
+                        .header("Authorization", getToken("user@mail.ru", "user")))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+
+    }
+
+    //Получение комментариев у вопроса без комментариев
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml",
+            "resource_question_controller/answers.yml",
+            "resource_question_controller/comments.yml",
+            "resource_question_controller/comments_question.yml",
+            "resource_question_controller/reputations.yml",
+            "resource_question_controller/tags.yml",
+            "resource_question_controller/tags_on_question.yml",
+            "resource_question_controller/tags_tracked.yml",
+            "resource_question_controller/tags_ignored.yml",
+    }, cleanBefore = true, cleanAfter = true)
+    @Test
+    public void getEmptyListCommentQuestion() throws Exception {
+        mockMvc.perform(get("/api/user/question/100/comment")
+                        .header("Authorization", getToken("user@mail.ru", "user")))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+
+    //Получение количества вопросов
+    @Test
+    @DataSet(value = {"resource_question_controller/roles.yml",
+            "resource_question_controller/users.yml",
+            "resource_question_controller/questions.yml"
+    }, cleanBefore = true, cleanAfter = true)
+    public void getCountQuestion() throws Exception {
+        String responseMessage = mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user/question/count")
+                        .header("Authorization", getToken("user@mail.ru", "user"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        assertThat(responseMessage).isEqualTo(Long.toString(4));
+    }
+
+    //Получение вопросов если их нет
+    @Test
+    @DataSet(value = {"resource_question_controller/users.yml",
+            "resource_question_controller/roles.yml",
+            "resource_question_controller/no_questions/questions.yml"
+    }, cleanBefore = true, cleanAfter = true)
+    public void getCountQuestionZero() throws Exception {
+        String responseMessage = mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user/question/count")
+                        .header("Authorization", getToken("user@mail.ru", "user"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(StandardCharsets.UTF_8);
+
+        assertThat(responseMessage).isEqualTo(Long.toString(0));
+    }
 }

@@ -1,0 +1,31 @@
+answer:
+  - id: 100
+    date_accept_time: 1990-10-10 00:00:00
+    html_body: body0
+    is_deleted: false
+    is_deleted_by_moderator: false
+    is_helpful: true
+    persist_date: 1990-10-10 00:00:00
+    update_date: 1990-10-10 00:00:00
+    question_id: 102
+    user_id: 100
+  - id: 101
+    date_accept_time: 1990-10-10 00:00:00
+    html_body: body1
+    is_deleted: false
+    is_deleted_by_moderator: false
+    is_helpful: true
+    persist_date: 1990-10-10 00:00:00
+    update_date: 1990-10-10 00:00:00
+    question_id: 102
+    user_id: 100
+  - id: 102
+    date_accept_time: 1990-10-10 00:00:00
+    html_body: body2
+    is_deleted: false
+    is_deleted_by_moderator: true
+    is_helpful: false
+    persist_date: 1990-10-10 00:00:00
+    update_date: 1990-10-10 00:00:00
+    question_id: 103
+    user_id: 102
